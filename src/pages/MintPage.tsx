@@ -1,6 +1,6 @@
 function MintPage() {
   return (
-    <div className="App">
+    <div className="bg-red-400">
       <h1>You can mint here</h1>
     </div>
   );
