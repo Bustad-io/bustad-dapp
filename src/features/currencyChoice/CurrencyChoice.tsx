@@ -4,6 +4,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { selectChosenCurrency, selectCurrencyOptions, setCurrency } from './currencyChoiceSlice';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 
+
 export function CurrencyChoice() {
   const chosenCurrency = useAppSelector(selectChosenCurrency);
   const currencyOptions = useAppSelector(selectCurrencyOptions);

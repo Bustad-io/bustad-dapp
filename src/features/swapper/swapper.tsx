@@ -1,3 +1,4 @@
+import { spawn } from "child_process";
 import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 
 export function Swapper() {
@@ -7,10 +8,10 @@ export function Swapper() {
 
   const incrementValue = Number(incrementAmount) || 0; */
 
-  const RenderInputComponent = () => {
+  const RenderInputComponent = (disabled: boolean) => {
     return <div className="flex">
-      <input type="text" placeholder="amount" className="border" />
-      <CurrencyChoice />
+      <input type="text" placeholder={!disabled ? 'amount' : ''} className="border" disabled={disabled}/>
+      {!disabled ? <CurrencyChoice/> : <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>}
     </div>;
   }
 
@@ -19,8 +20,8 @@ export function Swapper() {
       <span className="text-left">
         Mint
       </span>
-      {RenderInputComponent()}
-      {RenderInputComponent()}
+      {RenderInputComponent(false)}
+      {RenderInputComponent(true)}
     </div>
   );
 }
