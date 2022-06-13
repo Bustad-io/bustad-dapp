@@ -11,7 +11,7 @@ function App() {
         <Route path="/" element={<MintPage />} />
         <Route path="test" element={<TestCounterPage />} />
       </Routes>      
-        <Link to="test">Test</Link>
+        {/* <Link to="test">Test</Link> */}
       </header>
     </div>
   );
