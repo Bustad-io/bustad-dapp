@@ -1,5 +1,6 @@
 import { spawn } from "child_process";
 import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
+import { ConnectButton } from "../wallet/connectButton";
 
 export function Swapper() {
   /* const count = useAppSelector(selectCount);
@@ -22,6 +23,7 @@ export function Swapper() {
       </span>
       {RenderInputComponent(false)}
       {RenderInputComponent(true)}
+      <ConnectButton/>
     </div>
   );
 }
