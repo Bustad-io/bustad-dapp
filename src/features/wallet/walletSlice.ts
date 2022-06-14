@@ -1,30 +1,25 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Signer } from 'ethers';
 import { RootState } from '../../app/store';
-import { connectWallet, getSigner } from './walletAPI';
+import { connectWallet } from './walletAPI';
 
 export type WalletStatus = 'connected' | 'not_connected' | 'failed_to_connect';
 
 export interface WalletState {  
-  status: WalletStatus;
-  signer: Signer | null;  
+  status: WalletStatus;  
   account: string | null
 }
 
 const initialState: WalletState = {  
-  status: 'not_connected',  
-  signer: null,
+  status: 'not_connected',    
   account: null
 };
 
 export const connectWalletAsync = createAsyncThunk(
   'wallet/connectWallet',
   async () => {    
-    const accounts = await connectWallet();
-    const signer = getSigner();    
+    const accounts = await connectWallet();    
 
-    return {
-      signer,
+    return {    
       account: accounts[0]
     }
   }
@@ -34,15 +29,14 @@ export const walletSlice = createSlice({
   name: 'wallet',
   initialState,  
   reducers: {
-    /* setStatus: (state, action: PayloadAction<MintButtonStateStatus>) => {      
-      state.status = action.payload
-    } */
+    setAccount: (state, action: PayloadAction<string>) => {      
+      state.account = action.payload
+    }
   },
   extraReducers: (builder) => {
     builder      
       .addCase(connectWalletAsync.fulfilled, (state, action) => {
-        state.status = 'connected';
-        state.signer = action.payload.signer;
+        state.status = 'connected';        
         state.account = action.payload.account;
       })
       .addCase(connectWalletAsync.rejected, (state) => {
@@ -51,9 +45,8 @@ export const walletSlice = createSlice({
   },
 });
 
-/* export const { setStatus } = walletSlice.actions;
+export const { setAccount } = walletSlice.actions;
 
-*/
 export const selectAccount = (state: RootState) => state.wallet.account;
 
 export default walletSlice.reducer;
