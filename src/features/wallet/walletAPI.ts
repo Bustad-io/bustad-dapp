@@ -3,14 +3,9 @@ import { ethers, Signer } from "ethers";
 const provider = new ethers.providers.Web3Provider((window as any).ethereum)
 
 export function connectWallet() {
-  return new Promise<void>((resolve) => {
-    provider.send("eth_requestAccounts", []).then(() => resolve());
+  return new Promise<string[]>((resolve) => {
+    provider.send("eth_requestAccounts", []).then((res) => resolve(res));
   }
-  );
-}
-
-export function getAddress(signer: Signer) {
-  return new Promise<string>((resolve) => signer.getAddress().then(address => resolve(address))
   );
 }
 
