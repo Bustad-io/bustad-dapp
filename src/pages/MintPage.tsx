@@ -1,5 +1,5 @@
 import { useAppSelector } from "../app/hooks";
-import { Swapper } from "../features/swapper/swapper";
+import { Minter } from "../features/minter/minter";
 import { selectAccount } from "../features/wallet/walletSlice";
 
 function MintPage() {
@@ -7,7 +7,7 @@ function MintPage() {
   return (
     <div>
       <span className="text-sm">{account}</span>
-      <Swapper/>
+      <Minter/>
     </div>
   );
 }

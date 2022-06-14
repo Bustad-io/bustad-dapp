@@ -12,3 +12,7 @@ export function connectWallet() {
 export function getSigner(): Signer {
   return provider.getSigner()  
 }
+
+export function getProvider(): ethers.providers.Web3Provider {
+  return provider;
+}

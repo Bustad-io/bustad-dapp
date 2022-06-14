@@ -48,5 +48,6 @@ export const walletSlice = createSlice({
 export const { setAccount } = walletSlice.actions;
 
 export const selectAccount = (state: RootState) => state.wallet.account;
+export const selectWalletStatus = (state: RootState) => state.wallet.status;
 
 export default walletSlice.reducer;

@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import currencyChoiceReducer from '../features/currencyChoice/currencyChoiceSlice';
 import walletReducer from '../features/wallet/walletSlice';
+import minterReducer from '../features/minter/minterSlice';
 import AddAccountChangeListener from './event-listeners';
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     counter: counterReducer,
     currencyChoice: currencyChoiceReducer,
     wallet: walletReducer,
+    minter: minterReducer
   },
 });
 
