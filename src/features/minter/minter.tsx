@@ -3,7 +3,7 @@ import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
 import { fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { useState, useEffect } from 'react';
-import { formatUnitToNumber, fromEther, parseToNumber, parseUnits, parseUnitsFromNumber } from "../../utils/format";
+import { fromEther, parseToNumber, parseUnits } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
 import { calculateFromAmount, calculateToAmount } from './helper';
 import { useWalletBalance } from "../../hooks/balanceHook";
@@ -18,7 +18,6 @@ export function Minter() {
   const chosenCurrency = useAppSelector(selectChosenCurrency);
 
   const coinConfig = useCoinConfig();
-
   const balance = useWalletBalance();
   const allowance = useWalletAllowance();
 
@@ -31,6 +30,8 @@ export function Minter() {
 
   const [rate, setRate] = useState<number>(0);
   const [ethUsdPrice, setEthUsdPrice] = useState<number>(0);
+
+  const insufficientBalance = Number(fromAmount) > balance;
 
   useEffect(() => {
     if (contracts.crowdsale) {
@@ -102,9 +103,9 @@ export function Minter() {
           <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border" />
           <CurrencyChoice />
         </div>
-        <span className="text-sm text-left pl-2">
+        {insufficientBalance ? <span className="text-sm text-red-600 text-left pl-2">insufficient balance {balance} {chosenCurrency.toUpperCase()}</span>  :<span className="text-sm text-left pl-2">
           {chosenCurrency.toUpperCase()} balance: {balance}
-        </span>
+        </span>}
       </div>
       <div className="flex flex-col mb-4">
         <div className="flex">
@@ -115,7 +116,7 @@ export function Minter() {
           BUST balance: {walletBalance.bustadToken}
         </span>
       </div>
-      {walletStatus !== "connected" ? <ConnectButton /> : allowance >= Number(fromAmount) ? <button onClick={onClickMint}>Mint</button> : <button onClick={onClickAllow}>Allow</button>}
+      {walletStatus !== "connected" ? <ConnectButton /> : allowance >= Number(fromAmount) ? <button disabled={insufficientBalance} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
     </div>
   );
 }
