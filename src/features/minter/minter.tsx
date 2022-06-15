@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
-import { fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
+import { connectWalletAsync, fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { useState, useEffect } from 'react';
 import { fromEther, parseToNumber, parseUnits } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
@@ -39,6 +39,10 @@ export function Minter() {
       contracts.crowdsale.callStatic.getLatestETHPrice().then(res => setEthUsdPrice(parseToNumber(res)));
     }
   }, [contracts.crowdsale]);
+
+  useEffect(() => {  
+    dispatch(connectWalletAsync());    
+  }, []);
 
   useEffect(() => {
     onChangeFromAmount(fromAmount);
