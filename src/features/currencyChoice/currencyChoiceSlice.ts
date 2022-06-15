@@ -1,14 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
+export type OptionType = 'usdc' | 'dai' | 'eth';
+
 export interface CurrencyOption {  
-  chosen: string,
-  options: string[]
+  chosen: OptionType,
+  options: OptionType[]
 }
 
 const initialState: CurrencyOption = {
-  chosen: 'USDC',
-  options: ["USDC", "DAI", "ETH"]
+  chosen: 'usdc',
+  options: ["usdc", "dai", "eth"]
   
 };
 
@@ -16,7 +18,7 @@ export const currencyChoiceSlice = createSlice({
   name: 'currencyChoice',
   initialState,  
   reducers: {
-    setCurrency: (state, action: PayloadAction<string>) => {      
+    setCurrency: (state, action: PayloadAction<OptionType>) => {      
       state.chosen = action.payload
     }
   }

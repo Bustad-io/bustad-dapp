@@ -1,41 +1,37 @@
-import { Contract, ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { Contract } from "ethers";
 import { useAppSelector } from "../app/hooks";
-import { CrowdsaleAddress, BustadTokenAddress } from "../config";
-import { getProvider, getSigner } from "../features/wallet/walletAPI";
+import { selectChosenCurrency } from "../features/currencyChoice/currencyChoiceSlice";
+import { Contracts, getContracts } from "../features/wallet/walletAPI";
 import { selectWalletStatus } from "../features/wallet/walletSlice";
 
-import CrowdsaleDef from '../contracts/Crowdsale.sol/Crowdsale.json';
-import BustadTokenDef from '../contracts/BustadToken.sol/BustadToken.json';
+export interface ExtendedContracts extends Contracts  {
+    chosenCurrencyContract: Contract | null
+}
 
 export function useWeb3Connector() {
-    const [crowdsale, setCrowdsale] = useState<Contract>();
-    const [bustadToken, setBustadToken] = useState<Contract>();
-
     const walletStatus = useAppSelector(selectWalletStatus);
+    const chosenCurrency = useAppSelector(selectChosenCurrency);
 
-    useEffect(() => {
-        if (walletStatus === "connected") {
-            const signer = getSigner();
+    const contracts = getContracts(walletStatus === "connected");
 
-            const crowdsaleContract = new ethers.Contract(CrowdsaleAddress, CrowdsaleDef.abi, signer);
-            const bustadTokenContract = new ethers.Contract(BustadTokenAddress, BustadTokenDef.abi, signer);
+    let chosenCurrencyContract;
 
-            setCrowdsale(crowdsaleContract);
-            setBustadToken(bustadTokenContract);
-        } else {
-            const provider = getProvider();
-            const crowdsaleContract = new ethers.Contract(CrowdsaleAddress, CrowdsaleDef.abi, provider);
-            const bustadTokenContract = new ethers.Contract(BustadTokenAddress, BustadTokenDef.abi, provider);        
+    switch(chosenCurrency) {
+        case "dai": 
+        chosenCurrencyContract = contracts.dai;
+          break;
+        case "usdc": 
+        chosenCurrencyContract = contracts.usdc;
+          break;
+          default: 
+          chosenCurrencyContract = null;
+          
+      }
 
-            setCrowdsale(crowdsaleContract);
-            setBustadToken(bustadTokenContract);
-        };
-
-    }, [walletStatus]);
+    
 
     return {
-        crowdsale,
-        bustadToken
+        contracts,
+        chosenCurrencyContract
     }
 }

@@ -1,52 +1,73 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
-import { connectWalletAsync, fetchBalanceAsync, selectAccount, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
-import { ChangeEvent, useState, useEffect } from 'react';
+import { fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
+import { useState, useEffect } from 'react';
 import { fromEther, parseToNumber } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
 import { calculateFromAmount, calculateToAmount } from './helper';
-import { connectWallet } from '../wallet/walletAPI';
-
-type inputCallback = (e: ChangeEvent<HTMLInputElement>) => void;
+import { useWalletBalance } from "../../hooks/balanceHook";
+import { useWalletAllowance } from "../../hooks/allowanceHook";
+import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
   const walletBalance = useAppSelector(selectWalletBalance);
+  const chosenCurrency = useAppSelector(selectChosenCurrency);
+
+  const balance = useWalletBalance();
+  const allowance = useWalletAllowance();
 
   const dispatch = useAppDispatch();
 
-  const { crowdsale } = useWeb3Connector();
+  const { contracts, chosenCurrencyContract } = useWeb3Connector();
 
   const [fromAmount, setFromAmount] = useState<string>("");
   const [toAmount, setToAmount] = useState<string>("");
 
   const [rate, setRate] = useState<number>(0);
-  const [ethUsdPrice, setEthUsdPrice] = useState<number>(0);  
+  const [ethUsdPrice, setEthUsdPrice] = useState<number>(0);
 
   useEffect(() => {
-    if (crowdsale) {
-      crowdsale.callStatic.rate().then(res => setRate(parseToNumber(res)));
-      crowdsale.callStatic.getLatestETHPrice().then(res => setEthUsdPrice(parseToNumber(res)));
+    if (contracts.crowdsale) {
+      contracts.crowdsale.callStatic.rate().then(res => setRate(parseToNumber(res)));
+      contracts.crowdsale.callStatic.getLatestETHPrice().then(res => setEthUsdPrice(parseToNumber(res)));
     }
-  }, [crowdsale]);  
+  }, [contracts.crowdsale]);
+
+  useEffect(() => {
+    onChangeFromAmount(fromAmount);
+  }, [chosenCurrency]);
 
   const onClickMint = async () => {
-    if (!crowdsale) return;
+    if (!contracts.crowdsale) return;
 
-    const tx = await crowdsale.buyWithETH({ value: fromEther(Number(fromAmount)) });
+    let tx;
+
+    if (chosenCurrency === 'eth') {
+      tx = await contracts.crowdsale.buyWithETH({ value: fromEther(Number(fromAmount)) });
+    } else {
+      tx = await contracts.crowdsale.buyWithStableCoin(fromEther(Number(fromAmount)), chosenCurrencyContract!.address);
+    }
 
     await tx.wait();
     alert('success!');
     dispatch(fetchBalanceAsync());
   }
 
-  const onChangeFromAmount: inputCallback = (e) => {
-    const value = e.target.value;
+  const onClickAllow = async () => {
+    const tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, fromEther(Number(fromAmount)));
 
+    await tx.wait();
+
+    alert('success!');
+    dispatch(fetchAllowanceAsync());
+  }
+
+  const onChangeFromAmount = (value: string) => {
     setFromAmount(value);
 
-    const calculatedToAmount = calculateToAmount(Number(value), rate, false, ethUsdPrice);
+    const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethUsdPrice);
 
     if (!isNaN(calculatedToAmount)) {
       setToAmount(calculatedToAmount.toFixed(2).toString());
@@ -55,12 +76,10 @@ export function Minter() {
     }
   }
 
-  const onChangeToAmount: inputCallback = (e) => {
-    const value = e.target.value;
-
+  const onChangeToAmount = (value: string) => {    
     setToAmount(value);
 
-    const calculatedFromAmount = calculateFromAmount(Number(value), rate, false, ethUsdPrice);
+    const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethUsdPrice);
 
     if (!isNaN(calculatedFromAmount)) {
       setFromAmount(calculatedFromAmount.toString());
@@ -69,26 +88,30 @@ export function Minter() {
     }
   }
 
-  const RenderInputComponent = (value: string, swappable: boolean, walletBalance: number, onChange?: inputCallback) => {
-    return (
-      <div className="flex flex-col mb-4">
-        <div className="flex">
-          <input value={value} onChange={onChange} type="text" className="border" />
-          {!swappable ? <CurrencyChoice /> : <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>}
-        </div>
-        <span className="text-sm text-left pl-2">Wallet balance: {walletBalance} </span>
-      </div>
-    );
-  }
-
   return (
     <div className="border-2 flex flex-col">
       <span className="text-left">
         Mint
       </span>
-      {RenderInputComponent(fromAmount, false, walletBalance.eth, onChangeFromAmount)}
-      {RenderInputComponent(toAmount, true, walletBalance.bustadToken, onChangeToAmount)}
-      {walletStatus === "connected" ? <button onClick={onClickMint}>Mint</button> : <ConnectButton />}
+      <div className="flex flex-col mb-4">
+        <div className="flex">
+          <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border" />
+          <CurrencyChoice />
+        </div>
+        <span className="text-sm text-left pl-2">
+          {chosenCurrency.toUpperCase()} balance: {balance}
+        </span>
+      </div>
+      <div className="flex flex-col mb-4">
+        <div className="flex">
+          <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border" />
+          <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>
+        </div>
+        <span className="text-sm text-left pl-2">
+          BUST balance: {walletBalance.bustadToken}
+        </span>
+      </div>
+      {walletStatus !== "connected" ? <ConnectButton /> : allowance >= Number(fromAmount) ? <button onClick={onClickMint}>Mint</button> : <button onClick={onClickAllow}>Allow</button>}
     </div>
   );
 }

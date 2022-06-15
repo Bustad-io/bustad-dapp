@@ -1,5 +1,5 @@
 import { useAppDispatch } from '../../app/hooks';
-import { connectWalletAsync, fetchBalanceAsync } from './walletSlice';
+import { connectWalletAsync, fetchBalanceAsync, fetchAllowanceAsync } from './walletSlice';
 
 export function ConnectButton() {
   const dispatch = useAppDispatch();  
@@ -7,6 +7,7 @@ export function ConnectButton() {
   const onClick = async  () => {    
     await dispatch(connectWalletAsync());
     await dispatch(fetchBalanceAsync());
+    await dispatch(fetchAllowanceAsync());
   }
 
   return (

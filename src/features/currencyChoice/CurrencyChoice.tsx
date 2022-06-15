@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { Listbox, Transition } from "@headlessui/react";
-import { selectChosenCurrency, selectCurrencyOptions, setCurrency } from './currencyChoiceSlice';
+import { OptionType, selectChosenCurrency, selectCurrencyOptions, setCurrency } from './currencyChoiceSlice';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid'
 
 
@@ -10,7 +10,7 @@ export function CurrencyChoice() {
   const currencyOptions = useAppSelector(selectCurrencyOptions);
   const dispatch = useAppDispatch();
 
-  const onChange = (value: string) => {
+  const onChange = (value: OptionType) => {
     dispatch(setCurrency(value))
   }
 
