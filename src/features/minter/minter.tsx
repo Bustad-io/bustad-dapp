@@ -1,7 +1,7 @@
 import { useAppSelector } from "../../app/hooks";
 import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
-import { selectWalletStatus } from "../wallet/walletSlice";
+import { selectAccount, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { ChangeEvent, useState, useEffect } from 'react';
 import { fromEther, parseToNumber } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
@@ -11,6 +11,7 @@ type inputCallback = (e: ChangeEvent<HTMLInputElement>) => void;
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
+  const walletBalance = useAppSelector(selectWalletBalance);  
 
   const { crowdsale } = useWeb3Connector();
 
@@ -18,22 +19,14 @@ export function Minter() {
   const [toAmount, setToAmount] = useState<string>("");
 
   const [rate, setRate] = useState<number>(0);
-  const [ethUsdPrice, setEthUsdPrice] = useState<number>(0);
+  const [ethUsdPrice, setEthUsdPrice] = useState<number>(0);  
 
   useEffect(() => {
-    if (!crowdsale) return;
-
-    crowdsale.callStatic.rate().then(res => setRate(parseToNumber(res)));
-    crowdsale.callStatic.getLatestETHPrice().then(res => setEthUsdPrice(parseToNumber(res)));
-
-  }, [crowdsale]);
-
-  const RenderInputComponent = (value: string, swappable: boolean, onChange?: inputCallback) => {
-    return <div className="flex">
-      <input value={value} onChange={onChange} type="text" className="border" />
-      {!swappable ? <CurrencyChoice /> : <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>}
-    </div>;
-  }
+    if (crowdsale) {
+      crowdsale.callStatic.rate().then(res => setRate(parseToNumber(res)));
+      crowdsale.callStatic.getLatestETHPrice().then(res => setEthUsdPrice(parseToNumber(res)));
+    }
+  }, [crowdsale]);  
 
   const onClickMint = async () => {
     if (!crowdsale) return;
@@ -46,12 +39,12 @@ export function Minter() {
 
   const onChangeFromAmount: inputCallback = (e) => {
     const value = e.target.value;
-    
+
     setFromAmount(value);
 
     const calculatedToAmount = calculateToAmount(Number(value), rate, false, ethUsdPrice);
 
-    if(!isNaN(calculatedToAmount)) {
+    if (!isNaN(calculatedToAmount)) {
       setToAmount(calculatedToAmount.toFixed(2).toString());
     } else {
       setToAmount('');
@@ -60,17 +53,28 @@ export function Minter() {
 
   const onChangeToAmount: inputCallback = (e) => {
     const value = e.target.value;
-    
+
     setToAmount(value);
 
     const calculatedFromAmount = calculateFromAmount(Number(value), rate, false, ethUsdPrice);
-    console.log('calculatedFromAmount', calculatedFromAmount)
 
-    if(!isNaN(calculatedFromAmount)) {
-      setFromAmount(calculatedFromAmount.toFixed(6).toString());
+    if (!isNaN(calculatedFromAmount)) {
+      setFromAmount(calculatedFromAmount.toString());
     } else {
       setFromAmount('');
     }
+  }
+
+  const RenderInputComponent = (value: string, swappable: boolean, walletBalance: number, onChange?: inputCallback) => {
+    return (
+      <div className="flex flex-col mb-4">
+        <div className="flex">
+          <input value={value} onChange={onChange} type="text" className="border" />
+          {!swappable ? <CurrencyChoice /> : <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>}
+        </div>
+        <span className="text-sm text-left pl-2">Wallet balance: {walletBalance} </span>
+      </div>
+    );
   }
 
   return (
@@ -78,8 +82,8 @@ export function Minter() {
       <span className="text-left">
         Mint
       </span>
-      {RenderInputComponent(fromAmount, false, onChangeFromAmount)}
-      {RenderInputComponent(toAmount, true, onChangeToAmount)}
+      {RenderInputComponent(fromAmount, false, walletBalance.eth, onChangeFromAmount)}
+      {RenderInputComponent(toAmount, true, walletBalance.bustadToken, onChangeToAmount)}
       {walletStatus === "connected" ? <button onClick={onClickMint}>Mint</button> : <ConnectButton />}
     </div>
   );
