@@ -31,7 +31,8 @@ export function Minter() {
   const [rate, setRate] = useState<number>(0);
   const [ethUsdPrice, setEthUsdPrice] = useState<number>(0);
 
-  const insufficientBalance = Number(fromAmount) > balance;
+  const fromAmountNumber = Number(fromAmount);
+  const insufficientBalance = fromAmountNumber > balance;
 
   useEffect(() => {
     if (contracts.crowdsale) {
@@ -40,8 +41,13 @@ export function Minter() {
     }
   }, [contracts.crowdsale]);
 
-  useEffect(() => {  
-    dispatch(connectWalletAsync());    
+  useEffect(() => {
+    const run = async () => {
+      await dispatch(connectWalletAsync());
+      await dispatch(fetchBalanceAsync());
+      await dispatch(fetchAllowanceAsync());
+    }
+    run();
   }, []);
 
   useEffect(() => {
@@ -54,7 +60,7 @@ export function Minter() {
     let tx;
 
     if (chosenCurrency === 'eth') {
-      tx = await contracts.crowdsale.buyWithETH({ value: fromEther(Number(fromAmount)) });
+      tx = await contracts.crowdsale.buyWithETH({ value: fromEther(fromAmountNumber) });
     } else {      
       tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
     }
@@ -95,7 +101,7 @@ export function Minter() {
     } else {
       setFromAmount('');
     }
-  }
+  }  
 
   return (
     <div className="border-2 flex flex-col">
@@ -120,7 +126,7 @@ export function Minter() {
           BUST balance: {walletBalance.bustadToken}
         </span>
       </div>
-      {walletStatus !== "connected" ? <ConnectButton /> : allowance >= Number(fromAmount) ? <button disabled={insufficientBalance} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
+      {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
     </div>
   );
 }
