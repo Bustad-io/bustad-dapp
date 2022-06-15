@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { parseToNumber, toEther } from '../../utils/format';
+import { formatUnitToNumber, parseToNumber } from '../../utils/format';
 import { connectWallet, getContracts, getProvider } from './walletAPI';
-import { Dai } from '../../typechain/Dai.d';
+import { CoinContractConfig } from '../../config';
 
 export type WalletStatus = 'connected' | 'not_connected' | 'failed_to_connect' | 'loading';
 
@@ -58,8 +58,8 @@ export const fetchAllowanceAsync = createAsyncThunk(
 
     return {          
       allowance: {
-        dai: parseToNumber(daiAllowance),
-        usdc: parseToNumber(usdcAllowance),
+        dai: formatUnitToNumber(daiAllowance, CoinContractConfig.dai.decimal),
+        usdc: formatUnitToNumber(usdcAllowance, CoinContractConfig.usdc.decimal),
       }
     }
   }
@@ -76,19 +76,20 @@ export const fetchBalanceAsync = createAsyncThunk(
 
     const provider =  getProvider();  
 
-    const { bustadToken, dai } = getContracts();
+    const { bustadToken, dai, usdc } = getContracts();
 
     const ethBalance = await provider.getBalance(state.wallet.account!);
     const bustadBalance = await bustadToken.balanceOf(state.wallet.account);    
     const daiBalance = await dai.balanceOf(state.wallet.account);    
+    const usdcBalance = await usdc.balanceOf(state.wallet.account);    
 
     return {          
       balance: {
         loading: false,
         eth: parseToNumber(ethBalance),
         bustadToken: parseToNumber(bustadBalance),
-        dai: parseToNumber(daiBalance),
-        usdc: 0,
+        dai: formatUnitToNumber(daiBalance, CoinContractConfig.dai.decimal),
+        usdc: formatUnitToNumber(usdcBalance, CoinContractConfig.usdc.decimal),
       }      
     }
   }

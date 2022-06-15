@@ -1,5 +1,5 @@
 import { Contract, ethers, Signer } from "ethers";
-import { BustadTokenAddress, CrowdsaleAddress, DaiAddress, UsdcAddress } from "../../config";
+import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig } from "../../config";
 import CrowdsaleDef from '../../contracts/Crowdsale.sol/Crowdsale.json';
 import BustadTokenDef from '../../contracts/BustadToken.sol/BustadToken.json';
 import DaiDef from '../../contracts/Crowdsale.sol/IERC20Extended.json';
@@ -35,7 +35,7 @@ export function getContracts(useSigner = false): Contracts {
   return {
     crowdsale: new ethers.Contract(CrowdsaleAddress, CrowdsaleDef.abi, providerOrSigner),
     bustadToken: new ethers.Contract(BustadTokenAddress, BustadTokenDef.abi, providerOrSigner),
-    dai: new ethers.Contract(DaiAddress, DaiDef.abi, providerOrSigner),
-    usdc: new ethers.Contract(UsdcAddress, UsdcDef.abi, providerOrSigner),
+    dai: new ethers.Contract(CoinContractConfig.dai.address, DaiDef.abi, providerOrSigner),
+    usdc: new ethers.Contract(CoinContractConfig.usdc.address, UsdcDef.abi, providerOrSigner),
   }
 }

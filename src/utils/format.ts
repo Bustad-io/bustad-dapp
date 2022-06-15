@@ -9,5 +9,17 @@ export function fromEther(etherValue: number): BigNumberish {
 }
 
 export function parseToNumber(weiValue: BigNumberish) {
-  return Number(toEther(weiValue));
+  return Number(toEther(weiValue));  
+}
+
+export function formatUnitToNumber(weiValue: BigNumberish, decimal: number) {
+  return Number(ethers.utils.formatUnits(weiValue, decimal));
+}
+
+export function parseUnitsFromNumber(value: number, decimal: number) {
+  return Number(ethers.utils.parseUnits(value.toString(), decimal));
+}
+
+export function parseUnits(value: string, decimal: number) {
+  return Number(ethers.utils.parseUnits(value, decimal));
 }

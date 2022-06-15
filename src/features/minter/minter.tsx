@@ -3,17 +3,21 @@ import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
 import { fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { useState, useEffect } from 'react';
-import { fromEther, parseToNumber } from "../../utils/format";
+import { formatUnitToNumber, fromEther, parseToNumber, parseUnits, parseUnitsFromNumber } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
 import { calculateFromAmount, calculateToAmount } from './helper';
 import { useWalletBalance } from "../../hooks/balanceHook";
 import { useWalletAllowance } from "../../hooks/allowanceHook";
 import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
+import { useCoinConfig } from '../../hooks/coinConfigHook';
+import { parseEther } from "ethers/lib/utils";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
   const walletBalance = useAppSelector(selectWalletBalance);
   const chosenCurrency = useAppSelector(selectChosenCurrency);
+
+  const coinConfig = useCoinConfig();
 
   const balance = useWalletBalance();
   const allowance = useWalletAllowance();
@@ -46,8 +50,8 @@ export function Minter() {
 
     if (chosenCurrency === 'eth') {
       tx = await contracts.crowdsale.buyWithETH({ value: fromEther(Number(fromAmount)) });
-    } else {
-      tx = await contracts.crowdsale.buyWithStableCoin(fromEther(Number(fromAmount)), chosenCurrencyContract!.address);
+    } else {      
+      tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
     }
 
     await tx.wait();
@@ -55,8 +59,8 @@ export function Minter() {
     dispatch(fetchBalanceAsync());
   }
 
-  const onClickAllow = async () => {
-    const tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, fromEther(Number(fromAmount)));
+  const onClickAllow = async () => {    
+    const tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, parseUnits(fromAmount, coinConfig!.decimal));
 
     await tx.wait();
 
