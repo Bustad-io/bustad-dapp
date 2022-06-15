@@ -1,11 +1,12 @@
 import { useAppDispatch } from '../../app/hooks';
-import { connectWalletAsync } from './walletSlice';
+import { connectWalletAsync, fetchBalanceAsync } from './walletSlice';
 
 export function ConnectButton() {
   const dispatch = useAppDispatch();  
 
-  const onClick = () => {    
-    dispatch(connectWalletAsync());
+  const onClick = async  () => {    
+    await dispatch(connectWalletAsync());
+    await dispatch(fetchBalanceAsync());
   }
 
   return (

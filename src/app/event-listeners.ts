@@ -1,11 +1,12 @@
-import { connectWalletAsync } from "../features/wallet/walletSlice";
+import { connectWalletAsync, fetchBalanceAsync } from "../features/wallet/walletSlice";
 import { AppDispatch } from "./store";
 
 
 declare let window: any;
 
 export default function AddAccountChangeListener(dispatch: AppDispatch) {
-    window.ethereum.on('accountsChanged', (accounts: string[]) => {
-        dispatch(connectWalletAsync());
+    window.ethereum.on('accountsChanged', async (accounts: string[]) => {
+        await dispatch(connectWalletAsync());
+        await dispatch(fetchBalanceAsync());
     });
 }

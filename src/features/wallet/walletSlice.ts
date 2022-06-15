@@ -13,6 +13,7 @@ export interface WalletState {
 }
 
 export interface WalletBalance {
+  loading: boolean;
   eth: number;
   bustadToken: number;
   dai: number;
@@ -23,6 +24,7 @@ const initialState: WalletState = {
   status: 'not_connected',    
   account: null,
   balance: {
+    loading: false,
     eth: 0,
     bustadToken: 0,
     dai: 0,
@@ -30,27 +32,41 @@ const initialState: WalletState = {
   }
 };
 
-export const connectWalletAsync = createAsyncThunk(
-  'wallet/connectWallet',
-  async () => {
-    const provider =  getProvider();
+export const fetchBalanceAsync = createAsyncThunk(
+  'wallet/fetchBalance',
+  async (_, {getState}) => {    
+    const state = getState() as RootState;
 
-    const accounts = await connectWallet();
-    const account = accounts[0];
+    if(state.wallet.status !== 'connected') {
+      throw Error('Wallet not connected');
+    }
+
+    const provider =  getProvider();  
 
     const { bustadToken } = getContracts();
 
-    const ethBalance = await provider.getBalance(account);
-    const bustadBalance = await bustadToken.balanceOf(account);
+    const ethBalance = await provider.getBalance(state.wallet.account!);
+    const bustadBalance = await bustadToken.balanceOf(state.wallet.account);
 
-    return {    
-      account,
+    return {          
       balance: {
+        loading: false,
         eth: parseToNumber(ethBalance),
         bustadToken: parseToNumber(bustadBalance),
         usdc: 0,
         dai: 0
       }      
+    }
+  }
+);
+
+export const connectWalletAsync = createAsyncThunk(
+  'wallet/connectWallet',
+  async () => {    
+    const accounts = await connectWallet();
+    const account = accounts[0];    
+    return {    
+      account      
     }
   }
 );
@@ -67,14 +83,22 @@ export const walletSlice = createSlice({
     builder      
       .addCase(connectWalletAsync.fulfilled, (state, action) => {
         state.status = 'connected';        
-        state.account = action.payload.account;
-        state.balance = action.payload.balance;
+        state.account = action.payload.account;        
       })
       .addCase(connectWalletAsync.pending, (state) => {
         state.status = 'loading';        
       })
       .addCase(connectWalletAsync.rejected, (state) => {
         state.status = 'failed_to_connect';
+      })
+      .addCase(fetchBalanceAsync.fulfilled, (state, action) => {                
+        state.balance = action.payload.balance;
+      })
+      .addCase(fetchBalanceAsync.pending, (state) => {                
+        state.balance.loading = true;
+      })
+      .addCase(fetchBalanceAsync.rejected, (state) => {                
+        state.balance.loading = false;
       });
   },
 });

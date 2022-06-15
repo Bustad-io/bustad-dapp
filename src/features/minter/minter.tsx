@@ -1,17 +1,20 @@
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
-import { selectAccount, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
+import { connectWalletAsync, fetchBalanceAsync, selectAccount, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { ChangeEvent, useState, useEffect } from 'react';
 import { fromEther, parseToNumber } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
 import { calculateFromAmount, calculateToAmount } from './helper';
+import { connectWallet } from '../wallet/walletAPI';
 
 type inputCallback = (e: ChangeEvent<HTMLInputElement>) => void;
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
-  const walletBalance = useAppSelector(selectWalletBalance);  
+  const walletBalance = useAppSelector(selectWalletBalance);
+
+  const dispatch = useAppDispatch();
 
   const { crowdsale } = useWeb3Connector();
 
@@ -35,6 +38,7 @@ export function Minter() {
 
     await tx.wait();
     alert('success!');
+    dispatch(fetchBalanceAsync());
   }
 
   const onChangeFromAmount: inputCallback = (e) => {
