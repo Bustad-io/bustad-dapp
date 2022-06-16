@@ -12,6 +12,9 @@ import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
 import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
+import PendingDialog from "../dialog/PendingDialog";
+import { hidePendingModal, showPendingModal, showSubmittedModal } from "../dialog/dialogSlice";
+import SubmittedDialog from "../dialog/SubmittedDialog";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
@@ -33,6 +36,8 @@ export function Minter() {
   const [ethUsdPrice, setEthUsdPrice] = useState<number>(0);
 
   const fromAmountNumber = Number(fromAmount);
+  const toAmountNumber = Number(toAmount);
+
   const insufficientBalance = fromAmountNumber > balance;
 
   useEffect(() => {
@@ -58,21 +63,31 @@ export function Minter() {
   const onClickMint = async () => {
     if (!contracts.crowdsale) return;
 
+    dispatch(showPendingModal(`Mint ${toAmountNumber} Bustad for ${fromAmountNumber} ${chosenCurrency.toUpperCase()}`));
+
     let tx;
 
     if (chosenCurrency === 'eth') {
       tx = await contracts.crowdsale.buyWithETH({ value: fromEther(fromAmountNumber) });
-    } else {      
+    } else {
       tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
     }
+
+    await dispatch(hidePendingModal());
+    await dispatch(showSubmittedModal(tx.hash));
 
     await tx.wait();
     alert('success!');
     dispatch(fetchBalanceAsync());
   }
 
-  const onClickAllow = async () => {        
+  const onClickAllow = async () => {
+    dispatch(showPendingModal(`Allow Bustad to access your ${chosenCurrency.toUpperCase()}`));
+
     const tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.constants.MaxUint256);
+
+    await dispatch(hidePendingModal());
+    await dispatch(showSubmittedModal(tx.hash));
 
     await tx.wait();
 
@@ -92,7 +107,7 @@ export function Minter() {
     }
   }
 
-  const onChangeToAmount = (value: string) => {    
+  const onChangeToAmount = (value: string) => {
     setToAmount(value);
 
     const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethUsdPrice);
@@ -102,32 +117,36 @@ export function Minter() {
     } else {
       setFromAmount('');
     }
-  }  
+  }
 
   return (
-    <div className="border-2 flex flex-col">
-      <span className="text-left">
-        Mint
-      </span>
-      <div className="flex flex-col mb-4">
-        <div className="flex">
-          <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border" />
-          <CurrencyChoice />
-        </div>
-        {insufficientBalance ? <span className="text-sm text-red-600 text-left pl-2">insufficient balance {balance} {chosenCurrency.toUpperCase()}</span>  :<span className="text-sm text-left pl-2">
-          {chosenCurrency.toUpperCase()} balance: {balance}
-        </span>}
-      </div>
-      <div className="flex flex-col mb-4">
-        <div className="flex">
-          <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border" />
-          <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>
-        </div>
-        <span className="text-sm text-left pl-2">
-          BUST balance: {walletBalance.bustadToken}
+    <>
+      <div className="border-2 flex flex-col">
+        <span className="text-left">
+          Mint
         </span>
+        <div className="flex flex-col mb-4">
+          <div className="flex">
+            <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border" />
+            <CurrencyChoice />
+          </div>
+          {insufficientBalance ? <span className="text-sm text-red-600 text-left pl-2">insufficient balance {balance} {chosenCurrency.toUpperCase()}</span> : <span className="text-sm text-left pl-2">
+            {chosenCurrency.toUpperCase()} balance: {balance}
+          </span>}
+        </div>
+        <div className="flex flex-col mb-4">
+          <div className="flex">
+            <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border" />
+            <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>
+          </div>
+          <span className="text-sm text-left pl-2">
+            BUST balance: {walletBalance.bustadToken}
+          </span>
+        </div>
+        {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
       </div>
-      {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
-    </div>
+      <PendingDialog fromAmount={fromAmountNumber} toAmount={toAmountNumber}/>
+      <SubmittedDialog/>
+    </>
   );
 }
