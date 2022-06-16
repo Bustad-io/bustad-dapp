@@ -11,6 +11,7 @@ import { useWalletAllowance } from "../../hooks/allowanceHook";
 import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
 import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
+import { ethers } from "ethers";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
@@ -70,8 +71,8 @@ export function Minter() {
     dispatch(fetchBalanceAsync());
   }
 
-  const onClickAllow = async () => {    
-    const tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, parseUnits(fromAmount, coinConfig!.decimal));
+  const onClickAllow = async () => {        
+    const tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.constants.MaxUint256);
 
     await tx.wait();
 

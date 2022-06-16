@@ -11,6 +11,7 @@ export interface WalletState {
   account: string | null;  
   balance: WalletBalance;
   allowance: WalletAllowance;
+  governance: WalletGovernance;
 }
 
 export interface WalletBalance {
@@ -19,6 +20,7 @@ export interface WalletBalance {
   bustadToken: number;
   dai: number;
   usdc: number;
+  govToken: number;
 }
 
 export interface WalletAllowance {  
@@ -26,9 +28,16 @@ export interface WalletAllowance {
   usdc: number;
 }
 
+export interface WalletGovernance {
+  distributionShare: number;
+}
+
 const initialState: WalletState = {  
   status: 'not_connected',    
   account: null,
+  governance: {
+    distributionShare: 0
+  },
   allowance: {
     dai: 0,
     usdc: 0
@@ -38,9 +47,29 @@ const initialState: WalletState = {
     eth: 0,
     bustadToken: 0,
     dai: 0,
-    usdc: 0
+    usdc: 0,
+    govToken: 0
   }
 };
+
+export const fetchGovernanceDistributorShareAsync = createAsyncThunk(
+  'wallet/fetchGovernanceDistributorShare',
+  async (_, {getState}) => {
+    const state = getState() as RootState;
+
+    if(state.wallet.status !== 'connected') {
+      throw Error('Wallet not connected');
+    }
+
+    const { govDist } = getContracts();    
+
+    const distAmount = await govDist.getGovTokenShareForUser(state.wallet.account);
+
+    return {
+      distributionShare: parseToNumber(distAmount)
+    }
+  }
+);
 
 export const fetchAllowanceAsync = createAsyncThunk(
   'wallet/fetchAllowance',
@@ -76,10 +105,11 @@ export const fetchBalanceAsync = createAsyncThunk(
 
     const provider =  getProvider();  
 
-    const { bustadToken, dai, usdc } = getContracts();
+    const { bustadToken, govToken, dai, usdc } = getContracts();
 
     const ethBalance = await provider.getBalance(state.wallet.account!);
-    const bustadBalance = await bustadToken.balanceOf(state.wallet.account);    
+    const bustadBalance = await bustadToken.balanceOf(state.wallet.account);
+    const govBalance = await govToken.balanceOf(state.wallet.account);
     const daiBalance = await dai.balanceOf(state.wallet.account);    
     const usdcBalance = await usdc.balanceOf(state.wallet.account);    
 
@@ -88,6 +118,7 @@ export const fetchBalanceAsync = createAsyncThunk(
         loading: false,
         eth: parseToNumber(ethBalance),
         bustadToken: parseToNumber(bustadBalance),
+        govToken: parseToNumber(govBalance),
         dai: formatUnitToNumber(daiBalance, CoinContractConfig.dai.decimal),
         usdc: formatUnitToNumber(usdcBalance, CoinContractConfig.usdc.decimal),
       }      
@@ -137,6 +168,9 @@ export const walletSlice = createSlice({
       })
       .addCase(fetchAllowanceAsync.fulfilled, (state, action) => {          
         state.allowance = action.payload.allowance;
+      })
+      .addCase(fetchGovernanceDistributorShareAsync.fulfilled, (state, action) => {                
+        state.governance.distributionShare = action.payload.distributionShare;
       });
   },
 });
@@ -147,5 +181,6 @@ export const selectAccount = (state: RootState) => state.wallet.account;
 export const selectWalletStatus = (state: RootState) => state.wallet.status;
 export const selectWalletBalance = (state: RootState) => state.wallet.balance;
 export const selectWalletAllowance = (state: RootState) => state.wallet.allowance;
+export const selectWalletGovernanceDistributionShare = (state: RootState) => state.wallet.governance.distributionShare;
 
 export default walletSlice.reducer;

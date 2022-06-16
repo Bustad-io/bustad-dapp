@@ -24,11 +24,8 @@ export function useWeb3Connector() {
         chosenCurrencyContract = contracts.usdc;
           break;
           default: 
-          chosenCurrencyContract = null;
-          
-      }
-
-    
+          chosenCurrencyContract = null;          
+      }    
 
     return {
         contracts,

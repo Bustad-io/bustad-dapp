@@ -1,5 +1,7 @@
 export const CrowdsaleAddress: string = process.env.REACT_APP_CROWDSALE_ADDRESS ?? "";
 export const BustadTokenAddress: string = process.env.REACT_APP_BUSTAD_TOKEN_ADDRESS ?? "";
+export const GovDistAddress: string = process.env.REACT_APP_GOVERNANCE_DISTRIBUTOR_ADDRESS ?? "";
+export const GovTokenAddress: string = process.env.REACT_APP_GOVERNANCE_TOKEN_ADDRESS ?? "";
 
 const DaiAddress: string = process.env.REACT_APP_DAI_ADDRESS ?? "";
 const UsdcAddress: string = process.env.REACT_APP_USDC_ADDRESS ?? "";
