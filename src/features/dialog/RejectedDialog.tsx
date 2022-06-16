@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { BustadTokenAddress, BustadTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, explorerBaseUri } from '../../config';
 import { hideRejectedModal, selectRejected } from './dialogSlice'
 
 
@@ -12,21 +11,6 @@ export default function RejectedDialog() {
 
   function closeModal() {
     dispatch(hideRejectedModal());
-  }
-
-  async function onAddToMetaMask() {
-    await (window as any).ethereum.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: BustadTokenAddress,
-          symbol: BustadTokenSymbol,
-          decimals: BustadTokenDecimal,
-          image: BustadTokenRoundIcon
-        },
-      },
-    });
   }
 
   return (

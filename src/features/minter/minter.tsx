@@ -74,11 +74,11 @@ export function Minter() {
       } else {
         tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
       }
-    } catch(e) {      
+    } catch (e) {
       await dispatch(hidePendingModal());
       await dispatch(showRejectedModal());
       return;
-    } 
+    }
 
     await dispatch(hidePendingModal());
     await dispatch(showSubmittedModal(tx.hash));
@@ -95,7 +95,7 @@ export function Minter() {
 
     try {
       tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.utils.parseUnits(fromAmount, coinConfig!.decimal));
-    } catch(e) {
+    } catch (e) {
       await dispatch(hidePendingModal());
       await dispatch(showRejectedModal());
       return;
@@ -160,9 +160,9 @@ export function Minter() {
         </div>
         {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
       </div>
-      <PendingDialog fromAmount={fromAmountNumber} toAmount={toAmountNumber}/>
-      <SubmittedDialog/>
-      <RejectedDialog/>
+      <PendingDialog />
+      <SubmittedDialog />
+      <RejectedDialog />
     </>
   );
 }

@@ -3,12 +3,7 @@ import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { hidePendingModal, selectPending } from './dialogSlice'
 
-export type PendingDialogProp = {
-  fromAmount: number,
-  toAmount: number
-}
-
-export default function PendingDialog({fromAmount, toAmount}: PendingDialogProp) {
+export default function PendingDialog() {
   const dispatch = useAppDispatch();
 
   const pending = useAppSelector(selectPending);

@@ -26,7 +26,7 @@ const initialState: DialogState = {
     txHash: ''
   },
   rejected: {
-    show: true
+    show: false
   }
 };
 
