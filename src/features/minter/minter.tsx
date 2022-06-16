@@ -13,8 +13,9 @@ import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import PendingDialog from "../dialog/PendingDialog";
-import { hidePendingModal, showPendingModal, showSubmittedModal } from "../dialog/dialogSlice";
+import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
 import SubmittedDialog from "../dialog/SubmittedDialog";
+import RejectedDialog from '../dialog/RejectedDialog';
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
@@ -67,11 +68,17 @@ export function Minter() {
 
     let tx;
 
-    if (chosenCurrency === 'eth') {
-      tx = await contracts.crowdsale.buyWithETH({ value: fromEther(fromAmountNumber) });
-    } else {
-      tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
-    }
+    try {
+      if (chosenCurrency === 'eth') {
+        tx = await contracts.crowdsale.buyWithETH({ value: fromEther(fromAmountNumber) });
+      } else {
+        tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
+      }
+    } catch(e) {      
+      await dispatch(hidePendingModal());
+      await dispatch(showRejectedModal());
+      return;
+    } 
 
     await dispatch(hidePendingModal());
     await dispatch(showSubmittedModal(tx.hash));
@@ -84,7 +91,15 @@ export function Minter() {
   const onClickAllow = async () => {
     dispatch(showPendingModal(`Allow Bustad to access your ${chosenCurrency.toUpperCase()}`));
 
-    const tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.constants.MaxUint256);
+    let tx;
+
+    try {
+      tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.utils.parseUnits(fromAmount, coinConfig!.decimal));
+    } catch(e) {
+      await dispatch(hidePendingModal());
+      await dispatch(showRejectedModal());
+      return;
+    }
 
     await dispatch(hidePendingModal());
     await dispatch(showSubmittedModal(tx.hash));
@@ -147,6 +162,7 @@ export function Minter() {
       </div>
       <PendingDialog fromAmount={fromAmountNumber} toAmount={toAmountNumber}/>
       <SubmittedDialog/>
+      <RejectedDialog/>
     </>
   );
 }

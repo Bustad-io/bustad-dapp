@@ -10,6 +10,9 @@ export interface DialogState {
   submitted: {
     show: boolean,
     txHash: string
+  },
+  rejected: {
+    show: boolean
   }
 }
 
@@ -21,6 +24,9 @@ const initialState: DialogState = {
   submitted: {
     show: false,
     txHash: ''
+  },
+  rejected: {
+    show: true
   }
 };
 
@@ -43,14 +49,21 @@ export const dialogSlice = createSlice({
     hideSubmittedModal: (state) => {
       state.submitted.show = false;
       state.submitted.txHash = ''
+    },
+    showRejectedModal: (state) => {
+      state.rejected.show = true;      
+    },
+    hideRejectedModal: (state) => {
+      state.rejected.show = false;      
     }
   }
   }
 );
 
-export const { showPendingModal, hidePendingModal, showSubmittedModal, hideSubmittedModal } = dialogSlice.actions;
+export const { showPendingModal, hidePendingModal, showSubmittedModal, hideSubmittedModal, showRejectedModal, hideRejectedModal } = dialogSlice.actions;
 
 export const selectPending = (state: RootState) => state.dialog.pending;
 export const selectSubmitted = (state: RootState) => state.dialog.submitted;
+export const selectRejected = (state: RootState) => state.dialog.rejected;
 
 export default dialogSlice.reducer;
