@@ -16,11 +16,14 @@ import PendingDialog from "../dialog/PendingDialog";
 import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
 import SubmittedDialog from "../dialog/SubmittedDialog";
 import RejectedDialog from '../dialog/RejectedDialog';
+import { fetchEthPriceAsync, fetchRateAsync, selectEthPrice, selectRate } from "./minterSlice";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
   const walletBalance = useAppSelector(selectWalletBalance);
   const chosenCurrency = useAppSelector(selectChosenCurrency);
+  const rate = useAppSelector(selectRate);
+  const ethPrice = useAppSelector(selectEthPrice);
 
   const coinConfig = useCoinConfig();
   const balance = useWalletBalance();
@@ -33,26 +36,18 @@ export function Minter() {
   const [fromAmount, setFromAmount] = useState<string>("");
   const [toAmount, setToAmount] = useState<string>("");
 
-  const [rate, setRate] = useState<number>(0);
-  const [ethUsdPrice, setEthUsdPrice] = useState<number>(0);
-
   const fromAmountNumber = Number(fromAmount);
   const toAmountNumber = Number(toAmount);
 
   const insufficientBalance = fromAmountNumber > balance;
 
   useEffect(() => {
-    if (contracts.crowdsale) {
-      contracts.crowdsale.callStatic.rate().then(res => setRate(parseToNumber(res)));
-      contracts.crowdsale.callStatic.getLatestETHPrice().then(res => setEthUsdPrice(parseToNumber(res)));
-    }
-  }, [contracts.crowdsale]);
-
-  useEffect(() => {
     const run = async () => {
       await dispatch(connectWalletAsync());
       await dispatch(fetchBalanceAsync());
       await dispatch(fetchAllowanceAsync());
+      await dispatch(fetchRateAsync());
+      await dispatch(fetchEthPriceAsync());
     }
     run();
   }, []);
@@ -113,7 +108,7 @@ export function Minter() {
   const onChangeFromAmount = (value: string) => {
     setFromAmount(value);
 
-    const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethUsdPrice);
+    const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice);
 
     if (!isNaN(calculatedToAmount)) {
       setToAmount(calculatedToAmount.toFixed(2).toString());
@@ -125,7 +120,7 @@ export function Minter() {
   const onChangeToAmount = (value: string) => {
     setToAmount(value);
 
-    const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethUsdPrice);
+    const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice);
 
     if (!isNaN(calculatedFromAmount)) {
       setFromAmount(calculatedFromAmount.toString());
