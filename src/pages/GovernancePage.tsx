@@ -38,7 +38,7 @@ function GovernancePage() {
 
     try {
       tx = await contracts.govDist.withdraw();
-    } catch(e) {
+    } catch (e) {
       await dispatch(hidePendingModal());
       await dispatch(showRejectedModal());
       return;
@@ -54,18 +54,12 @@ function GovernancePage() {
   }
 
   return (
-    <>
-      <div className="flex flex-col">
-        <span className="text-xl mb-6">Governance tokens balance: {walletBalance.govToken}</span>
-        <span className="text-xl mb-6">Your voting power: {votingPower} %</span>
-        <span className="text-xl mb-6">Governance tokens to claim: {walletGovernanceDistributionShare}</span>
-        <button disabled={!canClaim} onClick={onClickClaim} className="border bg-blue-300 disabled:opacity-40">Claim now!</button>
-      </div>
-      <PendingDialog/>
-      <SubmittedDialog />
-      <RejectedDialog />
-    </>
-
+    <div className="flex flex-col">
+      <span className="text-xl mb-6">Governance tokens balance: {walletBalance.govToken}</span>
+      <span className="text-xl mb-6">Your voting power: {votingPower} %</span>
+      <span className="text-xl mb-6">Governance tokens to claim: {walletGovernanceDistributionShare}</span>
+      <button disabled={!canClaim} onClick={onClickClaim} className="border bg-blue-300 disabled:opacity-40">Claim now!</button>
+    </div>
   );
 }
 

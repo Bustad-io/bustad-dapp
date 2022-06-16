@@ -130,34 +130,29 @@ export function Minter() {
   }
 
   return (
-    <>
-      <div className="border-2 flex flex-col">
-        <span className="text-left">
-          Mint
-        </span>
-        <div className="flex flex-col mb-4">
-          <div className="flex">
-            <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border" />
-            <CurrencyChoice />
-          </div>
-          {insufficientBalance ? <span className="text-sm text-red-600 text-left pl-2">insufficient balance {balance} {chosenCurrency.toUpperCase()}</span> : <span className="text-sm text-left pl-2">
-            {chosenCurrency.toUpperCase()} balance: {balance}
-          </span>}
+    <div className="border-2 flex flex-col">
+      <span className="text-left">
+        Mint
+      </span>
+      <div className="flex flex-col mb-4">
+        <div className="flex">
+          <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border" />
+          <CurrencyChoice />
         </div>
-        <div className="flex flex-col mb-4">
-          <div className="flex">
-            <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border" />
-            <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>
-          </div>
-          <span className="text-sm text-left pl-2">
-            BUST balance: {walletBalance.bustadToken}
-          </span>
-        </div>
-        {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
+        {insufficientBalance ? <span className="text-sm text-red-600 text-left pl-2">insufficient balance {balance} {chosenCurrency.toUpperCase()}</span> : <span className="text-sm text-left pl-2">
+          {chosenCurrency.toUpperCase()} balance: {balance}
+        </span>}
       </div>
-      <PendingDialog />
-      <SubmittedDialog />
-      <RejectedDialog />
-    </>
+      <div className="flex flex-col mb-4">
+        <div className="flex">
+          <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border" />
+          <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>
+        </div>
+        <span className="text-sm text-left pl-2">
+          BUST balance: {walletBalance.bustadToken}
+        </span>
+      </div>
+      {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
+    </div>
   );
 }
