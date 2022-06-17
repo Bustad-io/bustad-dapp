@@ -3,7 +3,7 @@ import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
 import { connectWalletAsync, fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { useState, useEffect } from 'react';
-import { fromEther, parseToNumber, parseUnits } from "../../utils/format";
+import { fromEther } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
 import { calculateFromAmount, calculateToAmount } from './helper';
 import { useWalletBalance } from "../../hooks/balanceHook";
@@ -12,10 +12,7 @@ import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
 import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
-import PendingDialog from "../dialog/PendingDialog";
 import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
-import SubmittedDialog from "../dialog/SubmittedDialog";
-import RejectedDialog from '../dialog/RejectedDialog';
 import { fetchEthPriceAsync, fetchRateAsync, selectEthPrice, selectRate } from "./minterSlice";
 
 export function Minter() {
@@ -56,7 +53,7 @@ export function Minter() {
     onChangeFromAmount(fromAmount);
   }, [chosenCurrency]);
 
-  const onClickMint = async () => {
+  async function onClickMint() {
     if (!contracts.crowdsale) return;
 
     dispatch(showPendingModal(`Mint ${toAmountNumber} Bustad for ${fromAmountNumber} ${chosenCurrency.toUpperCase()}`));
@@ -83,7 +80,7 @@ export function Minter() {
     dispatch(fetchBalanceAsync());
   }
 
-  const onClickAllow = async () => {
+  async function onClickAllow() {
     dispatch(showPendingModal(`Allow Bustad to access your ${chosenCurrency.toUpperCase()}`));
 
     let tx;
@@ -105,7 +102,7 @@ export function Minter() {
     dispatch(fetchAllowanceAsync());
   }
 
-  const onChangeFromAmount = (value: string) => {
+  function onChangeFromAmount(value: string) {
     setFromAmount(value);
 
     const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice);
@@ -117,7 +114,7 @@ export function Minter() {
     }
   }
 
-  const onChangeToAmount = (value: string) => {
+  function onChangeToAmount(value: string) {
     setToAmount(value);
 
     const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice);
@@ -127,6 +124,10 @@ export function Minter() {
     } else {
       setFromAmount('');
     }
+  }
+
+  function onClickMax() {
+    onChangeFromAmount(balance.toString());
   }
 
   return (
@@ -140,7 +141,7 @@ export function Minter() {
           <CurrencyChoice />
         </div>
         {insufficientBalance ? <span className="text-sm text-red-600 text-left pl-2">insufficient balance {balance} {chosenCurrency.toUpperCase()}</span> : <span className="text-sm text-left pl-2">
-          {chosenCurrency.toUpperCase()} balance: {balance}
+          {chosenCurrency.toUpperCase()} balance: {balance} <span onClick={onClickMax} className="text-sm ml-2 bg-slate-300 cursor-pointer">Max</span>
         </span>}
       </div>
       <div className="flex flex-col mb-4">
