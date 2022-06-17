@@ -2,10 +2,9 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
 import { connectWalletAsync, fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { fromEther } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
-import { calculateFromAmount, calculateToAmount } from './helper';
 import { useWalletBalance } from "../../hooks/balanceHook";
 import { useWalletAllowance } from "../../hooks/allowanceHook";
 import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
@@ -13,15 +12,12 @@ import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
-import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, selectEthPrice, selectMintingFee, selectRate } from "./minterSlice";
+import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount } from "./minterSlice";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
   const walletBalance = useAppSelector(selectWalletBalance);
-  const chosenCurrency = useAppSelector(selectChosenCurrency);
-  const rate = useAppSelector(selectRate);
-  const ethPrice = useAppSelector(selectEthPrice);
-  const mintingFee = useAppSelector(selectMintingFee);
+  const chosenCurrency = useAppSelector(selectChosenCurrency); 
 
   const coinConfig = useCoinConfig();
   const balance = useWalletBalance();
@@ -31,8 +27,8 @@ export function Minter() {
 
   const { contracts, chosenCurrencyContract } = useWeb3Connector();
 
-  const [fromAmount, setFromAmount] = useState<string>("");
-  const [toAmount, setToAmount] = useState<string>("");
+  const fromAmount = useAppSelector(selectFromAmount);
+  const toAmount = useAppSelector(selectToAmount);
 
   const fromAmountNumber = Number(fromAmount);
   const toAmountNumber = Number(toAmount);
@@ -51,8 +47,9 @@ export function Minter() {
     run();
   }, []);
 
-  useEffect(() => {
-    onChangeFromAmount(fromAmount);
+  useEffect(() => {    
+    if(fromAmount === '') return;    
+    dispatch(setFromAmountAndCalculateToAmount(fromAmount));    
   }, [chosenCurrency]);
 
   async function onClickMint() {
@@ -105,31 +102,15 @@ export function Minter() {
   }
 
   function onChangeFromAmount(value: string) {
-    setFromAmount(value);
-
-    const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
-
-    if (!isNaN(calculatedToAmount)) {
-      setToAmount(calculatedToAmount.toFixed(2).toString());
-    } else {
-      setToAmount('');
-    }
+    dispatch(setFromAmountAndCalculateToAmount(value));
   }
 
   function onChangeToAmount(value: string) {
-    setToAmount(value);
-
-    const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
-
-    if (!isNaN(calculatedFromAmount)) {
-      setFromAmount(calculatedFromAmount.toString());
-    } else {
-      setFromAmount('');
-    }
+    dispatch(setToAmountAndCalculateFromAmount(value));
   }
 
   function onClickMax() {
-    onChangeFromAmount(balance.toString());
+    dispatch(setFromAmountAndCalculateToAmount(balance.toString()));    
   }
 
   return (
