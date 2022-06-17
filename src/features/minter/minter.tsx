@@ -13,11 +13,13 @@ import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
 import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount } from "./minterSlice";
+import { InformationCircleIcon } from '@heroicons/react/outline'
+import { InfoPopover } from './components/info-popover';
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
   const walletBalance = useAppSelector(selectWalletBalance);
-  const chosenCurrency = useAppSelector(selectChosenCurrency); 
+  const chosenCurrency = useAppSelector(selectChosenCurrency);
 
   const coinConfig = useCoinConfig();
   const balance = useWalletBalance();
@@ -47,9 +49,9 @@ export function Minter() {
     run();
   }, []);
 
-  useEffect(() => {    
-    if(fromAmount === '') return;    
-    dispatch(setFromAmountAndCalculateToAmount(fromAmount));    
+  useEffect(() => {
+    if (fromAmount === '') return;
+    dispatch(setFromAmountAndCalculateToAmount(fromAmount));
   }, [chosenCurrency]);
 
   async function onClickMint() {
@@ -110,12 +112,12 @@ export function Minter() {
   }
 
   function onClickMax() {
-    dispatch(setFromAmountAndCalculateToAmount(balance.toString()));    
+    dispatch(setFromAmountAndCalculateToAmount(balance.toString()));
   }
 
   return (
     <div className="border-2 flex flex-col">
-      <span className="text-left">
+      <span className="text-left text-3xl">
         Mint
       </span>
       <div className="flex flex-col mb-4">
@@ -132,9 +134,12 @@ export function Minter() {
           <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border" />
           <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>
         </div>
-        <span className="text-sm text-left pl-2">
-          BUST balance: {walletBalance.bustadToken}
-        </span>
+        <div className="flex justify-between px-2">
+          <span className="text-sm text-left pl-2">
+            BUST balance: {walletBalance.bustadToken}
+          </span>
+          <InfoPopover/>
+        </div>
       </div>
       {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
     </div>

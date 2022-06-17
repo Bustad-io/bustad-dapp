@@ -12,3 +12,10 @@ export function calculateFromAmount(toAmount: number, rate: number, isStableCoin
     }
     return toAmount / ((rate * ethUsdPrice) - (rate * ethUsdPrice * mintingFee));
 }
+
+export function calculateFeeAmount(fromAmount: number, rate: number, isStableCoin: boolean, ethUsdPrice: number, mintingFee: number) {
+    if(isStableCoin) {        
+        return fromAmount * rate * mintingFee;
+    }    
+    return rate * fromAmount * ethUsdPrice * mintingFee;
+}
