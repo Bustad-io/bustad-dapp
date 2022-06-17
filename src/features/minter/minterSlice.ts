@@ -6,11 +6,13 @@ import { getContracts } from '../wallet/walletAPI';
 export interface MinterState {  
   rate: number;
   ETHPrice: number;
+  mintingFee: number;
 }
 
 const initialState: MinterState = {  
   rate: 0,
-  ETHPrice: 0
+  ETHPrice: 0,
+  mintingFee: 0
 };
 
 export const fetchRateAsync = createAsyncThunk(
@@ -28,9 +30,22 @@ export const fetchEthPriceAsync = createAsyncThunk(
   'minter/fetchEthPrice',
   async () => {
     const { crowdsale } = getContracts();    
-    const res = await crowdsale.callStatic.getLatestETHPrice();
+    const ethPrice = await crowdsale.callStatic.getLatestETHPrice();    
+    
     return {
-      price: parseToNumber(res)
+      price: parseToNumber(ethPrice),      
+    }
+  }
+);
+
+export const fetchMintingFeeAsync = createAsyncThunk(
+  'minter/fetchMintingFee',
+  async () => {
+    const { bustadToken } = getContracts();        
+    const fee = await bustadToken.callStatic.getMintingFee();
+    
+    return {      
+      mintingFee: parseToNumber(fee)
     }
   }
 );
@@ -48,6 +63,9 @@ export const minterSlice = createSlice({
       })
       .addCase(fetchEthPriceAsync.fulfilled, (state, action) => {
         state.ETHPrice = action.payload.price;        
+      })
+      .addCase(fetchMintingFeeAsync.fulfilled, (state, action) => {
+        state.mintingFee = action.payload.mintingFee;        
       });
     }
   }
@@ -55,6 +73,7 @@ export const minterSlice = createSlice({
 
 export const selectRate = (state: RootState) => state.minter.rate;
 export const selectEthPrice = (state: RootState) => state.minter.ETHPrice;
+export const selectMintingFee = (state: RootState) => state.minter.mintingFee;
 
 
 export default minterSlice.reducer;

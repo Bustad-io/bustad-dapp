@@ -13,7 +13,7 @@ import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
-import { fetchEthPriceAsync, fetchRateAsync, selectEthPrice, selectRate } from "./minterSlice";
+import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, selectEthPrice, selectMintingFee, selectRate } from "./minterSlice";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
@@ -21,6 +21,7 @@ export function Minter() {
   const chosenCurrency = useAppSelector(selectChosenCurrency);
   const rate = useAppSelector(selectRate);
   const ethPrice = useAppSelector(selectEthPrice);
+  const mintingFee = useAppSelector(selectMintingFee);
 
   const coinConfig = useCoinConfig();
   const balance = useWalletBalance();
@@ -45,6 +46,7 @@ export function Minter() {
       await dispatch(fetchAllowanceAsync());
       await dispatch(fetchRateAsync());
       await dispatch(fetchEthPriceAsync());
+      await dispatch(fetchMintingFeeAsync());
     }
     run();
   }, []);
@@ -105,7 +107,7 @@ export function Minter() {
   function onChangeFromAmount(value: string) {
     setFromAmount(value);
 
-    const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice);
+    const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
 
     if (!isNaN(calculatedToAmount)) {
       setToAmount(calculatedToAmount.toFixed(2).toString());
@@ -117,7 +119,7 @@ export function Minter() {
   function onChangeToAmount(value: string) {
     setToAmount(value);
 
-    const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice);
+    const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
 
     if (!isNaN(calculatedFromAmount)) {
       setFromAmount(calculatedFromAmount.toString());
