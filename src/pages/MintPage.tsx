@@ -1,12 +1,10 @@
-import { useAppSelector } from "../app/hooks";
+import { AccountButton } from "../components/AccountButton";
 import { Minter } from "../features/minter/minter";
-import { selectAccount } from "../features/wallet/walletSlice";
 
-function MintPage() {
-  const account = useAppSelector(selectAccount);
+function MintPage() {  
   return (
     <div>
-      <span className="text-sm">{account}</span>
+      <AccountButton/>
       <Minter/>
     </div>
   );
