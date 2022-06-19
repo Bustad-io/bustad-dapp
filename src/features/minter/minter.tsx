@@ -13,7 +13,6 @@ import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
 import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount } from "./minterSlice";
-import { InformationCircleIcon } from '@heroicons/react/outline'
 import { InfoPopover } from './components/info-popover';
 
 export function Minter() {
@@ -122,7 +121,7 @@ export function Minter() {
       </span>
       <div className="flex flex-col mb-4">
         <div className="flex">
-          <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border" />
+          <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border w-96 mr-4" />
           <CurrencyChoice />
         </div>
         {insufficientBalance ? <span className="text-sm text-red-600 text-left pl-2">insufficient balance {balance} {chosenCurrency.toUpperCase()}</span> : <span className="text-sm text-left pl-2">
@@ -131,7 +130,7 @@ export function Minter() {
       </div>
       <div className="flex flex-col mb-4">
         <div className="flex">
-          <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border" />
+          <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border w-96 mr-4" />
           <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>
         </div>
         <div className="flex justify-between px-2">

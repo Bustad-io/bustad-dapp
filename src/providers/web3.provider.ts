@@ -1,11 +1,11 @@
 import { Contract, ethers, Signer } from "ethers";
-import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress } from "../../config";
-import CrowdsaleDef from '../../contracts/Crowdsale.sol/Crowdsale.json';
-import BustadTokenDef from '../../contracts/BustadToken.sol/BustadToken.json';
-import GovTokenDef from '../../contracts/governance/GovernanceToken.sol/GovernanceToken.json';
-import DaiDef from '../../contracts/Crowdsale.sol/IERC20Extended.json';
-import UsdcDef from '../../contracts/Crowdsale.sol/IERC20Extended.json';
-import GovDistDef from '../../contracts/governance/GovernanceDistributor.sol/GovernanceDistributor.json';
+import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress } from "../config";
+import CrowdsaleDef from '../contracts/Crowdsale.sol/Crowdsale.json';
+import BustadTokenDef from '../contracts/BustadToken.sol/BustadToken.json';
+import GovTokenDef from '../contracts/governance/GovernanceToken.sol/GovernanceToken.json';
+import DaiDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
+import UsdcDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
+import GovDistDef from '../contracts/governance/GovernanceDistributor.sol/GovernanceDistributor.json';
 
 const provider = new ethers.providers.Web3Provider((window as any).ethereum)
 

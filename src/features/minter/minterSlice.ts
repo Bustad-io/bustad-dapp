@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk, RootState } from '../../app/store';
 import { parseToNumber } from '../../utils/format';
-import { getContracts } from '../wallet/walletAPI';
 import { calculateFeeAmount, calculateFromAmount, calculateToAmount } from './helper';
 import { selectChosenCurrency } from '../currencyChoice/currencyChoiceSlice';
+import { getContracts } from '../../providers/web3.provider';
 
 export interface MinterState {  
   rate: number;

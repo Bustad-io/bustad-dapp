@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { formatUnitToNumber, parseToNumber } from '../../utils/format';
-import { connectWallet, getContracts, getProvider } from './walletAPI';
 import { CoinContractConfig } from '../../config';
+import { connectWallet, getContracts, getProvider } from '../../providers/web3.provider';
 
 export type WalletStatus = 'connected' | 'not_connected' | 'failed_to_connect' | 'loading';
 

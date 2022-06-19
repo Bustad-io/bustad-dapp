@@ -1,8 +1,8 @@
 import { Contract } from "ethers";
 import { useAppSelector } from "../app/hooks";
 import { selectChosenCurrency } from "../features/currencyChoice/currencyChoiceSlice";
-import { Contracts, getContracts } from "../features/wallet/walletAPI";
 import { selectWalletStatus } from "../features/wallet/walletSlice";
+import { Contracts, getContracts } from "../providers/web3.provider";
 
 export interface ExtendedContracts extends Contracts  {
     chosenCurrencyContract: Contract | null
