@@ -1,13 +1,14 @@
 import { Contract, ethers, Signer } from "ethers";
-import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress } from "../config";
+import Web3Modal from "web3modal";
+import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress, infuraId, network, appName } from "../config";
 import CrowdsaleDef from '../contracts/Crowdsale.sol/Crowdsale.json';
 import BustadTokenDef from '../contracts/BustadToken.sol/BustadToken.json';
 import GovTokenDef from '../contracts/governance/GovernanceToken.sol/GovernanceToken.json';
 import DaiDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
 import UsdcDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
 import GovDistDef from '../contracts/governance/GovernanceDistributor.sol/GovernanceDistributor.json';
-
-const provider = new ethers.providers.Web3Provider((window as any).ethereum)
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
 
 export interface Contracts {
   crowdsale: Contract;
@@ -18,11 +19,34 @@ export interface Contracts {
   govToken: Contract;
 }
 
-export function connectWallet() {
-  return new Promise<string[]>((resolve) => {
-    provider.send("eth_requestAccounts", []).then((res) => resolve(res));
+const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider,
+    options: {
+      infuraId: infuraId
+    }
+  },
+  coinbasewallet: {
+    package: CoinbaseWalletSDK,
+    options: {
+      appName: appName,
+      infuraId: infuraId,
+      darkMode: false
+    }
   }
-  );
+};
+
+const web3Modal = new Web3Modal({
+  network: network,
+  cacheProvider: false,
+  providerOptions
+});
+
+let provider: ethers.providers.Web3Provider;
+
+export async function connectWallet() {
+  const instance = await web3Modal.connect();
+  provider = new ethers.providers.Web3Provider(instance);  
 }
 
 export function getSigner(): Signer {
