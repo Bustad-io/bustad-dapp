@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
 import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { useEffect } from 'react';
@@ -17,6 +16,7 @@ import { InfoPopover } from './components/info-popover';
 import { web3Modal } from "../../providers/web3.provider";
 import { Input } from "./components/input";
 import { BustadTokenSymbol } from "../../config";
+import { PrimaryButton } from "../../components/PrimaryButton";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
@@ -121,15 +121,18 @@ export function Minter() {
     <div className="flex flex-col bg-Coral rounded-2xl py-4 px-5">
       <span className="text-left text-3xl text-white font-bold mb-10">
         Mint
-      </span>      
-      <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} fromAmount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount}/>
+      </span>
+      <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} fromAmount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
       <div className="mt-4">
-        <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount}/>        
+        <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount} />
       </div>
       <div className="flex justify-end mt-2">
         <InfoPopover />
       </div>
-      {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
+      {
+        walletStatus !== "connected" ? <ConnectButton wrapperClass='mt-12 cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> : allowance >= fromAmountNumber ?
+          <PrimaryButton text="Mint" disabled={insufficientBalance || fromAmountNumber === 0} onClick={onClickMint} /> :
+          <PrimaryButton text="Allow" disabled={insufficientBalance} onClick={onClickAllow} />}
     </div>
   );
 }

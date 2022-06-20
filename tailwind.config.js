@@ -19,7 +19,8 @@ module.exports = {
         'DarkPaleBlue': '#262343',
         'Coral': '#FF9649',
         'Negroni': '#FFDABF',
-        'PeachOrange': '#FFC499'
+        'PeachOrange': '#FFC499',
+        'Tuscanyapprox': '#BE6B30'
       }
     },
   },

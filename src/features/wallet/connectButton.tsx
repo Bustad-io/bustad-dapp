@@ -3,7 +3,12 @@ import { useAppDispatch } from '../../app/hooks';
 import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync } from '../minter/minterSlice';
 import { connectWalletAsync, fetchBalanceAsync, fetchAllowanceAsync, fetchAccountAsync } from './walletSlice';
 
-export function ConnectButton() {
+export interface ConnectButtonProp {
+  wrapperClass?: string;
+  buttonClass?: string
+}
+
+export function ConnectButton({wrapperClass = '', buttonClass = ''}: ConnectButtonProp) {
   const dispatch = useAppDispatch();
 
   const onClick = async () => {
@@ -19,8 +24,8 @@ export function ConnectButton() {
   }
 
   return (
-    <div>
-      <button onClick={onClick} className='bg-blue-400'>Connect wallet</button>
+    <div onClick={onClick} className={wrapperClass}>
+      <button className={buttonClass}>Connect wallet</button>
     </div>
   );
 }
