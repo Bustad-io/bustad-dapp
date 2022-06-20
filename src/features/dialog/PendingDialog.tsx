@@ -43,7 +43,7 @@ export default function PendingDialog() {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Confirm in MetaMask
+                    Confirm in you wallet
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">

@@ -103,6 +103,10 @@ export const fetchBalanceAsync = createAsyncThunk(
       throw Error('Wallet not connected');
     }
 
+    if(!state.wallet.account) {      
+      throw Error('Account not connected');
+    }
+
     const provider =  getProvider();  
 
     const { bustadToken, govToken, dai, usdc } = getContracts();

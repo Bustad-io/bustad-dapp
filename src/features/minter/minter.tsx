@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { CurrencyChoice } from "../currencyChoice/CurrencyChoice";
 import { ConnectButton } from "../wallet/connectButton";
-import { connectWalletAsync, fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
+import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { useEffect } from 'react';
 import { fromEther } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
@@ -14,6 +14,7 @@ import { ethers } from "ethers";
 import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
 import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount } from "./minterSlice";
 import { InfoPopover } from './components/info-popover';
+import { web3Modal } from "../../providers/web3.provider";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
@@ -34,7 +35,23 @@ export function Minter() {
   const fromAmountNumber = Number(fromAmount);
   const toAmountNumber = Number(toAmount);
 
-  const insufficientBalance = fromAmountNumber > balance;  
+  const insufficientBalance = fromAmountNumber > balance;
+
+  useEffect(() => {
+    const run = async () => {
+      await dispatch(connectWalletAsync());
+      await dispatch(fetchAccountAsync());
+      await dispatch(fetchBalanceAsync());
+      await dispatch(fetchAllowanceAsync());
+      await dispatch(fetchRateAsync());
+      await dispatch(fetchEthPriceAsync());
+      await dispatch(fetchMintingFeeAsync());
+    }
+
+    if (web3Modal.cachedProvider) {
+      run();
+    }
+  }, []);
 
   useEffect(() => {
     if (fromAmount === '') return;
@@ -125,7 +142,7 @@ export function Minter() {
           <span className="text-sm text-left pl-2">
             BUST balance: {walletBalance.bustadToken}
           </span>
-          <InfoPopover/>
+          <InfoPopover />
         </div>
       </div>
       {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}

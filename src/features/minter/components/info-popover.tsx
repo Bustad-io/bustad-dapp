@@ -12,7 +12,7 @@ export function InfoPopover() {
   const ethPrice = useAppSelector(selectEthPrice);
   const rate = useAppSelector(selectRate);
 
-  const bustadPrice = (chosenCurrency === 'eth' ? ethPrice : 1) * rate * 100;
+  const bustadPrice = (chosenCurrency === 'eth' ? ethPrice : 1) * rate;
 
   return (
     <Popover>

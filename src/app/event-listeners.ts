@@ -16,11 +16,11 @@ export function AddWeb3EventListeners(dispatch: AppDispatch) {
 
     //   });
 
-    // web3ModalInstance.on("connect", (info: { chainId: number }) => {
+    web3ModalInstance.on("connect", (info: { chainId: number }) => {
+        console.log('connect', info)
+    });
 
-    // });
-
-    //   web3ModalInstance.on("disconnect", (error: { code: number; message: string }) => {
-
-    //   });
+      web3ModalInstance.on("disconnect", (error: { code: number; message: string }) => {
+        console.log('disconnect', error)
+      });
 }
