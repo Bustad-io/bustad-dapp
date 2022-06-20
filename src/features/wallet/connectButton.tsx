@@ -2,13 +2,15 @@ import { AddWeb3EventListeners } from '../../app/event-listeners';
 import { useAppDispatch } from '../../app/hooks';
 import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync } from '../minter/minterSlice';
 import { connectWalletAsync, fetchBalanceAsync, fetchAllowanceAsync, fetchAccountAsync } from './walletSlice';
+import { ReactComponent as WalletIcon } from '../../assets/icons/Wallet.svg';
 
 export interface ConnectButtonProp {
   wrapperClass?: string;
-  buttonClass?: string
+  buttonClass?: string;
+  showIcon?: boolean;
 }
 
-export function ConnectButton({wrapperClass = '', buttonClass = ''}: ConnectButtonProp) {
+export function ConnectButton({wrapperClass = '', buttonClass = '', showIcon = false}: ConnectButtonProp) {
   const dispatch = useAppDispatch();
 
   const onClick = async () => {
@@ -26,6 +28,7 @@ export function ConnectButton({wrapperClass = '', buttonClass = ''}: ConnectButt
   return (
     <div onClick={onClick} className={wrapperClass}>
       <button className={buttonClass}>Connect wallet</button>
+      {showIcon && <WalletIcon/>}
     </div>
   );
 }

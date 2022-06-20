@@ -30,7 +30,7 @@ export function AccountButton() {
         <div>
             <Menu as="div" className="relative inline-block text-left">
                 <div className='flex items-center'>
-                    <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                    <Menu.Button className="inline-flex w-full justify-center rounded-md bg-PrimaryHordeBlue px-4 py-2 text-sm font-medium text-white hover:bg-opacity-50">
                         {firstAccountPart}...{lastAccountPart}
                         <ChevronDownIcon
                             className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
@@ -38,7 +38,7 @@ export function AccountButton() {
                         />
                     </Menu.Button>
                     <Transition
-                        className='left-36 absolute ml-4'
+                        className='top-10 absolute ml-4'
                         show={copyConfirmation}
                         enter="transition ease-out duration-100"
                         enterFrom="transform opacity-0 scale-95"
@@ -47,7 +47,7 @@ export function AccountButton() {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                     >
-                        <span>copied!</span>
+                        <span className='text-white'>copied!</span>
                     </Transition>
 
                 </div>
@@ -66,7 +66,7 @@ export function AccountButton() {
                                 {({ active }) => (
                                     <button
                                         onClick={onCopyAddress}
-                                        className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
+                                        className={`${active ? 'bg-Coral text-white' : 'text-gray-900'
                                             } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                                     >
                                         Copy address
@@ -77,7 +77,7 @@ export function AccountButton() {
                                 {({ active }) => (
                                     <button
                                         onClick={onDisconnect}
-                                        className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
+                                        className={`${active ? 'bg-Coral text-white' : 'text-gray-900'
                                             } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                                     >
                                         Disconnect
@@ -89,5 +89,5 @@ export function AccountButton() {
                 </Transition>
             </Menu>
         </div>
-    ) : (<ConnectButton />)
+    ) : (<ConnectButton buttonClass='text-white mr-2' wrapperClass='bg-Coral rounded-lg px-7 py-2 flex items-center cursor-pointer' showIcon/>)
 }
