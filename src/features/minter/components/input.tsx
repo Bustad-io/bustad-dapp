@@ -1,5 +1,5 @@
 import { CurrencyChoice } from "../../currencyChoice/CurrencyChoice";
-import { useLayoutEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { BustadTokenSymbol } from "../../../config";
 
 export interface InputProp {
@@ -20,15 +20,13 @@ export function Input({ fromAmount, onChange, insufficientBalance, currencyName,
         
     }
 
-
     return (
         <div onClick={onFocusInput} className="flex items-center bg-white rounded-2xl w-120 h-23 px-3">
             <CurrencyChoice balance={balance} isBustad={currencyName === BustadTokenSymbol}/>
-            <div className="">
-                <input ref={inputRef} value={fromAmount} onChange={e => onChange(e.target.value)} type="text" className="focus:outline-none ml-6 text-2xl" placeholder="0.0" />
+            <div className="flex flex-col ml-6 relative">
+                <input ref={inputRef} value={fromAmount} onChange={e => onChange(e.target.value)} type="text" className="focus:outline-none text-2xl" placeholder="0.0" />
+                {insufficientBalance && <span className="absolute top-8 text-red-600 text-xs">insufficient balance </span>
+            }
             </div>
-            {/* {insufficientBalance ? <span className="">insufficient balance {balance} {currencyName}</span> : <span className="">
-                {currencyName} balance: {balance} <span onClick={onClickMax} className="">Max</span>
-            </span>} */}
         </div>)
 }

@@ -1,10 +1,7 @@
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { CurrencyOption, selectChosenCurrency, selectChosenOption, selectCurrencyOptions, setCurrency } from './currencyChoiceSlice';
-import { ChevronDownIcon } from '@heroicons/react/solid'
-import { BustadTokenSymbol } from '../../config';
-import { ReactComponent as BustadIcon } from '../../assets/icons/BustadIcon.svg';
+import { CurrencyOption, selectCurrencyOptions, setCurrency } from './currencyChoiceSlice';
 import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 
 export interface CurrencyChoiceModalProp {  
   show: boolean;
