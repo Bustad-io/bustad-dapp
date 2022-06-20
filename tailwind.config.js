@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      textColor: {
+        'PrimaryHordeBlue': '#0F0B36',
+      },
       fontSize: {
         '2xs': '0.625rem'
       },
@@ -17,6 +20,7 @@ module.exports = {
 
       colors: {
         'DarkPaleBlue': '#262343',
+        'PrimaryHordeBlue': '#0F0B36',
         'Coral': '#FF9649',
         'Negroni': '#FFDABF',
         'PeachOrange': '#FFC499',
