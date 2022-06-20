@@ -17,9 +17,9 @@ import { web3Modal } from "../../providers/web3.provider";
 import { Input } from "./components/input";
 import { BustadTokenSymbol } from "../../config";
 import { PrimaryButton } from "../../components/PrimaryButton";
+import { useWalletConnection } from "../../hooks/walletConnectionHook";
 
-export function Minter() {
-  const walletStatus = useAppSelector(selectWalletStatus);
+export function Minter() {  
   const walletBalance = useAppSelector(selectWalletBalance);
   const chosenCurrency = useAppSelector(selectChosenCurrency);
 
@@ -30,6 +30,7 @@ export function Minter() {
   const dispatch = useAppDispatch();
 
   const { contracts, chosenCurrencyContract } = useWeb3Connector();
+  const { isConnected } = useWalletConnection();
 
   const fromAmount = useAppSelector(selectFromAmount);
   const toAmount = useAppSelector(selectToAmount);
@@ -50,7 +51,7 @@ export function Minter() {
       await dispatch(fetchMintingFeeAsync());
     }
 
-    if (web3Modal.cachedProvider) {
+    if (web3Modal.cachedProvider && !isConnected) {      
       run();
     }
   }, []);
@@ -127,10 +128,10 @@ export function Minter() {
         <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount} />
       </div>
       <div className="flex justify-end mt-2">
-        <InfoPopover />
+        {isConnected && <InfoPopover />}
       </div>
       {
-        walletStatus !== "connected" ? <ConnectButton wrapperClass='mt-12 cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> : allowance >= fromAmountNumber ?
+        !isConnected ? <ConnectButton wrapperClass='mt-12 cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> : allowance >= fromAmountNumber ?
           <PrimaryButton text="Mint" disabled={insufficientBalance || fromAmountNumber === 0} onClick={onClickMint} /> :
           <PrimaryButton text="Allow" disabled={insufficientBalance} onClick={onClickAllow} />}
     </div>
