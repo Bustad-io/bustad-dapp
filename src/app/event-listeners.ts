@@ -1,9 +1,9 @@
 import { fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync } from "../features/wallet/walletSlice";
-import { getWeb3ModalInstance } from "../providers/web3.provider";
+import { getWeb3ModalProvider } from "../providers/web3.provider";
 import { AppDispatch } from "./store";
 
 export function AddWeb3EventListeners(dispatch: AppDispatch) {
-    const web3ModalInstance = getWeb3ModalInstance();
+    const web3ModalInstance = getWeb3ModalProvider();
 
     web3ModalInstance.on("accountsChanged", async (accounts: string[]) => {        
         await dispatch(fetchAccountAsync());

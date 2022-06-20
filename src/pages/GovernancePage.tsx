@@ -7,20 +7,20 @@ import RejectedDialog from "../features/dialog/RejectedDialog";
 import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../features/dialog/dialogSlice";
 import PendingDialog from "../features/dialog/PendingDialog";
 import { ConnectButton } from '../features/wallet/connectButton';
+import { useWalletConnection } from "../hooks/walletConnectionHook";
 
 function GovernancePage() {
   const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
   const walletStatus = useAppSelector(selectWalletStatus);
   const walletBalance = useAppSelector(selectWalletBalance);
+  const { isConnected } = useWalletConnection();
 
   const dispatch = useAppDispatch();
 
   const { contracts } = useWeb3Connector();
 
   const votingPower = (walletBalance.govToken / 100000000 * 100).toFixed(5);
-  const canClaim = walletGovernanceDistributionShare > 0;
-  const isConnected = walletStatus === "connected";
-
+  const canClaim = walletGovernanceDistributionShare > 0;  
 
   useEffect(() => {
     const runAsync = async () => {

@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../app/store';
+import { AppThunk, RootState } from '../../app/store';
 import { formatUnitToNumber, parseToNumber } from '../../utils/format';
 import { CoinContractConfig } from '../../config';
-import { connectWallet, getContracts, getProvider, getSigner } from '../../providers/web3.provider';
+import { connectWallet, getContracts, getProvider, getSigner, web3Modal } from '../../providers/web3.provider';
 
 export type WalletStatus = 'connected' | 'not_connected' | 'failed_to_connect' | 'loading';
 
@@ -150,6 +150,13 @@ export const walletSlice = createSlice({
   reducers: {
     setAccount: (state, action: PayloadAction<string>) => {      
       state.account = action.payload      
+    },
+    resetWallet: (state) => {            
+      state.status = initialState.status;
+      state.account = initialState.status;      
+      state.allowance = initialState.allowance;
+      state.balance = initialState.balance;
+      state.governance = initialState.governance;      
     }
   },
   extraReducers: (builder) => {
@@ -184,7 +191,14 @@ export const walletSlice = createSlice({
   },
 });
 
-export const { setAccount } = walletSlice.actions;
+export const disconnectWallet =
+  (): AppThunk =>
+  (dispatch) => {        
+    web3Modal.clearCachedProvider();
+    dispatch(resetWallet());
+  };
+
+export const { setAccount, resetWallet } = walletSlice.actions;
 
 export const selectAccount = (state: RootState) => state.wallet.account;
 export const selectWalletStatus = (state: RootState) => state.wallet.status;

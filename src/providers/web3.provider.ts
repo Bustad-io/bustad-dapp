@@ -30,15 +30,14 @@ const providerOptions = {
     package: CoinbaseWalletSDK,
     options: {
       appName: appName,
-      infuraId: infuraId,
-      darkMode: false
+      infuraId: infuraId
     }
   }
 };
 
-const web3Modal = new Web3Modal({
+export const web3Modal = new Web3Modal({
   network: network,
-  cacheProvider: false,
+  cacheProvider: true,
   providerOptions
 });
 
@@ -58,7 +57,7 @@ export function getProvider(): ethers.providers.Web3Provider {
   return provider;
 }
 
-export function getWeb3ModalInstance() {
+export function getWeb3ModalProvider() {
   return web3ModalInstance;
 }
 
