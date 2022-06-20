@@ -43,10 +43,11 @@ const web3Modal = new Web3Modal({
 });
 
 let provider: ethers.providers.Web3Provider;
+let web3ModalInstance: any;
 
 export async function connectWallet() {
-  const instance = await web3Modal.connect();
-  provider = new ethers.providers.Web3Provider(instance);  
+  web3ModalInstance = await web3Modal.connect();
+  provider = new ethers.providers.Web3Provider(web3ModalInstance);  
 }
 
 export function getSigner(): Signer {
@@ -55,6 +56,10 @@ export function getSigner(): Signer {
 
 export function getProvider(): ethers.providers.Web3Provider {
   return provider;
+}
+
+export function getWeb3ModalInstance() {
+  return web3ModalInstance;
 }
 
 export function getContracts(useSigner = false): Contracts {

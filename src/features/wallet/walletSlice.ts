@@ -129,9 +129,15 @@ export const fetchBalanceAsync = createAsyncThunk(
 export const connectWalletAsync = createAsyncThunk(
   'wallet/connectWallet',
   async () => {    
-    await connectWallet();
+    await connectWallet();    
+  }
+);
+
+export const fetchAccountAsync = createAsyncThunk(
+  'wallet/fetchAccount',
+  async () => {    
     const signer = getSigner();
-    const account = await signer.getAddress();    
+    const account = await signer.getAddress();        
     return {    
       account      
     }
@@ -149,14 +155,16 @@ export const walletSlice = createSlice({
   extraReducers: (builder) => {
     builder      
       .addCase(connectWalletAsync.fulfilled, (state, action) => {
-        state.status = 'connected';        
-        state.account = action.payload.account;        
+        state.status = 'connected';                
       })
       .addCase(connectWalletAsync.pending, (state) => {
         state.status = 'loading';        
       })
       .addCase(connectWalletAsync.rejected, (state) => {
         state.status = 'failed_to_connect';
+      })
+      .addCase(fetchAccountAsync.fulfilled, (state, action) => {
+        state.account = action.payload.account;
       })
       .addCase(fetchBalanceAsync.fulfilled, (state, action) => {          
         state.balance = action.payload.balance;

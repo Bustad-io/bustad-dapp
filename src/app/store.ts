@@ -5,8 +5,6 @@ import walletReducer from '../features/wallet/walletSlice';
 import minterReducer from '../features/minter/minterSlice';
 import dialogReducer from '../features/dialog/dialogSlice';
 
-import AddAccountChangeListener from './event-listeners';
-
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
@@ -16,8 +14,6 @@ export const store = configureStore({
     dialog: dialogReducer
   },
 });
-
-AddAccountChangeListener(store.dispatch);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

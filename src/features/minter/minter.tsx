@@ -34,19 +34,7 @@ export function Minter() {
   const fromAmountNumber = Number(fromAmount);
   const toAmountNumber = Number(toAmount);
 
-  const insufficientBalance = fromAmountNumber > balance;
-
-  useEffect(() => {
-    const run = async () => {
-      await dispatch(connectWalletAsync());
-      await dispatch(fetchBalanceAsync());
-      await dispatch(fetchAllowanceAsync());
-      await dispatch(fetchRateAsync());
-      await dispatch(fetchEthPriceAsync());
-      await dispatch(fetchMintingFeeAsync());
-    }
-    run();
-  }, []);
+  const insufficientBalance = fromAmountNumber > balance;  
 
   useEffect(() => {
     if (fromAmount === '') return;
