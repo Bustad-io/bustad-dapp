@@ -117,10 +117,6 @@ export function Minter() {
     dispatch(setToAmountAndCalculateFromAmount(value));
   }
 
-  function onClickMax() {
-    dispatch(setFromAmountAndCalculateToAmount(balance.toString()));
-  }
-
   return (
     <div className="flex flex-col bg-Coral rounded-2xl py-4 px-5">
       <span className="text-left text-3xl text-white font-bold mb-10">
@@ -128,8 +124,11 @@ export function Minter() {
       </span>      
       <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} fromAmount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount}/>
       <div className="mt-4">
-        <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount}/>
-      </div>      
+        <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount}/>        
+      </div>
+      <div className="flex justify-end mt-2">
+        <InfoPopover />
+      </div>
       {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
     </div>
   );
