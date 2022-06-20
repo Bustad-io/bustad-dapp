@@ -15,6 +15,8 @@ import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedMod
 import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount } from "./minterSlice";
 import { InfoPopover } from './components/info-popover';
 import { web3Modal } from "../../providers/web3.provider";
+import { Input } from "./components/input";
+import { BustadTokenSymbol } from "../../config";
 
 export function Minter() {
   const walletStatus = useAppSelector(selectWalletStatus);
@@ -120,31 +122,14 @@ export function Minter() {
   }
 
   return (
-    <div className="border-2 flex flex-col">
-      <span className="text-left text-3xl">
+    <div className="flex flex-col bg-Coral rounded-2xl py-4 px-5">
+      <span className="text-left text-3xl text-white font-bold mb-10">
         Mint
-      </span>
-      <div className="flex flex-col mb-4">
-        <div className="flex">
-          <input value={fromAmount} onChange={e => onChangeFromAmount(e.target.value)} type="text" className="border w-96 mr-4" />
-          <CurrencyChoice />
-        </div>
-        {insufficientBalance ? <span className="text-sm text-red-600 text-left pl-2">insufficient balance {balance} {chosenCurrency.toUpperCase()}</span> : <span className="text-sm text-left pl-2">
-          {chosenCurrency.toUpperCase()} balance: {balance} <span onClick={onClickMax} className="text-sm ml-2 bg-slate-300 cursor-pointer">Max</span>
-        </span>}
-      </div>
-      <div className="flex flex-col mb-4">
-        <div className="flex">
-          <input value={toAmount} onChange={e => onChangeToAmount(e.target.value)} type="text" className="border w-96 mr-4" />
-          <span className="text-sm flex pl-3 items-center flex-grow">BUST</span>
-        </div>
-        <div className="flex justify-between px-2">
-          <span className="text-sm text-left pl-2">
-            BUST balance: {walletBalance.bustadToken}
-          </span>
-          <InfoPopover />
-        </div>
-      </div>
+      </span>      
+      <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} fromAmount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount}/>
+      <div className="mt-4">
+        <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount}/>
+      </div>      
       {walletStatus !== "connected" ? <ConnectButton /> : allowance >= fromAmountNumber ? <button disabled={insufficientBalance || fromAmountNumber === 0} className="disabled:opacity-40" onClick={onClickMint}>Mint</button> : <button className="disabled:opacity-40" disabled={insufficientBalance} onClick={onClickAllow}>Allow</button>}
     </div>
   );

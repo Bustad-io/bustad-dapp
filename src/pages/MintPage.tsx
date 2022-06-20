@@ -3,8 +3,7 @@ import { Minter } from "../features/minter/minter";
 
 function MintPage() {  
   return (
-    <div>
-      <AccountButton/>
+    <div>      
       <Minter/>
     </div>
   );

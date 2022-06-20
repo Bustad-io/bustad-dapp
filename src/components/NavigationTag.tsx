@@ -1,4 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
+import { AccountButton } from "./AccountButton";
 
 export function NavigationTag() {
     return (
@@ -13,6 +14,7 @@ export function NavigationTag() {
                 }
                     to={"/governance"} >Governance</NavLink>
             </nav>
+            <AccountButton/>
         </div>
 
     )

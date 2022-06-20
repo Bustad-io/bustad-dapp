@@ -9,15 +9,17 @@ import { Dialog } from './features/dialog/Dialog';
 function App() {
   return (
     <>
-      <div className="App">
-        <header className="App-header">
-          <NavigationTag />
-          <Routes>
+      <div className='bg-DarkPaleBlue h-full'>
+        <header>
+          <NavigationTag />          
+        </header>
+        <div className='flex justify-center items-center'>
+        <Routes>
             <Route path="/" element={<MintPage />} />
             <Route path="governance" element={<GovernancePage />} />
             <Route path="test" element={<TestCounterPage />} />
           </Routes>
-        </header>
+        </div>        
       </div>
       <Dialog/>
     </>
