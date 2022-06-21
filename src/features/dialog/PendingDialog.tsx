@@ -2,6 +2,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { hidePendingModal, selectPending } from './dialogSlice'
+import { ReactComponent as Spinner } from '../../assets/icons/Spinner.svg';
 
 export default function PendingDialog() {
   const dispatch = useAppDispatch();
@@ -38,18 +39,21 @@ export default function PendingDialog() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="rounded-2xl bg-Negroni px-10 pt-9 pb-12 flex flex-col items-center">
                   <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
+                    as="h2"
+                    className="text-2xl font-bold leading-6 text-gray-900 text-center"
                   >
                     Confirm in you wallet
                   </Dialog.Title>
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">
+                  <div className="mt-4 mb-10">
+                    <p className="text-lg text-gray-900 font-medium text-center">
                     {pending.text}
                     </p>
-                  </div>                
+                  </div>
+                  <div className='animate-spin'>
+                    <Spinner/>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>

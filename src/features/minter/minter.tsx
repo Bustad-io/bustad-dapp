@@ -67,7 +67,7 @@ export function Minter() {
   async function onClickMint() {
     if (!contracts.crowdsale) return;
 
-    dispatch(showPendingModal(`Mint ${toAmountNumber} Bustad for ${fromAmountNumber} ${chosenCurrency.toUpperCase()}`));
+    dispatch(showPendingModal(`Mint ${toAmountNumber.toPrecision(4)} Bustad for ${fromAmountNumber.toPrecision(4)} ${chosenCurrency.toUpperCase()}`));
 
     let tx;
 
