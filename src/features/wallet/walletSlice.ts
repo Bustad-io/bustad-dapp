@@ -157,7 +157,7 @@ export const walletSlice = createSlice({
     },
     resetWallet: (state) => {            
       state.status = initialState.status;
-      state.account = initialState.status;      
+      state.account = initialState.account;      
       state.allowance = initialState.allowance;
       state.balance = initialState.balance;
       state.governance = initialState.governance;      

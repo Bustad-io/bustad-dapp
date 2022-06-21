@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ConnectButton } from "../wallet/connectButton";
-import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
+import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
 import { useEffect } from 'react';
 import { fromEther } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
@@ -86,6 +86,7 @@ export function Minter() {
     await tx.wait();
     alert('success!');
     dispatch(fetchBalanceAsync());
+    dispatch(fetchGovernanceDistributorShareAsync());
   }
 
   async function onClickAllow() {
