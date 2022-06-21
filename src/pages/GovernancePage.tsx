@@ -9,7 +9,7 @@ import { MainBox } from "../components/MainBox";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { WhiteSection } from "../components/WhiteSection";
 import { IconLabelElement } from "../components/IconLabelElement";
-import { ClipboardCheckIcon } from '@heroicons/react/solid';
+import { ClipboardCheckIcon } from '@heroicons/react/outline';
 import { CashIcon } from '@heroicons/react/outline';
 import { formatNumberToSpaces } from "../utils/format";
 
@@ -48,7 +48,7 @@ function GovernancePage() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal(tx.hash));
+    await dispatch(showSubmittedModal({txHash: tx.hash, showMetamask: false}));
 
     await tx.wait();
     await dispatch(showConfirmedModal());
@@ -61,7 +61,7 @@ function GovernancePage() {
       <div className="mb-4">
         <WhiteSection>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold mb-2">Governance tokens balance</span>
+            <span className="text-sm font-semibold mb-2">Governance token balance</span>
             <div>
               <IconLabelElement label={formatNumberToSpaces(walletBalance.govToken, 2)}>
                 <CashIcon className="h-5" />
