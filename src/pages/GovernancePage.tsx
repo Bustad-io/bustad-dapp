@@ -56,38 +56,36 @@ function GovernancePage() {
     await dispatch(fetchBalanceAsync());
   }
 
-  return isConnected ?
-    (
-      <MainBox title="Governance">
-        <div className="flex flex-col">
-          <div className="mb-4">
-            <WhiteSection>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold mb-2">Governance tokens balance</span>
-                <div>
-                  <IconLabelElement label={formatNumberToSpaces(walletBalance.govToken, 2)}>
-                    <CashIcon className="h-5" />
-                  </IconLabelElement>
-                </div>
-              </div>
-            </WhiteSection>
+  return <MainBox title="Governance">
+    {isConnected ? <div className="flex flex-col">
+      <div className="mb-4">
+        <WhiteSection>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold mb-2">Governance tokens balance</span>
+            <div>
+              <IconLabelElement label={formatNumberToSpaces(walletBalance.govToken, 2)}>
+                <CashIcon className="h-5" />
+              </IconLabelElement>
+            </div>
           </div>
-          <div className="mb-20">
-            <WhiteSection>
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold mb-2">Governance tokens to claim</span>
-                <div>
-                  <IconLabelElement label={formatNumberToSpaces(walletGovernanceDistributionShare, 2)}>
-                    <ClipboardCheckIcon className="h-5" />
-                  </IconLabelElement>
-                </div>
-              </div>
-            </WhiteSection>
+        </WhiteSection>
+      </div>
+      <div className="mb-20">
+        <WhiteSection>
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold mb-2">Governance tokens to claim</span>
+            <div>
+              <IconLabelElement label={formatNumberToSpaces(walletGovernanceDistributionShare, 2)}>
+                <ClipboardCheckIcon className="h-5" />
+              </IconLabelElement>
+            </div>
           </div>
-          <PrimaryButton text="Claim" disabled={!canClaim} onClick={onClickClaim} />
-        </div>
-      </MainBox>
-    ) : (<ConnectButton />);
+        </WhiteSection>
+      </div>
+      <PrimaryButton text="Claim" disabled={!canClaim} onClick={onClickClaim} />
+    </div>
+      : <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl px-10' />}
+  </MainBox>;
 }
 
 export default GovernancePage;
