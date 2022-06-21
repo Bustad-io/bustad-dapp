@@ -25,14 +25,14 @@ function Tab({ to, text, showBadge = false }: TabProp) {
             >
                 <Badge></Badge>
             </Transition>
-            <NavLink className={({ isActive }) => isActive ? 'text-PrimaryHordeBlue bg-white font-bold py-3 px-9 rounded-xl' : 'px-8'} to={to} >{text}</NavLink>
+            <NavLink className={({ isActive }) => isActive ? 'text-PrimaryHordeBlue bg-orange-300 dark:bg-white font-bold py-3 px-9 rounded-xl' : 'px-8'} to={to} >{text}</NavLink>
         </div>
     )
 }
 
 function Badge() {
     const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
-    return <div className="absolute text-2xs bg-red-500 rounded-full p-2 h-6 -right-2 -top-4 flex justify-center items-center font-bold">{walletGovernanceDistributionShare.toFixed(0)}</div>
+    return <div className="absolute text-2xs text-white bg-rose-500 dark:bg-red-500 rounded-full p-2 h-6 -right-2 -top-4 flex justify-center items-center font-bold">{walletGovernanceDistributionShare.toFixed(0)}</div>
 }
 
 export function NavigationTab() {
@@ -57,7 +57,7 @@ export function NavigationTab() {
     }, [account, dispatch, isConnected, walletGovernanceDistributionShare]);
 
     return (
-        <nav className="bg-PrimaryHordeBlue rounded-xl h-11 text-white text-2xl flex items-center w-80 justify-between">
+        <nav className="bg-orange-50 dark:bg-PrimaryHordeBlue rounded-xl h-11 dark:text-white text-slate-700 text-2xl flex items-center w-80 justify-between">
             <Tab text="Mint" to="/" showBadge={false}/>
             <Tab text="Governance" to="/governance" showBadge={showBadge} />
         </nav>

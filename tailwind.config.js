@@ -20,6 +20,7 @@ module.exports = {
 
       colors: {
         'DarkPaleBlue': '#262343',
+        'DarkPaleBlueDarker': '#211e38',
         'PrimaryHordeBlue': '#0F0B36',
         'Coral': '#FF9649',
         'Negroni': '#FFDABF',

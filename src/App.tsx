@@ -11,7 +11,7 @@ import { ReactComponent as BustadIcon } from './assets/icons/BustadIcon.svg';
 function App() {
   return (
     <>
-      <div className='flex flex-col bg-DarkPaleBlue h-full'>
+      <div className='flex flex-col bg-orange-100 dark:bg-gradient-to-br dark:from-DarkPaleBlue dark:to-DarkPaleBlueDarker h-full'>
         <header className='flex items-center pt-12 justify-between px-11'>
           <BustadIcon className='w-12'/>
           <div className='relative left-16'>
