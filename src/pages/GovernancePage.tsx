@@ -7,6 +7,11 @@ import { ConnectButton } from '../features/wallet/connectButton';
 import { useWalletConnection } from "../hooks/walletConnectionHook";
 import { MainBox } from "../components/MainBox";
 import { PrimaryButton } from "../components/PrimaryButton";
+import { WhiteSection } from "../components/WhiteSection";
+import { IconLabelElement } from "../components/IconLabelElement";
+import { ClipboardCheckIcon } from '@heroicons/react/solid';
+import { CashIcon } from '@heroicons/react/outline';
+import { formatNumberToSpaces } from "../utils/format";
 
 function GovernancePage() {
   const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
@@ -18,7 +23,6 @@ function GovernancePage() {
 
   const { contracts } = useWeb3Connector();
 
-  /* const votingPower = (walletBalance.govToken / 100000000 * 100).toFixed(5); */
   const canClaim = walletGovernanceDistributionShare > 0;
 
   useEffect(() => {
@@ -56,12 +60,33 @@ function GovernancePage() {
     (
       <MainBox title="Governance">
         <div className="flex flex-col">
-          <span className="text-xl mb-6">Governance tokens balance: {walletBalance.govToken}</span>
-          {/* <span className="text-xl mb-6">Your voting power: {votingPower} %</span> */}
-          <span className="text-xl mb-6">Governance tokens to claim: {walletGovernanceDistributionShare}</span>        
+          <div className="mb-4">
+            <WhiteSection>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold mb-2">Governance tokens balance</span>
+                <div>
+                  <IconLabelElement label={formatNumberToSpaces(walletBalance.govToken, 2)}>
+                    <CashIcon className="h-5" />
+                  </IconLabelElement>
+                </div>
+              </div>
+            </WhiteSection>
+          </div>
+          <div className="mb-20">
+            <WhiteSection>
+              <div className="flex flex-col">
+                <span className="text-sm font-semibold mb-2">Governance tokens to claim</span>
+                <div>
+                  <IconLabelElement label={formatNumberToSpaces(walletGovernanceDistributionShare, 2)}>
+                    <ClipboardCheckIcon className="h-5" />
+                  </IconLabelElement>
+                </div>
+              </div>
+            </WhiteSection>
+          </div>
           <PrimaryButton text="Claim" disabled={!canClaim} onClick={onClickClaim} />
         </div>
-      </MainBox>      
+      </MainBox>
     ) : (<ConnectButton />);
 }
 

@@ -23,7 +23,7 @@ export function Input({ fromAmount, onChange, insufficientBalance, currencyName,
         <div onClick={onFocusInput} className="flex items-center bg-white rounded-2xl w-120 h-23 px-3">
             <div>
                 <CurrencyChoice isBustad={currencyName === BustadTokenSymbol}/>
-                <span className="text-xs pl-2 mt-2 block">
+                <span className="text-sm pl-2 mt-2 block">
                     <span className="font-semibold">Balance: </span>
                     <span>{balance.toPrecision(4)}</span>                    
                 </span>

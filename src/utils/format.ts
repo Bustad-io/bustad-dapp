@@ -23,3 +23,9 @@ export function parseUnitsFromNumber(value: number, decimal: number) {
 export function parseUnits(value: string, decimal: number) {
   return Number(ethers.utils.parseUnits(value, decimal));
 }
+
+export function formatNumberToSpaces(value: number, decimals: number = 0) {
+  var parts = value.toFixed(decimals).split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return parts.join(".");
+}

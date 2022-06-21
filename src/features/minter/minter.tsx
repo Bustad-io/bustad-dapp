@@ -127,7 +127,7 @@ export function Minter() {
         <div className="mt-4">
           <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount} />
         </div>
-        <div className="flex justify-end mt-2">
+        <div className="flex justify-end mt-2 mb-12">
           {isConnected && <InfoPopover />}
         </div>
         {
