@@ -84,7 +84,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({txHash: tx.hash, showMetamask: true}));
+    await dispatch(showSubmittedModal(tx.hash));
 
     await tx.wait();
     await dispatch(showConfirmedModal());
@@ -106,7 +106,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({txHash: tx.hash, showMetamask: false}));
+    await dispatch(showSubmittedModal(tx.hash));
 
     await tx.wait();
 

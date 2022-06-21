@@ -13,7 +13,7 @@ export interface ConnectButtonProp {
 export function ConnectButton({wrapperClass = '', buttonClass = '', showIcon = false}: ConnectButtonProp) {
   const dispatch = useAppDispatch();
 
-  const onClick = async () => {
+  const onClick = async () => {  
     await dispatch(connectWalletAsync());
     await dispatch(fetchAccountAsync());
     await dispatch(fetchBalanceAsync());
@@ -21,9 +21,7 @@ export function ConnectButton({wrapperClass = '', buttonClass = '', showIcon = f
     await dispatch(fetchRateAsync());
     await dispatch(fetchEthPriceAsync());
     await dispatch(fetchMintingFeeAsync());
-    await dispatch(fetchGovDistributionRateAsync());
-
-    AddWeb3EventListeners(dispatch);
+    await dispatch(fetchGovDistributionRateAsync());    
   }
 
   return (

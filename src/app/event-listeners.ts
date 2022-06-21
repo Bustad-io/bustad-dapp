@@ -1,11 +1,10 @@
-import { fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync } from "../features/wallet/walletSlice";
-import { getWeb3ModalProvider } from "../providers/web3.provider";
+import { fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, setWalletProvider } from "../features/wallet/walletSlice";
+import { web3Modal } from "../providers/web3.provider";
 import { AppDispatch } from "./store";
 
-export function AddWeb3EventListeners(dispatch: AppDispatch) {
-    const web3ModalInstance = getWeb3ModalProvider();
-
-    web3ModalInstance.on("accountsChanged", async (accounts: string[]) => {        
+export function AddWeb3EventListeners(dispatch: AppDispatch) {    
+  web3Modal.on("accountsChanged", async (accounts: string[]) => {        
+      console.log('test');
         await dispatch(fetchAccountAsync());
         await dispatch(fetchBalanceAsync());
         await dispatch(fetchAllowanceAsync());
@@ -14,13 +13,19 @@ export function AddWeb3EventListeners(dispatch: AppDispatch) {
     // Subscribe to chainId change
     //   web3ModalInstance.on("chainChanged", (chainId: number) => {
 
-    //   });
+    //   });    
 
-    web3ModalInstance.on("connect", (info: { chainId: number }) => {
-        console.log('connect', info)
+    web3Modal.on("connect", async (info) => {
+      if(info.isCoinbaseWallet === true) {
+        await dispatch(setWalletProvider('coinbase'));
+      } else if(info.isMetaMask === true) {
+        await dispatch(setWalletProvider('metamask'));
+      } else if(info.bridge === 'https://bridge.walletconnect.org') {
+        await dispatch(setWalletProvider('wallet_connect'));
+      }                   
     });
 
-      web3ModalInstance.on("disconnect", (error: { code: number; message: string }) => {
+    web3Modal.on("disconnect", (error: { code: number; message: string }) => {
         console.log('disconnect', error)
       });
 }

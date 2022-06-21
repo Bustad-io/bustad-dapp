@@ -37,7 +37,7 @@ function Badge() {
 
 export function NavigationTab() {
     const dispatch = useAppDispatch();
-    const isConnected = useWalletConnection();
+    const {isConnected} = useWalletConnection();
     const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
     const account = useAppSelector(selectAccount);
 
@@ -45,7 +45,7 @@ export function NavigationTab() {
 
     useEffect(() => {
         const runAsync = async () => {
-            if (!isConnected && walletGovernanceDistributionShare > 0) return;
+            if (!isConnected) return;
 
             if (!account) {
                 await dispatch(fetchAccountAsync());

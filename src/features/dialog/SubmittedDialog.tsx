@@ -2,15 +2,16 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { BustadTokenAddress, BustadTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, explorerBaseUri } from '../../config';
-import { hideSubmittedModal, selectSubmitted, selectSubmittedShowMetamask } from './dialogSlice'
+import { hideSubmittedModal, selectSubmitted } from './dialogSlice'
 import { ReactComponent as SuccessIcon } from '../../assets/icons/SuccessIcon.svg';
+import { useWalletConnection } from '../../hooks/walletConnectionHook';
 
 
 export default function SubmittedDialog() {
   const dispatch = useAppDispatch();
 
   const modal = useAppSelector(selectSubmitted);
-  const showMetamask = useAppSelector(selectSubmittedShowMetamask);
+  const { isMetaMask } = useWalletConnection();
 
   function closeModal() {
     dispatch(hideSubmittedModal());
@@ -71,7 +72,7 @@ export default function SubmittedDialog() {
                   <SuccessIcon/>
                 </div>
                 <div className="flex flex-col">
-                  {showMetamask && <button
+                  {isMetaMask && <button
                     type="button"
                     className="mb-3 mt-4 inline-flex justify-center rounded-xl bg-Coral px-6 py-2 font-medium text-white "
                     onClick={onAddToMetaMask}

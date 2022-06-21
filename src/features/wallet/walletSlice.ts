@@ -5,6 +5,7 @@ import { CoinContractConfig } from '../../config';
 import { connectWallet, getContracts, getProvider, getSigner, web3Modal } from '../../providers/web3.provider';
 
 export type WalletStatus = 'connected' | 'not_connected' | 'failed_to_connect' | 'loading';
+export type WalletProvider = 'metamask' | 'wallet_connect' | 'coinbase' | 'none';
 
 export interface WalletState {  
   status: WalletStatus;  
@@ -12,6 +13,7 @@ export interface WalletState {
   balance: WalletBalance;
   allowance: WalletAllowance;
   governance: WalletGovernance;
+  provider: WalletProvider;
 }
 
 export interface WalletBalance {
@@ -33,7 +35,8 @@ export interface WalletGovernance {
 }
 
 const initialState: WalletState = {  
-  status: 'not_connected',    
+  status: 'not_connected',
+  provider: 'none',
   account: null,
   governance: {
     distributionShare: 0
@@ -152,6 +155,9 @@ export const walletSlice = createSlice({
   name: 'wallet',
   initialState,  
   reducers: {
+    setWalletProvider: (state, action: PayloadAction<WalletProvider>) => {
+      state.provider = action.payload;
+    },
     setAccount: (state, action: PayloadAction<string>) => {      
       state.account = action.payload      
     },
@@ -160,7 +166,8 @@ export const walletSlice = createSlice({
       state.account = initialState.account;      
       state.allowance = initialState.allowance;
       state.balance = initialState.balance;
-      state.governance = initialState.governance;      
+      state.governance = initialState.governance;
+      state.provider = initialState.provider; 
     }
   },
   extraReducers: (builder) => {
@@ -202,7 +209,7 @@ export const disconnectWallet =
     dispatch(resetWallet());
   };
 
-export const { setAccount, resetWallet } = walletSlice.actions;
+export const { setAccount, resetWallet, setWalletProvider } = walletSlice.actions;
 
 export const selectAccount = (state: RootState) => state.wallet.account;
 export const selectBalanceLoading = (state: RootState) => state.wallet.balance.loading;
@@ -210,5 +217,6 @@ export const selectWalletStatus = (state: RootState) => state.wallet.status;
 export const selectWalletBalance = (state: RootState) => state.wallet.balance;
 export const selectWalletAllowance = (state: RootState) => state.wallet.allowance;
 export const selectWalletGovernanceDistributionShare = (state: RootState) => state.wallet.governance.distributionShare;
+export const selectWalletProvider = (state: RootState) => state.wallet.provider;
 
 export default walletSlice.reducer;
