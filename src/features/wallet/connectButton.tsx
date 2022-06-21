@@ -1,6 +1,6 @@
 import { AddWeb3EventListeners } from '../../app/event-listeners';
 import { useAppDispatch } from '../../app/hooks';
-import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync } from '../minter/minterSlice';
+import { fetchEthPriceAsync, fetchGovDistributionRateAsync, fetchMintingFeeAsync, fetchRateAsync } from '../minter/minterSlice';
 import { connectWalletAsync, fetchBalanceAsync, fetchAllowanceAsync, fetchAccountAsync } from './walletSlice';
 import { ReactComponent as WalletIcon } from '../../assets/icons/Wallet.svg';
 
@@ -21,6 +21,7 @@ export function ConnectButton({wrapperClass = '', buttonClass = '', showIcon = f
     await dispatch(fetchRateAsync());
     await dispatch(fetchEthPriceAsync());
     await dispatch(fetchMintingFeeAsync());
+    await dispatch(fetchGovDistributionRateAsync());
 
     AddWeb3EventListeners(dispatch);
   }

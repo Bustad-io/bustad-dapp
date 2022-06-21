@@ -12,6 +12,7 @@ export interface MinterState {
   fromAmount: string;
   toAmount: string;
   feeAmount: number;
+  govDistributionRate: number;
 }
 
 const initialState: MinterState = {  
@@ -20,7 +21,8 @@ const initialState: MinterState = {
   mintingFee: 0,
   fromAmount: '',
   toAmount: '',
-  feeAmount: 0
+  feeAmount: 0,
+  govDistributionRate: 0
 };
 
 export const fetchRateAsync = createAsyncThunk(
@@ -58,6 +60,18 @@ export const fetchMintingFeeAsync = createAsyncThunk(
   }
 );
 
+export const fetchGovDistributionRateAsync = createAsyncThunk(
+  'minter/fetchGovDistributionRate',
+  async () => {
+    const { govDist } = getContracts();        
+    const rate = await govDist.callStatic.bustadToGovDistributionRatio();
+    
+    return {      
+      govDistributionRate: parseToNumber(rate)
+    }
+  }
+);
+
 export const minterSlice = createSlice({
   name: 'minter',
   initialState,  
@@ -82,6 +96,9 @@ export const minterSlice = createSlice({
       })
       .addCase(fetchMintingFeeAsync.fulfilled, (state, action) => {
         state.mintingFee = action.payload.mintingFee;        
+      })
+      .addCase(fetchGovDistributionRateAsync.fulfilled, (state, action) => {
+        state.govDistributionRate = action.payload.govDistributionRate;        
       });
     }
   }
@@ -95,6 +112,7 @@ export const selectMintingFee = (state: RootState) => state.minter.mintingFee;
 export const selectFromAmount = (state: RootState) => state.minter.fromAmount;
 export const selectToAmount = (state: RootState) => state.minter.toAmount;
 export const selectFeeAmount = (state: RootState) => state.minter.feeAmount;
+export const selectGovDistributionRate = (state: RootState) => state.minter.govDistributionRate;
 
 export const setFromAmountAndCalculateToAmount =
   (value: string): AppThunk =>

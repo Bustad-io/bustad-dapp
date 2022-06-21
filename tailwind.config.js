@@ -24,7 +24,8 @@ module.exports = {
         'Coral': '#FF9649',
         'Negroni': '#FFDABF',
         'PeachOrange': '#FFC499',
-        'Tuscanyapprox': '#BE6B30'
+        'Tuscanyapprox': '#BE6B30',
+        'Anakiwa': '#B1DEFF'
       }
     },
   },
