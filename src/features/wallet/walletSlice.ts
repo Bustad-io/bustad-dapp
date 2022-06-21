@@ -205,6 +205,7 @@ export const disconnectWallet =
 export const { setAccount, resetWallet } = walletSlice.actions;
 
 export const selectAccount = (state: RootState) => state.wallet.account;
+export const selectBalanceLoading = (state: RootState) => state.wallet.balance.loading;
 export const selectWalletStatus = (state: RootState) => state.wallet.status;
 export const selectWalletBalance = (state: RootState) => state.wallet.balance;
 export const selectWalletAllowance = (state: RootState) => state.wallet.allowance;

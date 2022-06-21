@@ -1,6 +1,9 @@
 import { CurrencyChoice } from "../../currencyChoice/CurrencyChoice";
 import { useRef } from 'react';
 import { BustadTokenSymbol } from "../../../config";
+import { LoadingTextComponent } from "../../../components/LoadingTextComponent";
+import { useAppSelector } from "../../../app/hooks";
+import { selectBalanceLoading } from "../../wallet/walletSlice";
 
 export interface InputProp {
     fromAmount: string;
@@ -14,6 +17,8 @@ export interface InputProp {
 export function Input({ fromAmount, onChange, insufficientBalance, currencyName, balance, govTokenToReceive = 0 }: InputProp) {
     const inputRef = useRef<any>(null);
 
+    const balanceLoading = useAppSelector(selectBalanceLoading);
+
     function onFocusInput() {
         if(inputRef.current !== null) {
             inputRef.current.focus();
@@ -26,7 +31,9 @@ export function Input({ fromAmount, onChange, insufficientBalance, currencyName,
                 <CurrencyChoice isBustad={currencyName === BustadTokenSymbol}/>
                 <span className="text-sm pl-2 mt-2 block">
                     <span className="font-semibold">Balance: </span>
-                    <span>{balance.toPrecision(4)}</span>                    
+                    <LoadingTextComponent loading={balanceLoading}>
+                        <span>{balance.toPrecision(4)}</span>                    
+                    </LoadingTextComponent>
                 </span>
             </div>
             <div className="flex flex-col ml-6 relative">

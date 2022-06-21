@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance, selectWalletGovernanceDistributionShare, selectWalletStatus } from "../features/wallet/walletSlice";
+import { fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectBalanceLoading, selectWalletBalance, selectWalletGovernanceDistributionShare, selectWalletStatus } from "../features/wallet/walletSlice";
 import { useEffect } from 'react';
 import { useWeb3Connector } from "../hooks/web3Hook";
 import { hidePendingModal, showConfirmedModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../features/dialog/dialogSlice";
@@ -17,6 +17,7 @@ function GovernancePage() {
   const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
   const walletStatus = useAppSelector(selectWalletStatus);
   const walletBalance = useAppSelector(selectWalletBalance);
+  const balanceLoading = useAppSelector(selectBalanceLoading);
   const { isConnected } = useWalletConnection();
 
   const dispatch = useAppDispatch();
@@ -63,7 +64,7 @@ function GovernancePage() {
           <div className="flex flex-col">
             <span className="text-sm font-semibold mb-2">Governance token balance</span>
             <div>
-              <IconLabelElement label={formatNumberToSpaces(walletBalance.govToken, 2)}>
+              <IconLabelElement label={balanceLoading ? '~' : formatNumberToSpaces(walletBalance.govToken, 2)}>
                 <CashIcon className="h-5" />
               </IconLabelElement>
             </div>
