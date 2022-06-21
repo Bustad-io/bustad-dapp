@@ -30,7 +30,7 @@ export function CurrencyChoice({ isBustad }: CurrencyChoiceProp) {
     <>
       <div>
         <div className="relative">
-          <button onClick={onOpenModal} disabled={isBustad} className="relative w-full bg-Negroni rounded-md flex items-center pl-3 py-2 disabled:cursor-auto cursor-pointer">
+          <button onClick={onOpenModal} disabled={isBustad} className="box-content relative w-full bg-Negroni rounded-md flex items-center pl-3 py-2 disabled:cursor-auto cursor-pointer">
             {isBustad ? <BustadIcon className='relative left-1 w-4 mr-2' /> : <img src={chosenOption.img} alt="" className='w-6 max-h-6' />}
               <span className="font-semibold text-l ml-2 mr-1 min-w-[2.6rem]">{currencyDisplay}</span>                          
             {!isBustad ? <span className="flex items-center pr-2">
