@@ -18,8 +18,9 @@ import { Input } from "./components/input";
 import { BustadTokenSymbol } from "../../config";
 import { PrimaryButton } from "../../components/PrimaryButton";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
+import { MainBox } from "../../components/MainBox";
 
-export function Minter() {  
+export function Minter() {
   const walletBalance = useAppSelector(selectWalletBalance);
   const chosenCurrency = useAppSelector(selectChosenCurrency);
 
@@ -51,7 +52,7 @@ export function Minter() {
       await dispatch(fetchMintingFeeAsync());
     }
 
-    if (web3Modal.cachedProvider && !isConnected) {      
+    if (web3Modal.cachedProvider && !isConnected) {
       run();
     }
   }, []);
@@ -120,21 +121,21 @@ export function Minter() {
   }
 
   return (
-    <div className="flex flex-col bg-Coral rounded-2xl py-4 px-5">
-      <span className="text-left text-3xl text-white font-bold mb-10">
-        Mint
-      </span>
-      <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} fromAmount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
-      <div className="mt-4">
-        <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount} />
-      </div>
-      <div className="flex justify-end mt-2">
-        {isConnected && <InfoPopover />}
-      </div>
-      {
-        !isConnected ? <ConnectButton wrapperClass='mt-12 cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> : allowance >= fromAmountNumber ?
-          <PrimaryButton text="Mint" disabled={insufficientBalance || fromAmountNumber === 0} onClick={onClickMint} /> :
-          <PrimaryButton text="Allow" disabled={insufficientBalance} onClick={onClickAllow} />}
-    </div>
+    <MainBox title="Mint">
+      <>
+        <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} fromAmount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
+        <div className="mt-4">
+          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount} />
+        </div>
+        <div className="flex justify-end mt-2">
+          {isConnected && <InfoPopover />}
+        </div>
+        {
+          !isConnected ?
+            <ConnectButton wrapperClass='mt-12 cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> : allowance >= fromAmountNumber ?
+              <PrimaryButton text="Mint" disabled={insufficientBalance || fromAmountNumber === 0} onClick={onClickMint} /> :
+              <PrimaryButton text="Allow" disabled={insufficientBalance} onClick={onClickAllow} />}
+      </>
+    </MainBox>
   );
 }

@@ -59,7 +59,7 @@ export function CurrencyChoiceModal({ show, onClose }: CurrencyChoiceModalProp) 
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-Negroni transition-all py-4">
+                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white transition-all py-4">
                   <Dialog.Title
                     as="h2"
                     className="text-4xl font-bold text-black mb-6"

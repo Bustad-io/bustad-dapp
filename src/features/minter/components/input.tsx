@@ -16,16 +16,21 @@ export function Input({ fromAmount, onChange, insufficientBalance, currencyName,
     function onFocusInput() {
         if(inputRef.current !== null) {
             inputRef.current.focus();
-        }
-        
+        }        
     }
 
     return (
         <div onClick={onFocusInput} className="flex items-center bg-white rounded-2xl w-120 h-23 px-3">
-            <CurrencyChoice balance={balance} isBustad={currencyName === BustadTokenSymbol}/>
+            <div>
+                <CurrencyChoice isBustad={currencyName === BustadTokenSymbol}/>
+                <span className="text-xs pl-2 mt-2 block">
+                    <span className="font-semibold">Balance: </span>
+                    <span>{balance.toPrecision(4)}</span>                    
+                </span>
+            </div>
             <div className="flex flex-col ml-6 relative">
-                <input ref={inputRef} value={fromAmount} onChange={e => onChange(e.target.value)} type="text" className="focus:outline-none text-2xl" placeholder="0.0" />
-                {insufficientBalance && <span className="absolute top-8 text-red-600 text-xs">insufficient balance </span>
+                <input ref={inputRef} value={fromAmount} onChange={e => onChange(e.target.value)} type="text" className="focus:outline-none text-3xl" placeholder="0.0" />
+                {insufficientBalance && <span className="absolute top-9 text-red-600 text-xs">insufficient balance </span>
             }
             </div>
         </div>)

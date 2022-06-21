@@ -12,7 +12,7 @@ module.exports = {
         '2xs': '0.625rem'
       },
       width: {
-        120: '30rem'
+        120: '30rem'        
       },
       height: {
         23: '5.75rem'
