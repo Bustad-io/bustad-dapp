@@ -33,7 +33,7 @@ export function AccountButton() {
                     <Menu.Button className="inline-flex w-full justify-center rounded-md bg-orange-300 dark:bg-PrimaryHordeBlue px-9 py-2 text-sm font-medium dark:text-white text-DarkPaleBlue hover:bg-opacity-50">
                         {firstAccountPart}...{lastAccountPart}
                         <ChevronDownIcon
-                            className="ml-2 -mr-1 h-5 w-5 text-DarkPaleBlue dark:text-violet-200 dark:hover:text-violet-100 dark:hover:text-DarkPaleBlue"
+                            className="ml-2 -mr-1 h-5 w-5 text-DarkPaleBlue dark:text-violet-200 dark:hover:text-violet-100"
                             aria-hidden="true"
                         />
                     </Menu.Button>
@@ -47,7 +47,7 @@ export function AccountButton() {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                     >
-                        <span className='text-white'>copied!</span>
+                        <span className='text-PrimaryHordeBlue dark:text-white'>copied!</span>
                     </Transition>
                 </div>
                 <Transition

@@ -1,6 +1,7 @@
 import PendingDialog from "./PendingDialog";
 import RejectedDialog from "./RejectedDialog";
 import SubmittedDialog from "./SubmittedDialog";
+import ConfirmationDialog from './ConfirmationDialog';
 
 export function Dialog() {
   return (
@@ -8,6 +9,7 @@ export function Dialog() {
       <PendingDialog />
       <SubmittedDialog />
       <RejectedDialog />
+      <ConfirmationDialog />
     </>
   )
 }

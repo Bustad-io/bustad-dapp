@@ -10,7 +10,7 @@ import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
 import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
-import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
+import { hidePendingModal, showConfirmedModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
 import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount, selectGovDistributionRate, fetchGovDistributionRateAsync } from "./minterSlice";
 import { InfoPopover } from './components/info-popover';
 import { web3Modal } from "../../providers/web3.provider";
@@ -87,7 +87,7 @@ export function Minter() {
     await dispatch(showSubmittedModal(tx.hash));
 
     await tx.wait();
-    alert('success!');
+    await dispatch(showConfirmedModal());
     dispatch(fetchBalanceAsync());
     dispatch(fetchGovernanceDistributorShareAsync());
   }
@@ -110,7 +110,7 @@ export function Minter() {
 
     await tx.wait();
 
-    alert('success!');
+    await dispatch(showConfirmedModal());
     dispatch(fetchAllowanceAsync());
   }
 

@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance, selectWalletGovernanceDistributionShare, selectWalletStatus } from "../features/wallet/walletSlice";
 import { useEffect } from 'react';
 import { useWeb3Connector } from "../hooks/web3Hook";
-import { hidePendingModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../features/dialog/dialogSlice";
+import { hidePendingModal, showConfirmedModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../features/dialog/dialogSlice";
 import { ConnectButton } from '../features/wallet/connectButton';
 import { useWalletConnection } from "../hooks/walletConnectionHook";
 import { MainBox } from "../components/MainBox";
@@ -51,7 +51,7 @@ function GovernancePage() {
     await dispatch(showSubmittedModal(tx.hash));
 
     await tx.wait();
-    alert('success');
+    await dispatch(showConfirmedModal());
     await dispatch(fetchGovernanceDistributorShareAsync());
     await dispatch(fetchBalanceAsync());
   }

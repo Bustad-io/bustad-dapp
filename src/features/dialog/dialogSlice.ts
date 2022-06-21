@@ -13,6 +13,9 @@ export interface DialogState {
   },
   rejected: {
     show: boolean
+  },
+  confirmed: {
+    show: boolean
   }
 }
 
@@ -27,6 +30,9 @@ const initialState: DialogState = {
   },
   rejected: {
     show: false
+  },
+  confirmed: {
+    show: true
   }
 };
 
@@ -55,15 +61,22 @@ export const dialogSlice = createSlice({
     },
     hideRejectedModal: (state) => {
       state.rejected.show = false;      
-    }
+    },
+    showConfirmedModal: (state) => {
+      state.confirmed.show = true
+    },
+    hideConfirmedModal: (state) => {
+      state.confirmed.show = false
+    },
   }
   }
 );
 
-export const { showPendingModal, hidePendingModal, showSubmittedModal, hideSubmittedModal, showRejectedModal, hideRejectedModal } = dialogSlice.actions;
+export const { showPendingModal, hidePendingModal, showSubmittedModal, hideSubmittedModal, showRejectedModal, hideRejectedModal, showConfirmedModal, hideConfirmedModal } = dialogSlice.actions;
 
 export const selectPending = (state: RootState) => state.dialog.pending;
 export const selectSubmitted = (state: RootState) => state.dialog.submitted;
 export const selectRejected = (state: RootState) => state.dialog.rejected;
+export const selectConfirmed = (state: RootState) => state.dialog.confirmed;
 
 export default dialogSlice.reducer;
