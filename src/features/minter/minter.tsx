@@ -133,12 +133,12 @@ export function Minter() {
         <div className="mt-4">
           <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()}/>
         </div>
-        <div className="flex justify-end mt-2 mb-12">
+        <div className="flex justify-end mt-2 mb-12 h-5">
           {isConnected && <InfoPopover />}
         </div>
         {
           !isConnected ?
-            <ConnectButton wrapperClass='mt-12 cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> : allowance >= fromAmountNumber ?
+            <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> : allowance >= fromAmountNumber ?
               <PrimaryButton text="Mint" disabled={insufficientBalance || fromAmountNumber === 0} onClick={onClickMint} /> :
               <PrimaryButton text="Allow" disabled={insufficientBalance} onClick={onClickAllow} />}
       </>
