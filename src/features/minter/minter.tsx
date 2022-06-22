@@ -11,7 +11,7 @@ import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { hidePendingModal, showConfirmedModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
-import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount, selectGovDistributionRate, fetchGovDistributionRateAsync } from "./minterSlice";
+import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount, selectGovDistributionRate, fetchGovDistributionRateAsync, selectFeeAmount } from "./minterSlice";
 import { InfoPopover } from './components/info-popover';
 import { web3Modal } from "../../providers/web3.provider";
 import { Input } from "./components/input";
@@ -32,10 +32,11 @@ export function Minter() {
   const dispatch = useAppDispatch();
 
   const { contracts, chosenCurrencyContract } = useWeb3Connector();
-  const { isConnected, isMetaMask } = useWalletConnection();
+  const { isConnected } = useWalletConnection();
 
   const fromAmount = useAppSelector(selectFromAmount);
   const toAmount = useAppSelector(selectToAmount);
+  const feeAmount = useAppSelector(selectFeeAmount);
 
   const fromAmountNumber = Number(fromAmount);
   const toAmountNumber = Number(toAmount);
@@ -123,15 +124,15 @@ export function Minter() {
   }
 
   function calculateGovTokensToReceive() {
-    return toAmountNumber * govDistributionRate;
+    return Number((toAmountNumber * govDistributionRate + feeAmount).toFixed(2));
   }
 
   return (
     <MainBox title="Mint">
       <>
-        <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} fromAmount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
+        <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} amount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
         <div className="mt-4">
-          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} fromAmount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()}/>
+          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()}/>
         </div>
         <div className="flex justify-end mt-2 mb-12 h-5">
           {isConnected && <InfoPopover />}

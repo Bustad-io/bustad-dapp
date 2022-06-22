@@ -6,7 +6,7 @@ import { useAppSelector } from "../../../app/hooks";
 import { selectBalanceLoading } from "../../wallet/walletSlice";
 
 export interface InputProp {
-    fromAmount: string;
+    amount: string;
     onChange: (value: string) => void;
     insufficientBalance?: boolean;
     balance: number;
@@ -14,7 +14,7 @@ export interface InputProp {
     govTokenToReceive?: number;
 }
 
-export function Input({ fromAmount, onChange, insufficientBalance, currencyName, balance, govTokenToReceive = 0 }: InputProp) {
+export function Input({ amount, onChange, insufficientBalance, currencyName, balance, govTokenToReceive = 0 }: InputProp) {
     const inputRef = useRef<any>(null);
 
     const balanceLoading = useAppSelector(selectBalanceLoading);
@@ -37,7 +37,7 @@ export function Input({ fromAmount, onChange, insufficientBalance, currencyName,
                 </span>
             </div>
             <div className="flex flex-col ml-6 relative">
-                <input ref={inputRef} value={fromAmount} onChange={e => onChange(e.target.value)} type="text" className="focus:outline-none text-3xl max-w-xs" placeholder="0.0" />
+                <input ref={inputRef} value={amount} onChange={e => onChange(e.target.value)} type="text" className="focus:outline-none text-3xl max-w-xs" placeholder="0.0" />
                 {insufficientBalance && <span className="absolute top-9 text-red-600 text-xs">insufficient balance </span>}
                 {govTokenToReceive > 0 && <span className="absolute top-9 text-xs text-gray-700">+ {govTokenToReceive} Governance tokens </span>}
             </div>
