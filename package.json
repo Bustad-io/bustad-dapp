@@ -17,8 +17,10 @@
     "@walletconnect/web3-provider": "^1.7.8",
     "assert": "^2.0.0",
     "ethers": "^5.6.8",
+    "express": "^4.18.1",
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
+    "path": "^0.12.7",
     "process": "^0.11.10",
     "react": "^18.1.0",
     "react-app-rewired": "^2.2.1",
@@ -36,7 +38,8 @@
     "web3modal": "^1.9.8"
   },
   "scripts": {
-    "start": "GENERATE_SOURCEMAP=false react-app-rewired start",
+    "dev": "GENERATE_SOURCEMAP=false react-app-rewired start",    
+    "start": "node server.ts",    
     "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
