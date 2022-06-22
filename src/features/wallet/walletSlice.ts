@@ -135,8 +135,15 @@ export const fetchBalanceAsync = createAsyncThunk(
 
 export const connectWalletAsync = createAsyncThunk(
   'wallet/connectWallet',
-  async () => {    
-    await connectWallet();    
+  async () => {
+    try {
+      await connectWallet();    
+    } catch(e) {      
+      if(web3Modal.cachedProvider) {
+        web3Modal.clearCachedProvider();
+      }
+      throw e;
+    }    
   }
 );
 
