@@ -9,6 +9,8 @@ import UsdcDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
 import GovDistDef from '../contracts/governance/GovernanceDistributor.sol/GovernanceDistributor.json';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+import { AppDispatch } from "../app/store";
+import { fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, resetWallet, setWalletProvider } from "../features/wallet/walletSlice";
 
 export interface Contracts {
   crowdsale: Contract;
@@ -41,29 +43,28 @@ export const web3Modal = new Web3Modal({
   providerOptions
 });
 
-let provider: ethers.providers.Web3Provider;
-let web3ModalInstance: any;
+let library: ethers.providers.Web3Provider;
+let provider: any;
 
 export async function connectWallet() {
-  web3ModalInstance = await web3Modal.connect();
-  console.log(web3ModalInstance)  
-  provider = new ethers.providers.Web3Provider(web3ModalInstance);  
+  provider = await web3Modal.connect();
+  library = new ethers.providers.Web3Provider(provider);  
 }
 
 export function getSigner(): Signer {
-  return provider.getSigner()
+  return library.getSigner()
 }
 
-export function getProvider(): ethers.providers.Web3Provider {
+export function getLibrary(): ethers.providers.Web3Provider {
+  return library;
+}
+
+export function getProvider() {
   return provider;
 }
 
-export function getWeb3ModalProvider() {
-  return web3ModalInstance;
-}
-
 export function getContracts(useSigner = false): Contracts {
-  const providerOrSigner = useSigner ? getSigner() : getProvider();
+  const providerOrSigner = useSigner ? getSigner() : getLibrary();
 
   return {
     crowdsale: new ethers.Contract(CrowdsaleAddress, CrowdsaleDef.abi, providerOrSigner),
@@ -73,4 +74,26 @@ export function getContracts(useSigner = false): Contracts {
     dai: new ethers.Contract(CoinContractConfig.dai.address, DaiDef.abi, providerOrSigner),
     usdc: new ethers.Contract(CoinContractConfig.usdc.address, UsdcDef.abi, providerOrSigner)
   }
+}
+
+export function AddEventListeners(dispatch: AppDispatch) {    
+  web3Modal.on("accountsChanged", async () => {              
+        await dispatch(fetchAccountAsync());
+        await dispatch(fetchBalanceAsync());
+        await dispatch(fetchAllowanceAsync());
+    });
+
+    web3Modal.on("connect", async (info) => {      
+      if(info.isCoinbaseWallet === true) {
+        await dispatch(setWalletProvider('coinbase'));
+      } else if(info.isMetaMask === true) {
+        await dispatch(setWalletProvider('metamask'));
+      } else if(info.bridge === 'https://bridge.walletconnect.org') {
+        await dispatch(setWalletProvider('wallet_connect'));
+      }                   
+    });
+
+    web3Modal.on("disconnect", async () => {
+      await dispatch(resetWallet());
+    });
 }

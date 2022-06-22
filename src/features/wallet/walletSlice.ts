@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk, RootState } from '../../app/store';
 import { formatUnitToNumber, parseToNumber } from '../../utils/format';
 import { CoinContractConfig } from '../../config';
-import { connectWallet, getContracts, getProvider, getSigner, web3Modal } from '../../providers/web3.provider';
+import { connectWallet, getContracts, getLibrary, getSigner, web3Modal } from '../../providers/web3.provider';
 
 export type WalletStatus = 'connected' | 'not_connected' | 'failed_to_connect' | 'loading';
 export type WalletProvider = 'metamask' | 'wallet_connect' | 'coinbase' | 'none';
@@ -110,11 +110,11 @@ export const fetchBalanceAsync = createAsyncThunk(
       throw Error('Account not connected');
     }
 
-    const provider =  getProvider();  
+    const library =  getLibrary();  
 
     const { bustadToken, govToken, dai, usdc } = getContracts();
 
-    const ethBalance = await provider.getBalance(state.wallet.account!);
+    const ethBalance = await library.getBalance(state.wallet.account!);
     const bustadBalance = await bustadToken.balanceOf(state.wallet.account);
     const govBalance = await govToken.balanceOf(state.wallet.account);
     const daiBalance = await dai.balanceOf(state.wallet.account);    

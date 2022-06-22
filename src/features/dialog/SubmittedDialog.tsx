@@ -2,22 +2,25 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { BustadTokenAddress, BustadTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, explorerBaseUri } from '../../config';
-import { hideSubmittedModal, selectSubmitted, selectSubmittedShowMetaMask } from './dialogSlice'
+import { hideSubmittedModal, selectSubmitted, selectSubmittedShowAddWalletButton } from './dialogSlice'
 import { ReactComponent as SuccessIcon } from '../../assets/icons/SuccessIcon.svg';
+import { getProvider } from '../../providers/web3.provider';
 
 
 export default function SubmittedDialog() {
   const dispatch = useAppDispatch();
 
   const modal = useAppSelector(selectSubmitted);
-  const submittedShowMetaMask = useAppSelector(selectSubmittedShowMetaMask);
+  const showAddWalletButton = useAppSelector(selectSubmittedShowAddWalletButton);
 
   function closeModal() {
     dispatch(hideSubmittedModal());
   }
 
   async function onAddToMetaMask() {
-    await (window as any).ethereum.request({
+    const provider = getProvider();
+
+    await provider.request({
       method: 'wallet_watchAsset',
       params: {
         type: 'ERC20',
@@ -71,12 +74,12 @@ export default function SubmittedDialog() {
                   <SuccessIcon/>
                 </div>
                 <div className="flex flex-col">
-                  {submittedShowMetaMask && <button
+                  {showAddWalletButton && <button
                     type="button"
                     className="mb-3 mt-4 inline-flex justify-center rounded-xl bg-Coral px-6 py-2 font-medium text-white "
                     onClick={onAddToMetaMask}
                   >
-                    Add Bustad to MetaMask
+                    Add Bustad to Wallet
                   </button>}
                   <button
                     type="button"

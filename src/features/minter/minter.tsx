@@ -84,7 +84,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({txHash: tx.hash, showMetaMask: isMetaMask }));
+    await dispatch(showSubmittedModal({txHash: tx.hash, showAddWalletButton: true }));
 
     await tx.wait();
     await dispatch(showConfirmedModal());
@@ -106,7 +106,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({ txHash: tx.hash, showMetaMask: true }));
+    await dispatch(showSubmittedModal({txHash: tx.hash, showAddWalletButton: true }));
 
     await tx.wait();
 
