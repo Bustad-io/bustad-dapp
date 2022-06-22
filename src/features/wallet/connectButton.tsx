@@ -2,6 +2,7 @@ import { useAppDispatch } from '../../app/hooks';
 import { fetchEthPriceAsync, fetchGovDistributionRateAsync, fetchMintingFeeAsync, fetchRateAsync } from '../minter/minterSlice';
 import { connectWalletAsync, fetchBalanceAsync, fetchAllowanceAsync, fetchAccountAsync } from './walletSlice';
 import { ReactComponent as WalletIcon } from '../../assets/icons/Wallet.svg';
+import { AddAccountsChangedListener } from '../../app/event-listeners';
 
 export interface ConnectButtonProp {
   wrapperClass?: string;
@@ -20,7 +21,9 @@ export function ConnectButton({wrapperClass = '', buttonClass = '', showIcon = f
     await dispatch(fetchRateAsync());
     await dispatch(fetchEthPriceAsync());
     await dispatch(fetchMintingFeeAsync());
-    await dispatch(fetchGovDistributionRateAsync());    
+    await dispatch(fetchGovDistributionRateAsync());
+
+    AddAccountsChangedListener(dispatch);
   }
 
   return (

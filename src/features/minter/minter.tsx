@@ -20,6 +20,8 @@ import { PrimaryButton } from "../../components/PrimaryButton";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { MainBox } from "../../components/MainBox";
 
+import { AddAccountsChangedListener } from '../../app/event-listeners';
+
 export function Minter() {
   const walletBalance = useAppSelector(selectWalletBalance);
   const chosenCurrency = useAppSelector(selectChosenCurrency);
@@ -53,6 +55,8 @@ export function Minter() {
       await dispatch(fetchEthPriceAsync());
       await dispatch(fetchMintingFeeAsync());
       await dispatch(fetchGovDistributionRateAsync());
+
+      AddAccountsChangedListener(dispatch);
     }
 
     if (web3Modal.cachedProvider && !isConnected) {

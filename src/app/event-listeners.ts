@@ -1,14 +1,18 @@
-import { fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, resetWallet, setWalletProvider } from "../features/wallet/walletSlice";
-import { web3Modal } from "../providers/web3.provider";
+import { disconnectWallet, fetchAllowanceAsync, fetchBalanceAsync, setAccount, setWalletProvider } from "../features/wallet/walletSlice";
+import { getProvider, web3Modal } from "../providers/web3.provider";
 import { AppDispatch } from "./store";
 
-export function AddWeb3EventListeners(dispatch: AppDispatch) {
-  web3Modal.on("accountsChanged", async (accounts: string[]) => {
-    await dispatch(fetchAccountAsync());
+export function AddAccountsChangedListener(dispatch: AppDispatch) {
+  const provider = getProvider();
+
+  provider.on("accountsChanged", async (accounts: string[]) => {
+    dispatch(setAccount(accounts[0]));
     await dispatch(fetchBalanceAsync());
     await dispatch(fetchAllowanceAsync());
   });
+}
 
+export function AddWeb3EventListeners(dispatch: AppDispatch) {  
   web3Modal.on("connect", async (info) => {
     if (info.isCoinbaseWallet === true) {
       await dispatch(setWalletProvider('coinbase'));
@@ -19,7 +23,7 @@ export function AddWeb3EventListeners(dispatch: AppDispatch) {
     }
   });
 
-  web3Modal.on("disconnect", async () => {
-    await dispatch(resetWallet());
+  web3Modal.on("disconnect", async () => {    
+    await dispatch(disconnectWallet());
   });
 }
