@@ -57,7 +57,7 @@ export default function ConfirmationDialog() {
                 <div className="flex flex-col">                  
                   <button
                     type="button"
-                    className="mt-4 inline-flex justify-center font-semibold text-black "
+                    className="mt-4 inline-flex justify-center font-bold text-black"
                     onClick={closeModal}
                   >
                     Close

@@ -1,4 +1,3 @@
-import { AddWeb3EventListeners } from '../../app/event-listeners';
 import { useAppDispatch } from '../../app/hooks';
 import { fetchEthPriceAsync, fetchGovDistributionRateAsync, fetchMintingFeeAsync, fetchRateAsync } from '../minter/minterSlice';
 import { connectWalletAsync, fetchBalanceAsync, fetchAllowanceAsync, fetchAccountAsync } from './walletSlice';

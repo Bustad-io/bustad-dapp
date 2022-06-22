@@ -49,7 +49,7 @@ function GovernancePage() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal(tx.hash));
+    await dispatch(showSubmittedModal({ txHash: tx.hash }));
 
     await tx.wait();
     await dispatch(showConfirmedModal());

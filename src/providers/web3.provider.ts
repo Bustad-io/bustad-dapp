@@ -46,6 +46,7 @@ let web3ModalInstance: any;
 
 export async function connectWallet() {
   web3ModalInstance = await web3Modal.connect();
+  console.log(web3ModalInstance)  
   provider = new ethers.providers.Web3Provider(web3ModalInstance);  
 }
 

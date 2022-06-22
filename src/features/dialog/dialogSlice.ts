@@ -9,7 +9,8 @@ export interface DialogState {
   },
   submitted: {
     show: boolean,
-    txHash: string    
+    txHash: string,
+    showMetaMask: boolean
   },
   rejected: {
     show: boolean
@@ -26,7 +27,8 @@ const initialState: DialogState = {
   },
   submitted: {
     show: false,
-    txHash: ''    
+    txHash: '',
+    showMetaMask: false
   },
   rejected: {
     show: false
@@ -50,7 +52,8 @@ export const dialogSlice = createSlice({
     },
     showSubmittedModal: (state, action) => {
       state.submitted.show = true;
-      state.submitted.txHash = action.payload;      
+      state.submitted.txHash = action.payload.txHash;
+      state.submitted.showMetaMask = action.payload.showMetaMask ?? false
     },
     hideSubmittedModal: (state) => {
       state.submitted.show = false;
@@ -76,6 +79,7 @@ export const { showPendingModal, hidePendingModal, showSubmittedModal, hideSubmi
 
 export const selectPending = (state: RootState) => state.dialog.pending;
 export const selectSubmitted = (state: RootState) => state.dialog.submitted;
+export const selectSubmittedShowMetaMask = (state: RootState) => state.dialog.submitted.showMetaMask;
 export const selectRejected = (state: RootState) => state.dialog.rejected;
 export const selectConfirmed = (state: RootState) => state.dialog.confirmed;
 
