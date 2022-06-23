@@ -40,8 +40,7 @@
   "scripts": {
     "dev": "GENERATE_SOURCEMAP=false react-app-rewired start",    
     "start": "node server.ts",    
-    "build": "react-app-rewired build",
-    "test": "react-scripts test",
+    "build": "GENERATE_SOURCEMAP=false react-app-rewired build",    
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
