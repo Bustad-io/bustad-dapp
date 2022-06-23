@@ -7,7 +7,6 @@ import { useWeb3Connector } from '../../hooks/web3Hook';
 import { useWalletBalance } from "../../hooks/balanceHook";
 import { useWalletAllowance } from "../../hooks/allowanceHook";
 import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
-import { useCoinConfig } from '../../hooks/coinConfigHook';
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { hidePendingModal, showConfirmedModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
