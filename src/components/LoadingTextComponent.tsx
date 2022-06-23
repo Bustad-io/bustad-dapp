@@ -1,5 +1,3 @@
-import { ReactComponent as Spinner } from '../assets/icons/SpinnerSmall.svg';
-
 export interface LoadingComponentProps {
     children: JSX.Element;
     loading: boolean;

@@ -9,8 +9,6 @@ import UsdcDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
 import GovDistDef from '../contracts/governance/GovernanceDistributor.sol/GovernanceDistributor.json';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
-import { AppDispatch } from "../app/store";
-import { fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, resetWallet, setWalletProvider } from "../features/wallet/walletSlice";
 
 export interface Contracts {
   crowdsale: Contract;

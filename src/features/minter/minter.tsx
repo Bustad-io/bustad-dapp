@@ -62,11 +62,13 @@ export function Minter() {
     if (web3Modal.cachedProvider && !isConnected) {
       run();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (fromAmount === '') return;
     dispatch(setFromAmountAndCalculateToAmount(fromAmount));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenCurrency]);
 
   async function onClickMint() {

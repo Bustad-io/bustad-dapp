@@ -1,5 +1,5 @@
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { CurrencyOption, selectChosenCurrency, selectChosenOption, setCurrency } from './currencyChoiceSlice';
+import { useAppSelector } from '../../app/hooks';
+import { selectChosenCurrency, selectChosenOption } from './currencyChoiceSlice';
 import { ChevronDownIcon } from '@heroicons/react/solid'
 import { BustadTokenSymbol } from '../../config';
 import { ReactComponent as BustadIcon } from '../../assets/icons/BustadIcon.svg';
