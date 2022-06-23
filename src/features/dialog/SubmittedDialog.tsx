@@ -1,8 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { BustadTokenAddress, BustadTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, explorerBaseUri } from '../../config';
-import { hideSubmittedModal, selectSubmitted, selectSubmittedShowAddWalletButton } from './dialogSlice'
+import { BustadTokenAddress, BustadTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, explorerBaseUri, GovTokenAddress, GovTokenDecimal, GovTokenSymbol } from '../../config';
+import { hideSubmittedModal, selectSubmitted, selectSubmittedShowAddBustadToWalletButton, selectSubmittedShowAddGovToWalletButton } from './dialogSlice'
 import { ReactComponent as SuccessIcon } from '../../assets/icons/SuccessIcon.svg';
 import { getProvider } from '../../providers/web3.provider';
 
@@ -11,13 +11,14 @@ export default function SubmittedDialog() {
   const dispatch = useAppDispatch();
 
   const modal = useAppSelector(selectSubmitted);
-  const showAddWalletButton = useAppSelector(selectSubmittedShowAddWalletButton);
+  const showAddBustadToWalletButton = useAppSelector(selectSubmittedShowAddBustadToWalletButton);
+  const showAddGovToWalletButton = useAppSelector(selectSubmittedShowAddGovToWalletButton);
 
   function closeModal() {
     dispatch(hideSubmittedModal());
   }
 
-  async function onAddToMetaMask() {
+  async function onAddBustadToMetaMask() {
     const provider = getProvider();
 
     await provider.request({
@@ -28,6 +29,23 @@ export default function SubmittedDialog() {
           address: BustadTokenAddress,
           symbol: BustadTokenSymbol,
           decimals: BustadTokenDecimal,
+          image: BustadTokenRoundIcon
+        },
+      },
+    });
+  }
+
+  async function onAddGovToMetaMask() {
+    const provider = getProvider();
+
+    await provider.request({
+      method: 'wallet_watchAsset',
+      params: {
+        type: 'ERC20',
+        options: {
+          address: GovTokenAddress,
+          symbol: GovTokenSymbol,
+          decimals: GovTokenDecimal,
           image: BustadTokenRoundIcon
         },
       },
@@ -74,16 +92,23 @@ export default function SubmittedDialog() {
                   <SuccessIcon/>
                 </div>
                 <div className="flex flex-col">
-                  {showAddWalletButton && <button
+                  {showAddBustadToWalletButton && <button
                     type="button"
-                    className="mb-3 mt-4 inline-flex justify-center rounded-xl bg-Coral px-6 py-2 font-medium text-white "
-                    onClick={onAddToMetaMask}
+                    className="mb-3 mt-4 inline-flex justify-center rounded-xl bg-Coral px-6 py-2 font-medium text-white"
+                    onClick={onAddBustadToMetaMask}
                   >
                     Add Bustad to Wallet
                   </button>}
+                  {showAddGovToWalletButton && <button
+                    type="button"
+                    className="mb-3 mt-4 inline-flex justify-center rounded-xl bg-Coral px-6 py-2 font-medium text-white"
+                    onClick={onAddGovToMetaMask}
+                  >
+                    Add Governance token to Wallet
+                  </button>}
                   <button
                     type="button"
-                    className="mt-4 inline-flex justify-center font-semibold text-black "
+                    className="mt-4 inline-flex justify-center font-semibold text-black"
                     onClick={closeModal}
                   >
                     Close

@@ -49,7 +49,7 @@ function GovernancePage() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({ txHash: tx.hash }));
+    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddGovToWalletButton: true }));
 
     await tx.wait();
     await dispatch(showConfirmedModal());

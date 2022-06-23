@@ -91,7 +91,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({txHash: tx.hash, showAddWalletButton: true }));
+    await dispatch(showSubmittedModal({txHash: tx.hash, showAddBustadToWalletButton: true }));
 
     await tx.wait();
     await dispatch(showConfirmedModal());
@@ -105,15 +105,16 @@ export function Minter() {
     let tx;
 
     try {
-      tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.utils.parseUnits(fromAmount, coinConfig!.decimal));
+      tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.constants.MaxUint256);
     } catch (e) {
+      console.log(e)
       await dispatch(hidePendingModal());
       await dispatch(showRejectedModal());
       return;
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({txHash: tx.hash, showAddWalletButton: true }));
+    await dispatch(showSubmittedModal({txHash: tx.hash, showAddBustadToWalletButton: true }));
 
     await tx.wait();
 

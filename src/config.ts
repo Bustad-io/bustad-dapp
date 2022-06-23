@@ -5,6 +5,8 @@ export const BustadTokenDecimal: string = process.env.REACT_APP_BUSTAD_TOKEN_DEC
 export const BustadTokenRoundIcon: string = process.env.REACT_APP_BUSTAD_TOKEN_ROUND_ICON ?? "";
 export const GovDistAddress: string = process.env.REACT_APP_GOVERNANCE_DISTRIBUTOR_ADDRESS ?? "";
 export const GovTokenAddress: string = process.env.REACT_APP_GOVERNANCE_TOKEN_ADDRESS ?? "";
+export const GovTokenSymbol: string = process.env.REACT_APP_GOVERNANCE_TOKEN_SYMBOL ?? "";
+export const GovTokenDecimal: string = process.env.REACT_APP_GOVERNANCE_TOKEN_DECIMAL ?? "";
 
 export const explorerBaseUri: string = process.env.REACT_APP_EXPLORER_BASE_URI ?? "";
 export const infuraId: string = process.env.REACT_APP_INFURA_ID ?? "";
