@@ -10,7 +10,8 @@ export interface DialogState {
   submitted: {
     show: boolean,
     txHash: string,
-    showAddWalletButton: boolean
+    showAddBustadToWalletButton: boolean,
+    showAddGovToWalletButton: boolean,
   },
   rejected: {
     show: boolean
@@ -28,7 +29,8 @@ const initialState: DialogState = {
   submitted: {
     show: false,
     txHash: '',
-    showAddWalletButton: false
+    showAddBustadToWalletButton: false,
+    showAddGovToWalletButton: false,
   },
   rejected: {
     show: false
@@ -53,7 +55,8 @@ export const dialogSlice = createSlice({
     showSubmittedModal: (state, action) => {
       state.submitted.show = true;
       state.submitted.txHash = action.payload.txHash;
-      state.submitted.showAddWalletButton = action.payload.showAddWalletButton ?? false
+      state.submitted.showAddBustadToWalletButton = action.payload.showAddBustadToWalletButton ?? false
+      state.submitted.showAddGovToWalletButton = action.payload.showAddGovToWalletButton ?? false
     },
     hideSubmittedModal: (state) => {
       state.submitted.show = false;
@@ -79,7 +82,8 @@ export const { showPendingModal, hidePendingModal, showSubmittedModal, hideSubmi
 
 export const selectPending = (state: RootState) => state.dialog.pending;
 export const selectSubmitted = (state: RootState) => state.dialog.submitted;
-export const selectSubmittedShowAddWalletButton = (state: RootState) => state.dialog.submitted.showAddWalletButton;
+export const selectSubmittedShowAddBustadToWalletButton = (state: RootState) => state.dialog.submitted.showAddBustadToWalletButton;
+export const selectSubmittedShowAddGovToWalletButton = (state: RootState) => state.dialog.submitted.showAddGovToWalletButton;
 export const selectRejected = (state: RootState) => state.dialog.rejected;
 export const selectConfirmed = (state: RootState) => state.dialog.confirmed;
 
