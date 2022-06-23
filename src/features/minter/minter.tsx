@@ -27,7 +27,6 @@ export function Minter() {
   const chosenCurrency = useAppSelector(selectChosenCurrency);
   const govDistributionRate = useAppSelector(selectGovDistributionRate);
 
-  const coinConfig = useCoinConfig();
   const balance = useWalletBalance();
   const allowance = useWalletAllowance();
 
