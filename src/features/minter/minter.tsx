@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ConnectButton } from "../wallet/connectButton";
-import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance, selectWalletStatus } from "../wallet/walletSlice";
+import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance } from "../wallet/walletSlice";
 import { useEffect } from 'react';
 import { fromEther } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
@@ -39,7 +39,6 @@ export function Minter() {
   const fromAmount = useAppSelector(selectFromAmount);
   const toAmount = useAppSelector(selectToAmount);
   const feeAmount = useAppSelector(selectFeeAmount);
-  const walletStatus = useAppSelector(selectWalletStatus);
 
   const fromAmountNumber = Number(fromAmount);
   const toAmountNumber = Number(toAmount);
@@ -49,18 +48,15 @@ export function Minter() {
   useEffect(() => {
     const run = async () => {
       await dispatch(connectWalletAsync());
+      await dispatch(fetchAccountAsync());
+      await dispatch(fetchBalanceAsync());
+      await dispatch(fetchAllowanceAsync());
+      await dispatch(fetchRateAsync());
+      await dispatch(fetchEthPriceAsync());
+      await dispatch(fetchMintingFeeAsync());
+      await dispatch(fetchGovDistributionRateAsync());
 
-      if (isConnected) {
-        await dispatch(fetchAccountAsync());
-        await dispatch(fetchBalanceAsync());
-        await dispatch(fetchAllowanceAsync());
-        await dispatch(fetchRateAsync());
-        await dispatch(fetchEthPriceAsync());
-        await dispatch(fetchMintingFeeAsync());
-        await dispatch(fetchGovDistributionRateAsync());
-
-        AddAccountsChangedListener(dispatch);
-      }
+      AddAccountsChangedListener(dispatch);
     }
 
     if (web3Modal.cachedProvider && !isConnected) {
@@ -93,7 +89,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddWalletButton: true }));
+    await dispatch(showSubmittedModal({txHash: tx.hash, showAddWalletButton: true }));
 
     await tx.wait();
     await dispatch(showConfirmedModal());
@@ -115,7 +111,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddWalletButton: true }));
+    await dispatch(showSubmittedModal({txHash: tx.hash, showAddWalletButton: true }));
 
     await tx.wait();
 
@@ -140,7 +136,7 @@ export function Minter() {
       <>
         <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} amount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
         <div className="mt-4">
-          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()} />
+          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()}/>
         </div>
         <div className="flex justify-end mt-2 mb-12 h-5">
           {isConnected && <InfoPopover />}
