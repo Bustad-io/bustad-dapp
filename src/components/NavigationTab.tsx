@@ -32,7 +32,7 @@ function Tab({ to, text, showBadge = false }: TabProp) {
 
 function Badge() {
     const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
-    return <div className="absolute text-2xs text-white bg-rose-500 dark:bg-red-500 animate-pulse rounded-full p-2 h-6 -right-2 -top-4 flex justify-center items-center font-bold">{walletGovernanceDistributionShare.toFixed(0)}</div>
+    return <div className="absolute text-2xs text-white bg-rose-500 dark:bg-red-500 rounded-full p-2 h-6 -right-2 -top-4 flex justify-center items-center font-bold">{walletGovernanceDistributionShare.toFixed(0)}</div>
 }
 
 export function NavigationTab() {
