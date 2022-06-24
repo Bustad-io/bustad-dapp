@@ -21,7 +21,9 @@ export function InfoPopover() {
         {({ open }) => (
           <>
             <div className='flex text-sm text-white relative'>
-              <span className='mr-2'>1 {BustadTokenSymbol} = {bustadPrice} {chosenCurrency.toUpperCase()}</span>
+              {chosenCurrency === 'eth'
+                ? <span className='mr-2'>1 ETH = {bustadPrice.toFixed(0)}  {BustadTokenSymbol}</span>
+                : <span className='mr-2'>1 {BustadTokenSymbol} = {bustadPrice} {chosenCurrency.toUpperCase()}</span>}
               <Popover.Button
                 className={''}
               >
