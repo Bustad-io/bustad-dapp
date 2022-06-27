@@ -25,7 +25,7 @@ function MintPage() {
         leaveFrom="transform opacity-100 translate-y-0"
         leaveTo="transform opacity-0 translate-y-2"
       >
-        <AnnouncementBox text="Early participants will receive governance tokens." link="https://bustad.io">
+        <AnnouncementBox text={'Early participants will receive governance tokens, "Eigar".'} link="https://bustad.io">
           <BadgeCheckIcon className="h-6" />
         </AnnouncementBox>
       </Transition>

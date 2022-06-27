@@ -12,6 +12,7 @@ import { IconLabelElement } from "../components/IconLabelElement";
 import { ClipboardCheckIcon } from '@heroicons/react/outline';
 import { CashIcon } from '@heroicons/react/outline';
 import { formatNumberToSpaces } from "../utils/format";
+import { GovTokenSymbol } from "../config";
 
 function GovernancePage() {
   const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
@@ -62,7 +63,7 @@ function GovernancePage() {
       <div className="mb-4">
         <WhiteSection>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold mb-2">Governance token balance</span>
+            <span className="text-sm font-semibold mb-2">{GovTokenSymbol} balance</span>
             <div>
               <IconLabelElement label={balanceLoading ? '~' : formatNumberToSpaces(walletBalance.govToken, 2)}>
                 <CashIcon className="h-5" />
@@ -74,7 +75,7 @@ function GovernancePage() {
       <div className="mb-20">
         <WhiteSection>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold mb-2">Governance tokens to claim</span>
+            <span className="text-sm font-semibold mb-2">{GovTokenSymbol} to claim</span>
             <div>
               <IconLabelElement label={formatNumberToSpaces(walletGovernanceDistributionShare, 2)}>
                 <ClipboardCheckIcon className="h-5" />
