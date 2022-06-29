@@ -112,7 +112,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({txHash: tx.hash, showAddBustadToWalletButton: true }));
+    await dispatch(showSubmittedModal({txHash: tx.hash }));
 
     await tx.wait();
 
