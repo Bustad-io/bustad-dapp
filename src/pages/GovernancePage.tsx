@@ -42,7 +42,7 @@ function GovernancePage() {
     dispatch(showPendingModal(`Confirm to claim your governance tokens`));
 
     try {
-      tx = await contracts.govDist.withdraw();
+      tx = await contracts.govDist.claim();
     } catch (e) {
       await dispatch(hidePendingModal());
       await dispatch(showRejectedModal());
