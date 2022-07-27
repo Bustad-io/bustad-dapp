@@ -19,7 +19,7 @@ function GovernancePage() {
   const walletStatus = useAppSelector(selectWalletStatus);
   const walletBalance = useAppSelector(selectWalletBalance);
   const balanceLoading = useAppSelector(selectBalanceLoading);
-  const { isConnected } = useWalletConnection();
+  const { isConnected, isMetaMask } = useWalletConnection();
 
   const dispatch = useAppDispatch();
 
@@ -50,7 +50,7 @@ function GovernancePage() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddGovToWalletButton: true }));
+    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddGovToWalletButton: isMetaMask }));
 
     await tx.wait();
     await dispatch(showConfirmedModal());

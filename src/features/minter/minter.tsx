@@ -32,7 +32,7 @@ export function Minter() {
   const dispatch = useAppDispatch();
 
   const { contracts, chosenCurrencyContract } = useWeb3Connector();
-  const { isConnected } = useWalletConnection();
+  const { isConnected, isMetaMask } = useWalletConnection();
 
   const fromAmount = useAppSelector(selectFromAmount);
   const toAmount = useAppSelector(selectToAmount);
@@ -89,7 +89,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddBustadToWalletButton: true }));
+    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddBustadToWalletButton: isMetaMask }));
 
     await tx.wait();
     await dispatch(showConfirmedModal());

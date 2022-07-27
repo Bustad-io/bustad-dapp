@@ -1,10 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { BustadTokenAddress, BustadTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, explorerBaseUri, GovTokenAddress, GovTokenDecimal, GovTokenSymbol } from '../../config';
+import { explorerBaseUri } from '../../config';
 import { hideSubmittedModal, selectSubmitted, selectSubmittedShowAddBustadToWalletButton, selectSubmittedShowAddGovToWalletButton } from './dialogSlice'
 import { ReactComponent as SuccessIcon } from '../../assets/icons/SuccessIcon.svg';
-import { getProvider } from '../../providers/web3.provider';
+import { addBustadToWallet, addGovTokenToWallet } from '../../providers/web3.provider';
 
 
 export default function SubmittedDialog() {
@@ -19,37 +19,11 @@ export default function SubmittedDialog() {
   }
 
   async function onAddBustadToMetaMask() {
-    const provider = getProvider();
-
-    await provider.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: BustadTokenAddress,
-          symbol: BustadTokenSymbol,
-          decimals: BustadTokenDecimal,
-          image: BustadTokenRoundIcon
-        },
-      },
-    });
+    await addBustadToWallet();
   }
 
   async function onAddGovToMetaMask() {
-    const provider = getProvider();
-
-    await provider.request({
-      method: 'wallet_watchAsset',
-      params: {
-        type: 'ERC20',
-        options: {
-          address: GovTokenAddress,
-          symbol: GovTokenSymbol,
-          decimals: GovTokenDecimal,
-          image: BustadTokenRoundIcon
-        },
-      },
-    });
+    await addGovTokenToWallet();
   }
 
   return (
@@ -97,14 +71,14 @@ export default function SubmittedDialog() {
                     className="mb-3 mt-4 inline-flex justify-center rounded-xl bg-Coral px-6 py-2 font-medium text-white"
                     onClick={onAddBustadToMetaMask}
                   >
-                    Add Bustad to Wallet
+                    Add Bustad Coin to Wallet
                   </button>}
                   {showAddGovToWalletButton && <button
                     type="button"
                     className="mb-3 mt-4 inline-flex justify-center rounded-xl bg-Coral px-6 py-2 font-medium text-white"
                     onClick={onAddGovToMetaMask}
                   >
-                    Add Governance token to Wallet
+                    Add Eigar to Wallet
                   </button>}
                   <button
                     type="button"

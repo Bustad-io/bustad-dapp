@@ -1,6 +1,6 @@
 import { Contract, ethers, Signer } from "ethers";
 import Web3Modal from "web3modal";
-import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress, infuraId, network, appName } from "../config";
+import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress, infuraId, network, appName, GovTokenSymbol, GovTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, BustadTokenDecimal } from "../config";
 import CrowdsaleDef from '../contracts/Crowdsale.sol/Crowdsale.json';
 import BustadTokenDef from '../contracts/BustadToken.sol/BustadToken.json';
 import GovTokenDef from '../contracts/governance/GovernanceToken.sol/GovernanceToken.json';
@@ -73,3 +73,34 @@ export function getContracts(useSigner = false): Contracts {
     usdc: new ethers.Contract(CoinContractConfig.usdc.address, UsdcDef.abi, providerOrSigner)
   }
 }
+
+export async function addGovTokenToWallet() {
+  await provider.request({
+    method: 'wallet_watchAsset',
+    params: {
+      type: 'ERC20',
+      options: {
+        address: GovTokenAddress,
+        symbol: GovTokenSymbol,
+        decimals: GovTokenDecimal,
+        image: BustadTokenRoundIcon
+      },
+    },
+  });
+}
+
+export async function addBustadToWallet() {
+  await provider.request({
+    method: 'wallet_watchAsset',
+    params: {
+      type: 'ERC20',
+      options: {
+        address: BustadTokenAddress,
+        symbol: BustadTokenSymbol,
+        decimals: BustadTokenDecimal,
+        image: BustadTokenRoundIcon
+      },
+    },
+  });
+}
+

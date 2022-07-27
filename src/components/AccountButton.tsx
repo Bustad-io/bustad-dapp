@@ -5,6 +5,7 @@ import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { disconnectWallet, selectAccount } from '../features/wallet/walletSlice';
 import { useWalletConnection } from '../hooks/walletConnectionHook';
 import { ConnectButton } from '../features/wallet/connectButton';
+import { addBustadToWallet, addGovTokenToWallet } from '../providers/web3.provider';
 
 export function AccountButton() {
     const dispatch = useAppDispatch();
@@ -14,12 +15,20 @@ export function AccountButton() {
     const lastAccountPart = account?.slice(38, 42);
     const [copyConfirmation, showCopyConfirmation] = useState(false);
 
-    const { isConnected } = useWalletConnection();
+    const { isConnected, isMetaMask } = useWalletConnection();
 
     function onCopyAddress() {
         navigator.clipboard.writeText(account!);
         showCopyConfirmation(true);
         setTimeout(() => showCopyConfirmation(false), 2500);
+    }
+
+    async function onAddBustadToWallet() {
+        await addBustadToWallet();
+    }
+
+    async function onAddGovTokenToWallet() {
+        await addGovTokenToWallet();
     }
 
     function onDisconnect() {
@@ -74,6 +83,28 @@ export function AccountButton() {
                                     </button>
                                 )}
                             </Menu.Item>
+                            {isMetaMask && <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        onClick={onAddBustadToWallet}
+                                        className={`${active ? 'bg-Coral text-white' : 'text-gray-900'
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                    >
+                                        Add BUSC to wallet
+                                    </button>
+                                )}
+                            </Menu.Item>}
+                            {isMetaMask && <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        onClick={onAddGovTokenToWallet}
+                                        className={`${active ? 'bg-Coral text-white' : 'text-gray-900'
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                    >
+                                        Add EIG to wallet
+                                    </button>
+                                )}
+                            </Menu.Item>}
                             <Menu.Item>
                                 {({ active }) => (
                                     <button
