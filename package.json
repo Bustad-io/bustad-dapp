@@ -38,7 +38,7 @@
     "web3modal": "^1.9.8"
   },
   "scripts": {
-    "dev": "react-app-rewired start",    
+    "dev": "GENERATE_SOURCEMAP=false react-app-rewired start",    
     "start": "node server.ts",    
     "build": "react-app-rewired build",    
     "eject": "react-scripts eject"
