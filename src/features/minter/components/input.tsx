@@ -26,7 +26,7 @@ export function Input({ amount, onChange, insufficientBalance, currencyName, bal
     }
 
     return (
-        <div onClick={onFocusInput} className="flex items-center bg-white rounded-2xl w-120 h-23 px-3">
+        <div onClick={onFocusInput} className="flex items-center bg-white rounded-2xl h-23 px-3">
             <div>
                 <CurrencyChoice isBustad={currencyName === BustadTokenSymbol}/>
                 <span className="text-sm pl-2 mt-2 block">
@@ -36,10 +36,10 @@ export function Input({ amount, onChange, insufficientBalance, currencyName, bal
                     </LoadingTextComponent>
                 </span>
             </div>
-            <div className="flex flex-col ml-6 relative">
-                <input ref={inputRef} value={amount} onChange={e => onChange(e.target.value)} type="text" className="focus:outline-none text-3xl max-w-xs" placeholder="0.0" />
+            <div className="flex flex-col ml-6 relative">                
+                <input ref={inputRef} value={amount} onChange={e => onChange(e.target.value)} type="text" className="focus:outline-none sm:text-3xl sm:max-w-xs max-w-[9rem]" placeholder="0.0" />
                 {insufficientBalance && <span className="absolute top-9 text-red-600 text-xs">insufficient balance </span>}
-                {govTokenToReceive > 0 && <span className="absolute top-9 text-xs text-gray-700">+ {govTokenToReceive} Governance tokens </span>}
+                {govTokenToReceive > 0 && <span className="absolute top-7 sm:top-9 text-xs text-gray-700">+ {govTokenToReceive} EIG </span>}
             </div>
         </div>)
 }

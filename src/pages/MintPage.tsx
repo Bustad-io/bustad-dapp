@@ -16,7 +16,7 @@ function MintPage() {
   return (
     <div className="relative">
       <Transition
-        className='mb-2 absolute -top-12 w-[520px]'
+        className='mb-2 sm:absolute -top-12 sm:w-[520px]'
         show={announcement}
         enter="transition ease-out duration-[300ms]"
         enterFrom="transform opacity-0 translate-y-2"

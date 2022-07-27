@@ -39,7 +39,7 @@ export function InfoPopover() {
               leaveFrom="opacity-100 translate-y-0"
               leaveTo="opacity-0 translate-y-1"
             >
-              <Popover.Panel className="bg-white text-black absolute rounded-md top-7 px-4 py-3">
+              <Popover.Panel className="bg-white text-black absolute rounded-md top-7 px-4 py-3 -left-4 sm:left-0">
                 <div className="flex justify-between">
                   <span className='font-semibold'>Fee</span>
                   <span>{mintingFee * 100}%</span>

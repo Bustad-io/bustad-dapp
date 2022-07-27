@@ -12,18 +12,21 @@ function App() {
   return (
     <>
       <div className='flex flex-col bg-orange-100 dark:bg-gradient-to-br dark:from-DarkPaleBlue dark:to-DarkPaleBlueDarker h-full'>
-        <header className='flex items-center pt-12 justify-between px-11'>
-          <BustadIcon className='w-12'/>
-          <div className='relative left-16'>
-            <NavigationTab />
+        <header className='flex pt-2 sm:pt-12 px-2 sm:px-11 items-center'>
+          <div className='md:grow'>
+            <BustadIcon className='w-6 sm:w-12'/>
           </div>
-          <AccountButton />  
+          <div className='grow flex justify-between'>
+            <div className='relative sm:left-16 ml-6 sm:ml-0'>
+              <NavigationTab />
+            </div>
+            <AccountButton />  
+          </div>          
         </header>
         <div className='flex justify-center items-center h-full'>
           <Routes>
             <Route path="/" element={<MintPage />} />
-            <Route path="governance" element={<GovernancePage />} />
-            <Route path="test" element={<TestCounterPage />} />
+            <Route path="governance" element={<GovernancePage />} />            
           </Routes>
         </div>        
       </div>
