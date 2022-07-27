@@ -15,11 +15,11 @@ import { InfoPopover } from './components/info-popover';
 import { web3Modal } from "../../providers/web3.provider";
 import { Input } from "./components/input";
 import { BustadTokenSymbol } from "../../config";
-import { PrimaryButton } from "../../components/PrimaryButton";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { MainBox } from "../../components/MainBox";
 
 import { AddAccountsChangedListener } from '../../app/event-listeners';
+import { ButtonGroup } from "./components/ButtonGroup";
 
 export function Minter() {
   const walletBalance = useAppSelector(selectWalletBalance);
@@ -32,7 +32,7 @@ export function Minter() {
   const dispatch = useAppDispatch();
 
   const { contracts, chosenCurrencyContract } = useWeb3Connector();
-  const { isConnected } = useWalletConnection();
+  const { isConnected, isMetaMask } = useWalletConnection();
 
   const fromAmount = useAppSelector(selectFromAmount);
   const toAmount = useAppSelector(selectToAmount);
@@ -60,13 +60,13 @@ export function Minter() {
     if (web3Modal.cachedProvider && !isConnected) {
       run();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (fromAmount === '') return;
     dispatch(setFromAmountAndCalculateToAmount(fromAmount));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chosenCurrency]);
 
   async function onClickMint() {
@@ -89,7 +89,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({txHash: tx.hash, showAddBustadToWalletButton: true }));
+    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddBustadToWalletButton: isMetaMask }));
 
     await tx.wait();
     await dispatch(showConfirmedModal());
@@ -112,7 +112,7 @@ export function Minter() {
     }
 
     await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({txHash: tx.hash }));
+    await dispatch(showSubmittedModal({ txHash: tx.hash }));
 
     await tx.wait();
 
@@ -137,16 +137,16 @@ export function Minter() {
       <>
         <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} amount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
         <div className="mt-4">
-          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()}/>
+          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()} />
         </div>
         <div className="flex justify-end mt-2 mb-12 h-5">
           {isConnected && <InfoPopover />}
         </div>
         {
           !isConnected ?
-            <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> : allowance >= fromAmountNumber ?
-              <PrimaryButton text="Mint" disabled={insufficientBalance || fromAmountNumber === 0} onClick={onClickMint} /> :
-              <PrimaryButton text="Allow" disabled={insufficientBalance} onClick={onClickAllow} />}
+            <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl' /> :
+            <ButtonGroup insufficientBalance={insufficientBalance} fromAmountNumber={fromAmountNumber} onClickMint={onClickMint} onClickAllow={onClickAllow} allowance={allowance} />
+        }
       </>
     </MainBox>
   );

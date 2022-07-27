@@ -25,7 +25,6 @@ jobs:
         run: |
           npm install
           npm run build --if-present
-
       - name: Archive Release
         uses: thedoctor0/zip-release@main
         with:
@@ -57,7 +56,6 @@ jobs:
         run: |
           unzip release.zip
           rm release.zip
-
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
