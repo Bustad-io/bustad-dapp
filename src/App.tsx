@@ -1,7 +1,6 @@
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import MintPage from './pages/MintPage';
-import TestCounterPage from './pages/TestCounterPage';
 import { NavigationTab } from './components/NavigationTab';
 import GovernancePage from './pages/GovernancePage';
 import { Dialog } from './features/dialog/Dialog';
