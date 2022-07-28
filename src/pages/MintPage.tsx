@@ -1,11 +1,14 @@
-import { AnnouncementBox } from "../components/AnnouncementBox";
 import { Minter } from "../features/minter/minter";
-import { BadgeCheckIcon } from '@heroicons/react/outline';
 import { Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
+import { useAppSelector } from "../app/hooks";
+import { AnnouncementBox } from "../components/AnnouncementBox";
+import { BadgeCheckIcon } from "@heroicons/react/solid";
+import { selectPendingTransactionList } from "../features/dialog/dialogSlice";
 
 function MintPage() {
   const [announcement, showAnnouncement] = useState(false);
+  const pendingTransactionList = useAppSelector(selectPendingTransactionList);
 
   useEffect(() => {
     setTimeout(() => {
@@ -17,7 +20,7 @@ function MintPage() {
     <div className="relative">
       <Transition
         className='mb-2 sm:absolute -top-12 sm:w-[520px]'
-        show={announcement}
+        show={announcement && pendingTransactionList.length === 0}
         enter="transition ease-out duration-[300ms]"
         enterFrom="transform opacity-0 translate-y-2"
         enterTo="transform opacity-100 translate-y-0"
@@ -28,7 +31,7 @@ function MintPage() {
         <AnnouncementBox text={'Early participants will receive governance tokens, "Eigar".'} link="https://bustad.io">
           <BadgeCheckIcon className="h-6" />
         </AnnouncementBox>
-      </Transition>
+      </Transition>      
       <Minter />
     </div>
   );

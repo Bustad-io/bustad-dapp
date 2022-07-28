@@ -1,20 +1,20 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { hidePendingModal, selectPending } from './dialogSlice'
+import { hideAwaitingModal, selectAwaitingConfirmation } from './dialogSlice'
 import { ReactComponent as Spinner } from '../../assets/icons/Spinner.svg';
 
 export default function PendingDialog() {
   const dispatch = useAppDispatch();
 
-  const pending = useAppSelector(selectPending);
+  const awaiting = useAppSelector(selectAwaitingConfirmation);
 
   function closeModal() {
-    dispatch(hidePendingModal());
+    dispatch(hideAwaitingModal());
   }
 
   return (
-    <Transition appear show={pending.show} as={Fragment}>
+    <Transition appear show={awaiting.show} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
@@ -48,7 +48,7 @@ export default function PendingDialog() {
                   </Dialog.Title>
                   <div className="mt-4 mb-10">
                     <p className="text-lg text-gray-900 font-medium text-center">
-                    {pending.text}
+                    {awaiting.text}
                     </p>
                   </div>
                   <div className='animate-spin'>
