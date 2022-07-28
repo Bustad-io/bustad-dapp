@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectBalanceLoading, selectWalletBalance, selectWalletGovernanceDistributionShare, selectWalletStatus } from "../features/wallet/walletSlice";
 import { useEffect } from 'react';
 import { useWeb3Connector } from "../hooks/web3Hook";
-import { hidePendingModal, showConfirmedModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../features/dialog/dialogSlice";
+import { hideAwaitingModal, showConfirmedModal, showAwaitingModal, showRejectedModal, showSubmittedModal, addPendingTransaction, removePendingTransaction } from "../features/dialog/dialogSlice";
 import { ConnectButton } from '../features/wallet/connectButton';
 import { useWalletConnection } from "../hooks/walletConnectionHook";
 import { MainBox } from "../components/MainBox";
@@ -39,20 +39,23 @@ function GovernancePage() {
   const onClickClaim = async () => {
     let tx;
 
-    dispatch(showPendingModal(`Confirm to claim your governance tokens`));
+    dispatch(showAwaitingModal(`Confirm to claim your governance tokens`));
 
     try {
       tx = await contracts.govDist.claim();
     } catch (e) {
-      await dispatch(hidePendingModal());
+      await dispatch(hideAwaitingModal());
       await dispatch(showRejectedModal());
       return;
     }
 
-    await dispatch(hidePendingModal());
+    await dispatch(addPendingTransaction({ txHash: tx.hash, type: 'claim' }));
+    await dispatch(hideAwaitingModal());
     await dispatch(showSubmittedModal({ txHash: tx.hash, showAddGovToWalletButton: isMetaMask }));
 
     await tx.wait();
+
+    await dispatch(removePendingTransaction(tx.hash));
     await dispatch(showConfirmedModal());
     await dispatch(fetchGovernanceDistributorShareAsync());
     await dispatch(fetchBalanceAsync());

@@ -9,7 +9,7 @@ import { useWalletAllowance } from "../../hooks/allowanceHook";
 import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
-import { hidePendingModal, showConfirmedModal, showPendingModal, showRejectedModal, showSubmittedModal } from "../dialog/dialogSlice";
+import { hideAwaitingModal, showConfirmedModal, showAwaitingModal, showRejectedModal, showSubmittedModal, addPendingTransaction, removePendingTransaction } from "../dialog/dialogSlice";
 import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount, selectGovDistributionRate, fetchGovDistributionRateAsync, selectFeeAmount } from "./minterSlice";
 import { InfoPopover } from './components/info-popover';
 import { web3Modal } from "../../providers/web3.provider";
@@ -72,7 +72,7 @@ export function Minter() {
   async function onClickMint() {
     if (!contracts.crowdsale) return;
 
-    dispatch(showPendingModal(`Mint ${toAmountNumber.toPrecision(4)} Bustad for ${fromAmountNumber.toPrecision(4)} ${chosenCurrency.toUpperCase()}`));
+    dispatch(showAwaitingModal(`Mint ${toAmountNumber.toPrecision(4)} Bustad for ${fromAmountNumber.toPrecision(4)} ${chosenCurrency.toUpperCase()}`));
 
     let tx;
 
@@ -83,22 +83,24 @@ export function Minter() {
         tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
       }
     } catch (e) {
-      await dispatch(hidePendingModal());
+      await dispatch(hideAwaitingModal());
       await dispatch(showRejectedModal());
       return;
     }
 
-    await dispatch(hidePendingModal());
-    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddBustadToWalletButton: isMetaMask }));
+    await dispatch(hideAwaitingModal());
+    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddBustadToWalletButton: isMetaMask }));    
+    await dispatch(addPendingTransaction({txHash: tx.hash, type: 'mint'}));
 
     await tx.wait();
+    await dispatch(removePendingTransaction(tx.hash));
     await dispatch(showConfirmedModal());
     dispatch(fetchBalanceAsync());
     dispatch(fetchGovernanceDistributorShareAsync());
   }
 
   async function onClickAllow() {
-    dispatch(showPendingModal(`Allow Bustad to access your ${chosenCurrency.toUpperCase()}`));
+    dispatch(showAwaitingModal(`Allow Bustad to access your ${chosenCurrency.toUpperCase()}`));
 
     let tx;
 
@@ -106,16 +108,18 @@ export function Minter() {
       tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.constants.MaxUint256);
     } catch (e) {
       console.log(e)
-      await dispatch(hidePendingModal());
+      await dispatch(hideAwaitingModal());
       await dispatch(showRejectedModal());
       return;
     }
 
-    await dispatch(hidePendingModal());
+    await dispatch(hideAwaitingModal());
     await dispatch(showSubmittedModal({ txHash: tx.hash }));
+    await dispatch(addPendingTransaction({txHash: tx.hash, type: 'allow'}));
 
     await tx.wait();
 
+    await dispatch(removePendingTransaction(tx.hash));
     await dispatch(showConfirmedModal());
     dispatch(fetchAllowanceAsync());
   }

@@ -1,9 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
+type PendingTransaction = {
+  txHash: string;
+  type: string;
+}
 
-export interface DialogState {  
-  pending: {
+export interface DialogState {
+  pendingTransactionList: PendingTransaction[];
+  awaitingConfirmation: {
     show: boolean,
     text: string
   },
@@ -21,8 +26,9 @@ export interface DialogState {
   }
 }
 
-const initialState: DialogState = {  
-  pending: {
+const initialState: DialogState = {
+  pendingTransactionList: [],
+  awaitingConfirmation: {
     show: false,
     text: ''
   },
@@ -42,15 +48,21 @@ const initialState: DialogState = {
 
 export const dialogSlice = createSlice({
   name: 'dialog',
-  initialState,  
-  reducers: {    
-    showPendingModal: (state, action) => {
-      state.pending.show = true;
-      state.pending.text = action.payload;
+  initialState,
+  reducers: {
+    addPendingTransaction: (state, action) => {
+      state.pendingTransactionList.push({txHash: action.payload.txHash, type: action.payload.type});
     },
-    hidePendingModal: (state) => {
-      state.pending.show = false;
-      state.pending.text = '';
+    removePendingTransaction: (state, action) => {
+      state.pendingTransactionList = state.pendingTransactionList.filter((transaction) => transaction.txHash !== action.payload);
+    },    
+    showAwaitingModal: (state, action) => {
+      state.awaitingConfirmation.show = true;
+      state.awaitingConfirmation.text = action.payload;
+    },
+    hideAwaitingModal: (state) => {
+      state.awaitingConfirmation.show = false;
+      state.awaitingConfirmation.text = '';
     },
     showSubmittedModal: (state, action) => {
       state.submitted.show = true;
@@ -63,10 +75,10 @@ export const dialogSlice = createSlice({
       state.submitted.txHash = ''
     },
     showRejectedModal: (state) => {
-      state.rejected.show = true;      
+      state.rejected.show = true;
     },
     hideRejectedModal: (state) => {
-      state.rejected.show = false;      
+      state.rejected.show = false;
     },
     showConfirmedModal: (state) => {
       state.confirmed.show = true
@@ -75,16 +87,17 @@ export const dialogSlice = createSlice({
       state.confirmed.show = false
     },
   }
-  }
+}
 );
 
-export const { showPendingModal, hidePendingModal, showSubmittedModal, hideSubmittedModal, showRejectedModal, hideRejectedModal, showConfirmedModal, hideConfirmedModal } = dialogSlice.actions;
+export const { showAwaitingModal, hideAwaitingModal, showSubmittedModal, hideSubmittedModal, showRejectedModal, hideRejectedModal, showConfirmedModal, hideConfirmedModal, addPendingTransaction, removePendingTransaction } = dialogSlice.actions;
 
-export const selectPending = (state: RootState) => state.dialog.pending;
+export const selectAwaitingConfirmation = (state: RootState) => state.dialog.awaitingConfirmation;
 export const selectSubmitted = (state: RootState) => state.dialog.submitted;
 export const selectSubmittedShowAddBustadToWalletButton = (state: RootState) => state.dialog.submitted.showAddBustadToWalletButton;
 export const selectSubmittedShowAddGovToWalletButton = (state: RootState) => state.dialog.submitted.showAddGovToWalletButton;
 export const selectRejected = (state: RootState) => state.dialog.rejected;
 export const selectConfirmed = (state: RootState) => state.dialog.confirmed;
+export const selectPendingTransactionList = (state: RootState) => state.dialog.pendingTransactionList;
 
 export default dialogSlice.reducer;
