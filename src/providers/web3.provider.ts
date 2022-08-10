@@ -1,6 +1,6 @@
 import { Contract, ethers, Signer } from "ethers";
 import Web3Modal from "web3modal";
-import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress, infuraId, network, appName, GovTokenSymbol, GovTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, BustadTokenDecimal } from "../config";
+import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress, infuraId, network, appName, GovTokenSymbol, GovTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, BustadTokenDecimal, GovTokenRoundIcon } from "../config";
 import CrowdsaleDef from '../contracts/Crowdsale.sol/Crowdsale.json';
 import BustadTokenDef from '../contracts/BustadToken.sol/BustadToken.json';
 import GovTokenDef from '../contracts/governance/GovernanceToken.sol/GovernanceToken.json';
@@ -83,7 +83,7 @@ export async function addGovTokenToWallet() {
         address: GovTokenAddress,
         symbol: GovTokenSymbol,
         decimals: GovTokenDecimal,
-        image: BustadTokenRoundIcon
+        image: GovTokenRoundIcon
       },
     },
   });
