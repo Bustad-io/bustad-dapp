@@ -10,7 +10,7 @@ import { PrimaryButton } from "../components/PrimaryButton";
 import { WhiteSection } from "../components/WhiteSection";
 import { IconLabelElement } from "../components/IconLabelElement";
 import { ClipboardCheckIcon } from '@heroicons/react/outline';
-import { CashIcon } from '@heroicons/react/outline';
+import { ReactComponent as EigIcon } from '../assets/icons/eigar_black.svg';
 import { formatNumberToSpaces } from "../utils/format";
 import { GovTokenSymbol } from "../config";
 
@@ -69,7 +69,7 @@ function GovernancePage() {
             <span className="text-sm font-semibold mb-2">{GovTokenSymbol} balance</span>
             <div>
               <IconLabelElement label={balanceLoading ? '~' : formatNumberToSpaces(walletBalance.govToken, 2)}>
-                <CashIcon className="h-5" />
+                <EigIcon className="h-5" />
               </IconLabelElement>
             </div>
           </div>
