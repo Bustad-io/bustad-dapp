@@ -8,12 +8,15 @@ import { AccountButton } from './components/AccountButton';
 import { ReactComponent as BustadIcon } from './assets/icons/BustadIcon.svg';
 
 function App() {
+
   return (
     <>
       <div className='flex flex-col bg-orange-100 dark:bg-gradient-to-br dark:from-DarkPaleBlue dark:to-DarkPaleBlueDarker h-full'>
         <header className='flex pt-2 sm:pt-12 px-2 sm:px-11 items-center'>
           <div className='md:grow'>
-            <BustadIcon className='w-6 sm:w-12' />
+            <a href="https://bustad.io" className='w-6 sm:w-12 inline-block'>
+              <BustadIcon className='w-6 sm:w-12'/>
+            </a>
           </div>
           <div className='grow flex justify-between'>
             <div className='relative sm:left-16 ml-6 sm:ml-0'>
