@@ -44,6 +44,12 @@ export const web3Modal = new Web3Modal({
 let library: ethers.providers.Web3Provider;
 let provider: any;
 
+export function getDefaultProvider() {
+  return ethers.getDefaultProvider(network, {  
+    infura: infuraId,  
+  });  
+}
+
 export async function connectWallet() {
   provider = await web3Modal.connect();
   library = new ethers.providers.Web3Provider(provider);  
@@ -62,7 +68,7 @@ export function getProvider() {
 }
 
 export function getContracts(useSigner = false): Contracts {
-  const providerOrSigner = useSigner ? getSigner() : getLibrary();
+  const providerOrSigner = useSigner ? getSigner() : getDefaultProvider();
 
   return {
     crowdsale: new ethers.Contract(CrowdsaleAddress, CrowdsaleDef.abi, providerOrSigner),

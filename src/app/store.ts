@@ -1,5 +1,4 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
 import currencyChoiceReducer from '../features/currencyChoice/currencyChoiceSlice';
 import walletReducer from '../features/wallet/walletSlice';
 import minterReducer from '../features/minter/minterSlice';
@@ -9,8 +8,7 @@ import { AddWeb3EventListeners } from '../app/event-listeners';
 
 
 export const store = configureStore({
-  reducer: {
-    counter: counterReducer,
+  reducer: {    
     currencyChoice: currencyChoiceReducer,
     wallet: walletReducer,
     minter: minterReducer,
