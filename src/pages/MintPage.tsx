@@ -3,7 +3,6 @@ import { Transition } from "@headlessui/react";
 import { useEffect, useState } from "react";
 import { useAppSelector } from "../app/hooks";
 import { AnnouncementBox } from "../components/AnnouncementBox";
-import { BadgeCheckIcon } from "@heroicons/react/solid";
 import { selectPendingTransactionList } from "../features/dialog/dialogSlice";
 
 function MintPage() {
