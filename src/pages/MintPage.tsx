@@ -28,8 +28,8 @@ function MintPage() {
         leaveFrom="transform opacity-100 translate-y-0"
         leaveTo="transform opacity-0 translate-y-2"
       >
-        <AnnouncementBox text={'Early participants will receive governance tokens, "Eigar".'} link="https://www.bustad.io/#eigar">
-          <BadgeCheckIcon className="h-6" />
+        <AnnouncementBox text={'Early participants will receive governance tokens, "Eigar".'} link="https://www.bustad.io/#eigar">          
+          <img src="https://app.bustad.io/logo/eigar_black.png" alt="Eigar token" className="h-6" />
         </AnnouncementBox>
       </Transition>      
       <Minter />
