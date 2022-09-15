@@ -1,8 +1,9 @@
 import { Contract } from "ethers";
 import { useAppSelector } from "../app/hooks";
 import { selectChosenCurrency } from "../features/currencyChoice/currencyChoiceSlice";
-import { selectWalletStatus } from "../features/wallet/walletSlice";
+import { selectChainId, selectWalletStatus } from "../features/wallet/walletSlice";
 import { Contracts, getContracts } from "../providers/web3.provider";
+import { chainId, network } from "../config";
 
 export interface ExtendedContracts extends Contracts  {
     chosenCurrencyContract: Contract | null
@@ -11,6 +12,10 @@ export interface ExtendedContracts extends Contracts  {
 export function useWeb3Connector() {
     const walletStatus = useAppSelector(selectWalletStatus);
     const chosenCurrency = useAppSelector(selectChosenCurrency);
+    const walletChainId = useAppSelector(selectChainId);
+
+    const correctChain = chainId === walletChainId;
+    const networkName = network;    
 
     const contracts = getContracts(walletStatus === "connected");
 
@@ -29,6 +34,8 @@ export function useWeb3Connector() {
 
     return {
         contracts,
-        chosenCurrencyContract
+        chosenCurrencyContract,
+        correctChain,
+        networkName
     }
 }

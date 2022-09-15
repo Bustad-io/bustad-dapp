@@ -13,6 +13,7 @@ export const explorerBaseUri: string = process.env.REACT_APP_EXPLORER_BASE_URI ?
 export const infuraId: string = process.env.REACT_APP_INFURA_ID ?? "";
 export const network: string = process.env.REACT_APP_NETWORK ?? "";
 export const appName: string = process.env.REACT_APP_APP_NAME ?? "";
+export const chainId: number = Number(process.env.REACT_APP_CHAIN_ID) ?? 0;
 
 const DaiAddress: string = process.env.REACT_APP_DAI_ADDRESS ?? "";
 const UsdcAddress: string = process.env.REACT_APP_USDC_ADDRESS ?? "";

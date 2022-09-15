@@ -14,6 +14,7 @@ export interface WalletState {
   allowance: WalletAllowance;
   governance: WalletGovernance;
   provider: WalletProvider;
+  chainId: number
 }
 
 export interface WalletBalance {
@@ -37,6 +38,7 @@ export interface WalletGovernance {
 const initialState: WalletState = {  
   status: 'not_connected',
   provider: 'none',
+  chainId: 0,
   account: null,
   governance: {
     distributionShare: 0
@@ -136,7 +138,12 @@ export const fetchBalanceAsync = createAsyncThunk(
 export const connectWalletAsync = createAsyncThunk(
   'wallet/connectWallet',
   async () => {    
-    await connectWallet();    
+    await connectWallet();
+    const library =  getLibrary();  
+    const network = await library.getNetwork()
+    return {
+      chainId: network.chainId
+    }
   }
 );
 
@@ -174,6 +181,7 @@ export const walletSlice = createSlice({
     builder      
       .addCase(connectWalletAsync.fulfilled, (state, action) => {
         state.status = 'connected';                
+        state.chainId = action.payload.chainId;
       })
       .addCase(connectWalletAsync.pending, (state) => {
         state.status = 'loading';        
@@ -218,5 +226,6 @@ export const selectWalletBalance = (state: RootState) => state.wallet.balance;
 export const selectWalletAllowance = (state: RootState) => state.wallet.allowance;
 export const selectWalletGovernanceDistributionShare = (state: RootState) => state.wallet.governance.distributionShare;
 export const selectWalletProvider = (state: RootState) => state.wallet.provider;
+export const selectChainId = (state: RootState) => state.wallet.chainId;
 
 export default walletSlice.reducer;
