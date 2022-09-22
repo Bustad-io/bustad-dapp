@@ -21,7 +21,7 @@ function MintPage() {
 
   return (
     <div className="relative">
-      {correctChain ? (
+      {true ? (
         <Transition
           className='mb-2 sm:absolute -top-12 sm:w-[520px]'
           show={announcement && pendingTransactionList.length === 0}
