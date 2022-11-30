@@ -39,7 +39,7 @@ function App() {
           </div>}
         </header>
         <div className='flex justify-center items-center h-full'>
-          <div className='flex flex-col'>
+          <div className='flex flex-col dialog:w-auto w-full items-center px-2 dialog:px-0'>
             <div className="mb-2">
               <PendingTransactionList />
             </div>

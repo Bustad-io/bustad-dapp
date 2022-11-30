@@ -23,7 +23,7 @@ function WalletSelectionPage() {
 
   return (
     <MainBox>
-      <div className="px-16 my-5">
+      <div className="dialog:px-16 my-5">
         <h1 className="text-white font-bold text-2xl text-center mb-4">How to get a wallet</h1>
         <div className="text-white font-semibold text-lg mb-3">1. Choose a wallet</div>
         <div className="flex mb-5">
@@ -40,7 +40,7 @@ function WalletSelectionPage() {
               }} walletLabel="MetaMask" isActive={!isCoinbase} logoPath={require('../../assets/icons/metamask.png')} />
           </div>
         </div>
-        <div className="text-white font-semibold text-lg max-w-xs">2. Download and configure {isCoinbase ? 'Coinbase Wallet' : 'MetaMask'}</div>
+        <div className="text-white font-semibold text-lg">2. Download and configure {isCoinbase ? 'Coinbase Wallet' : 'MetaMask'}</div>
         {isCoinbase ? (
           <div className="mb-5">
             <div className="text-white text-xs mb-2">Get the app on your phone</div>
