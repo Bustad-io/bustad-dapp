@@ -8,6 +8,9 @@ import { AccountButton } from './components/AccountButton';
 import { ReactComponent as BustadIcon } from './assets/icons/BustadIcon.svg';
 import { useEffect, useState } from 'react';
 import CounterPage from './pages/CounterPage';
+import StartPage from './pages/StartPage';
+import WalletSelectionPage from './pages/wizard/WalletSelectionPage';
+import MobileRedirectionPage from './pages/wizard/MobileRedirectionPage';
 
 function App() {
   const location = useLocation();
@@ -41,9 +44,12 @@ function App() {
               <PendingTransactionList />
             </div>
             <Routes>
-              <Route path="/" element={<MintPage />} />
+              <Route path="/" element={<StartPage />} />
+              <Route path="mint" element={<MintPage />} />
               <Route path="governance" element={<GovernancePage />} />
               <Route path="counter" element={<CounterPage />} />
+              <Route path="wallet-selection" element={<WalletSelectionPage />} />
+              <Route path="app-store-redirect" element={<MobileRedirectionPage />} />
             </Routes>
           </div>
         </div>
