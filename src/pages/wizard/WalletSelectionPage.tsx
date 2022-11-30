@@ -25,7 +25,7 @@ function WalletSelectionPage() {
     <MainBox>
       <div className="dialog:px-14 my-4">
         <h1 className="text-white font-bold text-2xl text-center mb-4">How to get a wallet</h1>
-        <div className="min-h-[265px]">
+        <div className="min-h-[260px]">
           <div className="text-white font-semibold text-lg mb-3">1. Choose a wallet</div>
           <div className="flex mb-7 space-x-2">
             <WalletSelectorButton onClick={() => {
@@ -59,7 +59,7 @@ function WalletSelectionPage() {
             </div>) : (
             <div>
               <BrowserView>
-                <a href="https://metamask.io/" target="_blank" className="underline text-sm font-bold mt-1 block" rel="noreferrer noopener">Go to MetaMask.io</a>
+                <a href="https://metamask.io/" target="_blank" className="text-white underline text-sm font-bold mt-1 block" rel="noreferrer noopener">Go to MetaMask.io</a>
               </BrowserView>
               <MobileView>
                 <div className="text-sm font-semibold mt-1">MetaMask plugin is only available on desktop</div>
