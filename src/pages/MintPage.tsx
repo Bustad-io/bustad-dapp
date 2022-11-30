@@ -11,7 +11,7 @@ function MintPage() {
   const [announcement, showAnnouncement] = useState(false);
   const pendingTransactionList = useAppSelector(selectPendingTransactionList);
 
-  const { networkName, correctChain } = useWeb3Connector();
+  const { networkName } = useWeb3Connector();
 
   useEffect(() => {
     setTimeout(() => {

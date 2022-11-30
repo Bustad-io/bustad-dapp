@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export interface Props {
     label?: string;
     checked?: boolean;

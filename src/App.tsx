@@ -20,7 +20,7 @@ function App() {
     if(location.pathname === '/counter') {
       setShowNavigationTab(false);
     }    
-  }, []);
+  }, [location.pathname]);
 
   return (
     <>
