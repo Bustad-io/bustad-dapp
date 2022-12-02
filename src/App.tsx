@@ -12,6 +12,7 @@ import StartPage from './pages/StartPage';
 import WalletSelectionPage from './pages/wizard/WalletSelectionPage';
 import MobileRedirectionPage from './pages/wizard/MobileRedirectionPage';
 import ConnectPage from './pages/wizard/ConnectPage';
+import FundingPage from './pages/wizard/FundingPage';
 
 function App() {
   const location = useLocation();
@@ -52,6 +53,7 @@ function App() {
               <Route path="wallet-selection" element={<WalletSelectionPage />} />
               <Route path="app-store-redirect" element={<MobileRedirectionPage />} />
               <Route path="connect" element={<ConnectPage />} />
+              <Route path="funding" element={<FundingPage />} />
             </Routes>
           </div>
         </div>
