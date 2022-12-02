@@ -6,6 +6,7 @@
     "@coinbase/wallet-sdk": "^3.3.0",
     "@headlessui/react": "^1.6.4",
     "@heroicons/react": "^1.0.6",
+    "@ramp-network/ramp-instant-sdk": "^4.0.1",
     "@reduxjs/toolkit": "^1.8.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",

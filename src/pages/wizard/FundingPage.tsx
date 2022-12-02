@@ -4,15 +4,35 @@ import { PrimaryButtonSmall } from "../../components/PrimaryButton";
 import { WhiteSection } from "../../components/WhiteSection";
 import { useNavigate } from 'react-router-dom';
 import { selectWalletBalance } from "../../features/wallet/walletSlice";
+import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+import { useWalletConnection } from "../../hooks/walletConnectionHook";
+import { useEffect } from "react";
 
 
 function FundingPage() {  
   const navigate = useNavigate();
 
   const walletBalance = useAppSelector(selectWalletBalance);
+  const { address, isConnected } = useWalletConnection();
 
   const onContinue = () => {
     navigate('/mint');
+  }
+
+  useEffect(() => {    
+    if(!isConnected) {
+      navigate('/connect');
+    }
+  }, [isConnected, navigate]);
+
+  const showOnRamp = () => {
+    new RampInstantSDK({
+      hostAppName: 'Bustad',
+      hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',
+      //swapAsset: 'ETH_ETH',
+      url: 'https://ri-widget-staging.firebaseapp.com/',
+      userAddress: address!,
+    }).show();
   }
 
   return (
@@ -22,7 +42,7 @@ function FundingPage() {
         <div className="min-h-[260px] flex flex-col">
           <div className="text-white font-semibold text-lg">4. Fund your wallet with ETH</div>
           <span className="text-white text-xs pl-2 te mb-4">To mint Bustad coins, you'll need to use ETH.</span>
-          <button className="w-fit bg-Tuscanyapprox text-white text-sm font-semibold px-5 py-2 rounded-md mb-7">Buy ETH</button>
+          <button className="w-fit bg-Tuscanyapprox text-white text-sm font-semibold px-5 py-2 rounded-md mb-7" onClick={showOnRamp}>Buy ETH</button>
           <WhiteSection>
             <div className="flex flex-col space-y-2">
               <span className="text-sm font-semibold">Your ETH balance</span>
