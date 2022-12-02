@@ -35,6 +35,13 @@ const providerOptions = {
   }
 };
 
+export type WalletType = 'coinbasewallet' | 'walletconnect' | 'injected';
+
+export const COINBASE_WALLET: WalletType = 'coinbasewallet';
+export const WALLET_CONNECT: WalletType = 'walletconnect';
+export const METAMASK: WalletType = 'injected';
+
+
 export const web3Modal = new Web3Modal({
   network: network,
   cacheProvider: true,
@@ -45,14 +52,14 @@ let library: ethers.providers.Web3Provider;
 let provider: any;
 
 export function getDefaultProvider() {
-  return ethers.getDefaultProvider(network, {  
-    infura: infuraId,  
-  });  
+  return ethers.getDefaultProvider(network, {
+    infura: infuraId,
+  });
 }
 
-export async function connectWallet() {
-  provider = await web3Modal.connect();
-  library = new ethers.providers.Web3Provider(provider);  
+export async function connectWallet(walletName?: WalletType) {
+  provider = !!walletName ? await web3Modal.connectTo(walletName) : await web3Modal.connect();
+  library = new ethers.providers.Web3Provider(provider);
 }
 
 export function getSigner(): Signer {

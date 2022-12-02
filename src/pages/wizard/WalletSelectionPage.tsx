@@ -8,18 +8,18 @@ import AppStore from './../../assets/icons/AppStoreLogo.png';
 import { Checkbox } from '../../components/Checkbox';
 import { PrimaryButtonSmall } from "../../components/PrimaryButton";
 import { BrowserView, MobileView, CustomView, isIOS, isMobile } from 'react-device-detect';
-
-
-const COINBASE = 'coinbase';
-const METAMASK = 'metamask';
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { selectChosenWallet, setChosenWallet } from "../../features/wizard/wizardSlice";
 
 function WalletSelectionPage() {
-  const navigate = useNavigate();
-  const [walletChoice, setWalletChoice] = useState(COINBASE)
-  const [confirmed, setConfirmed] = useState(false);
+  const navigate = useNavigate();  
+  const dispatch = useAppDispatch();
 
-  const isCoinbase = walletChoice === COINBASE;
-  const isMetaMask = walletChoice === METAMASK;
+  const [confirmed, setConfirmed] = useState(false);
+  const chosenWallet = useAppSelector(selectChosenWallet);
+
+  const isCoinbase = chosenWallet === "coinbase";
+  const isMetaMask = chosenWallet === "metamask";
 
   return (
     <MainBox>
@@ -29,11 +29,11 @@ function WalletSelectionPage() {
           <div className="text-white font-semibold text-lg mb-3">1. Choose a wallet</div>
           <div className="flex mb-7 space-x-2">
             <WalletSelectorButton onClick={() => {
-              setWalletChoice(COINBASE);
+              dispatch(setChosenWallet("coinbase"));              
               setConfirmed(false);
             }} walletLabel="Coinbase Wallet" isActive={isCoinbase} logoPath={require('../../assets/icons/coinbase.png')} />
             <WalletSelectorButton onClick={() => {
-              setWalletChoice(METAMASK);
+              dispatch(setChosenWallet("metamask"));              
               setConfirmed(false);
             }} walletLabel="MetaMask" isActive={!isCoinbase} logoPath={require('../../assets/icons/metamask.png')} />
           </div>
@@ -70,7 +70,7 @@ function WalletSelectionPage() {
         <div className="mb-2">
           <Checkbox checked={confirmed} onClick={() => setConfirmed(prev => !prev)} label={`I have downloaded and configured ${isCoinbase ? 'Coinbase Wallet' : 'MetaMask'}`} />
         </div>
-        <PrimaryButtonSmall disabled={!confirmed || (isMobile && isMetaMask)} text="Continue" onClick={() => navigate('/mint')} />
+        <PrimaryButtonSmall disabled={!confirmed || (isMobile && isMetaMask)} text="Continue" onClick={() => navigate('/connect')} />
       </div>
     </MainBox>
   );

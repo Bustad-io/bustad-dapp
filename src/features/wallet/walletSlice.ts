@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk, RootState } from '../../app/store';
 import { formatUnitToNumber, parseToNumber } from '../../utils/format';
 import { CoinContractConfig } from '../../config';
-import { connectWallet, getContracts, getLibrary, getSigner, web3Modal } from '../../providers/web3.provider';
+import { connectWallet, getContracts, getLibrary, getSigner, WalletType, web3Modal } from '../../providers/web3.provider';
 
 export type WalletStatus = 'connected' | 'not_connected' | 'failed_to_connect' | 'loading';
 export type WalletProvider = 'metamask' | 'wallet_connect' | 'coinbase' | 'none';
@@ -137,8 +137,8 @@ export const fetchBalanceAsync = createAsyncThunk(
 
 export const connectWalletAsync = createAsyncThunk(
   'wallet/connectWallet',
-  async () => {    
-    await connectWallet();
+  async (walletName?: WalletType) => {    
+    await connectWallet(walletName);
     const library =  getLibrary();  
     const network = await library.getNetwork()
     return {
