@@ -37,7 +37,7 @@ function ConnectPage() {
   }
 
   const onContinue = () => {
-    navigate('/funding');
+    navigate('/mint/funding');
   }
 
   return (

@@ -11,7 +11,7 @@ function StartPage() {
         <BustadIcon className="h-36 mb-10"></BustadIcon>
         <div className="max-w-sm w-full space-y-5">
           <PrimaryButton text="Connect wallet" onClick={() => navigate('mint')} />          
-          <PrimaryButton text="I don't have a wallet" onClick={() => navigate('wallet-selection')} />
+          <PrimaryButton text="I don't have a wallet" onClick={() => navigate('mint/wallet-selection')} />
         </div>
       </div>
     </MainBox>

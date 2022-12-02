@@ -50,10 +50,10 @@ function App() {
               <Route path="mint" element={<MintPage />} />
               <Route path="governance" element={<GovernancePage />} />
               <Route path="counter" element={<CounterPage />} />
-              <Route path="wallet-selection" element={<WalletSelectionPage />} />
-              <Route path="app-store-redirect" element={<MobileRedirectionPage />} />
-              <Route path="connect" element={<ConnectPage />} />
-              <Route path="funding" element={<FundingPage />} />
+              <Route path="mint/wallet-selection" element={<WalletSelectionPage />} />
+              <Route path="mint/app-store-redirect" element={<MobileRedirectionPage />} />
+              <Route path="mint/connect" element={<ConnectPage />} />
+              <Route path="mint/funding" element={<FundingPage />} />
             </Routes>
           </div>
         </div>

@@ -70,7 +70,7 @@ function WalletSelectionPage() {
         <div className="mb-2">
           <Checkbox checked={confirmed} onClick={() => setConfirmed(prev => !prev)} label={`I have downloaded and configured ${isCoinbase ? 'Coinbase Wallet' : 'MetaMask'}`} />
         </div>
-        <PrimaryButtonSmall disabled={!confirmed || (isMobile && isMetaMask)} text="Continue" onClick={() => navigate('/connect')} />
+        <PrimaryButtonSmall disabled={!confirmed || (isMobile && isMetaMask)} text="Continue" onClick={() => navigate('/mint/connect')} />
       </div>
     </MainBox>
   );
