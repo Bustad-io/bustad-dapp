@@ -46,7 +46,14 @@ function WalletSelectionPage() {
             <div className="">
               <div className="text-white text-xs mb-2">Get the app on your phone</div>
               <BrowserView>
-                <QRCode value={`http://${window.location.hostname}${isLocalhost ? ':3000' : ''}/app-store-redirect`} size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
+              {
+                isLocalhost ? (
+                  <QRCode value={`http://localhost:3000/app-store-redirect`} size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
+                ): (
+                  <QRCode value='https://bustad-dapp-dev.azurewebsites.net/app-store-redirect' size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
+                )
+              }
+                
               </BrowserView>
               <MobileView>
                 <CustomView condition={isIOS}>
