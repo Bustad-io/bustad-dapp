@@ -48,9 +48,9 @@ function WalletSelectionPage() {
               <BrowserView>
               {
                 !isLocalhost ? (
-                  <QRCode value={`http://localhost:3000/app-store-redirect`} size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
+                  <QRCode value={`http://localhost:3000/mint/app-store-redirect`} size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
                 ): (
-                  <QRCode value='https://bustad-dapp-dev.azurewebsites.net/app-store-redirect' size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
+                  <QRCode value='https://bustad-dapp-dev.azurewebsites.net/mint/app-store-redirect' size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
                 )
               }
                 
