@@ -47,7 +47,7 @@ function WalletSelectionPage() {
               <div className="text-white text-xs mb-2">Get the app on your phone</div>
               <BrowserView>
               {
-                !isLocalhost ? (
+                isLocalhost ? (
                   <QRCode value={`http://localhost:3000/mint/app-store-redirect`} size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
                 ): (
                   <QRCode value='https://bustad-dapp-dev.azurewebsites.net/mint/app-store-redirect' size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
