@@ -51,8 +51,8 @@ function ConnectPage() {
               <div className="flex flex-col space-y-2">
                 <span className="text-sm font-semibold">Status</span>
                 <div className="bg-Negroni px-3 py-2 rounded-md w-fit">
-                  <div className="flex items-center space-x-2">
-                    <StatusDot color={isConnected ? "#5ACE79" :"#707070"} />
+                  <div className="flex items-center space-x-2">                    
+                    <div className={`${isConnected ? 'bg-[#5ACE79]' : 'bg-[#707070]'} h-2 w-2 rounded-full`}></div>
                     <span className="text-sm font-semibold">{isConnected ? 'Connected' : 'Not connected'}</span>                    
                   </div>
                 </div>
