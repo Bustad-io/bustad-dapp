@@ -10,6 +10,7 @@ import { PrimaryButtonSmall } from "../../components/PrimaryButton";
 import { BrowserView, MobileView, CustomView, isIOS, isMobile } from 'react-device-detect';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectChosenWallet, setChosenWallet } from "../../features/wizard/wizardSlice";
+import { coinbaseAndroidUrl, coinbaseIosUrl } from "../../config";
 
 function WalletSelectionPage() {
   const navigate = useNavigate();  
@@ -45,16 +46,16 @@ function WalletSelectionPage() {
             <div className="">
               <div className="text-white text-xs mb-2">Get the app on your phone</div>
               <BrowserView>
-                <QRCode value={`http://${window.location.hostname}${isLocalhost && ':3000'}/app-store-redirect`} size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
+                <QRCode value={`http://${window.location.hostname}${isLocalhost ? ':3000' : ''}/app-store-redirect`} size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
               </BrowserView>
               <MobileView>
                 <CustomView condition={isIOS}>
-                  <a href="https://apps.apple.com/us/app/coinbase-wallet-nfts-crypto/id1278383455">
+                  <a href={coinbaseIosUrl}>
                     <img className="w-[125px]" src={AppStore} alt="" />
                   </a>
                 </CustomView>
                 <CustomView condition={!isIOS}>
-                  <a href="https://play.google.com/store/apps/details?id=org.toshi">
+                  <a href={coinbaseAndroidUrl}>
                     <img className="w-[125px]" src={GooglePlay} alt="" />
                   </a>
                 </CustomView>

@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { isIOS } from 'react-device-detect';
+import { coinbaseAndroidUrl, coinbaseIosUrl } from '../../config';
 
 function MobileRedirectionPage() {
   useEffect(() => {
     if(isIOS) {
-      window.location.replace('https://apps.apple.com/us/app/coinbase-wallet-nfts-crypto/id1278383455');
+      window.location.replace(coinbaseIosUrl);
     } else {
-      window.location.replace('https://play.google.com/store/apps/details?id=org.toshi');        
+      window.location.replace(coinbaseAndroidUrl);
     }
   }, []);
   return (

@@ -15,6 +15,9 @@ export const network: string = process.env.REACT_APP_NETWORK ?? "";
 export const appName: string = process.env.REACT_APP_APP_NAME ?? "";
 export const chainId: number = Number(process.env.REACT_APP_CHAIN_ID) ?? 0;
 
+export const coinbaseIosUrl = process.env.REACT_APP_COINBASE_IOS_URL ?? "";
+export const coinbaseAndroidUrl = process.env.REACT_APP_COINBASE_ANDROID_URL ?? "";
+
 const DaiAddress: string = process.env.REACT_APP_DAI_ADDRESS ?? "";
 const UsdcAddress: string = process.env.REACT_APP_USDC_ADDRESS ?? "";
 
