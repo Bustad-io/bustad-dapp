@@ -21,6 +21,9 @@ function WalletSelectionPage() {
   const isCoinbase = chosenWallet === "coinbase";
   const isMetaMask = chosenWallet === "metamask";
 
+  const hostname = window.location.hostname;
+  const isLocalhost = hostname === 'localhost';
+
   return (
     <MainBox>
       <div className="dialog:px-14 my-4">
@@ -42,7 +45,7 @@ function WalletSelectionPage() {
             <div className="">
               <div className="text-white text-xs mb-2">Get the app on your phone</div>
               <BrowserView>
-                <QRCode value="http://192.168.128.76:3000/app-store-redirect" size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
+                <QRCode value={`http://${window.location.hostname}${isLocalhost && ':3000'}/app-store-redirect`} size={75} bgColor={'#FF9649'} fgColor={'#FFFFFF'} />
               </BrowserView>
               <MobileView>
                 <CustomView condition={isIOS}>
