@@ -40,7 +40,7 @@ function App() {
             <AccountButton />
           </div>}
         </header>
-        <div className='flex justify-center items-center h-full'>
+        <div className='flex justify-center items-center md:h-full'>
           <div className='flex flex-col dialog:w-auto w-full items-center px-2 dialog:px-0'>
             <div className="mb-2">
               <PendingTransactionList />
