@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ConnectButton } from "../wallet/connectButton";
-import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance } from "../wallet/walletSlice";
+import { fetchAllowanceAsync, fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance } from "../wallet/walletSlice";
 import { useEffect } from 'react';
 import { fromEther } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
@@ -10,15 +10,13 @@ import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { hideAwaitingModal, showConfirmedModal, showAwaitingModal, showRejectedModal, showSubmittedModal, addPendingTransaction, removePendingTransaction } from "../dialog/dialogSlice";
-import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount, selectGovDistributionRate, fetchGovDistributionRateAsync, selectFeeAmount } from "./minterSlice";
+import { setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount, selectGovDistributionRate, selectFeeAmount } from "./minterSlice";
 import { InfoPopover } from './components/info-popover';
-import { web3Modal } from "../../providers/web3.provider";
 import { Input } from "./components/input";
 import { BustadTokenSymbol } from "../../config";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { MainBox } from "../../components/MainBox";
 
-import { AddAccountsChangedListener } from '../../app/event-listeners';
 import { ButtonGroup } from "./components/ButtonGroup";
 
 export function Minter() {
@@ -43,7 +41,7 @@ export function Minter() {
 
   const insufficientBalance = fromAmountNumber > balance;
 
-  useEffect(() => {
+  /* useEffect(() => {
     const run = async () => {
       await dispatch(connectWalletAsync());
       await dispatch(fetchAccountAsync());
@@ -61,7 +59,7 @@ export function Minter() {
       run();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); */
 
   useEffect(() => {
     if (fromAmount === '') return;
