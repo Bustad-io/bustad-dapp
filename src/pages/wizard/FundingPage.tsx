@@ -9,6 +9,7 @@ import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { useEffect } from "react";
 import { LoadingTextComponent } from "../../components/LoadingTextComponent";
 import RefreshIcon from "../../assets/icons/refresh.png";
+import { IS_DEV_ENV } from "../../config";
 
 
 function FundingPage() {
@@ -31,13 +32,24 @@ function FundingPage() {
   }, [isConnected, navigate]);
 
   const showOnRamp = () => {
-    new RampInstantSDK({
-      hostAppName: 'Bustad',
-      hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',
-      //swapAsset: 'ETH_ETH',
-      url: 'https://ri-widget-staging.firebaseapp.com/',
-      userAddress: address!,
-    }).show();
+
+    if (IS_DEV_ENV) {
+      new RampInstantSDK({
+        hostAppName: 'Bustad',
+        hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',        
+        url: 'https://ri-widget-staging.firebaseapp.com/',
+        swapAsset: 'GOERLI_ETH',
+        userAddress: address!,
+      }).show();
+    } else {
+
+      new RampInstantSDK({
+        hostAppName: 'Bustad',
+        hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',
+        swapAsset: 'ETH_ETH',        
+        userAddress: address!,
+      }).show();
+    }
   }
 
   const onRefreshBalance = async () => {
