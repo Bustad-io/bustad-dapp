@@ -26,7 +26,7 @@ function FundingPage() {
 
   useEffect(() => {
     if (!isConnected) {
-      navigate('mint/connect');
+      navigate('/mint/connect');
     }
   }, [isConnected, navigate]);
 

@@ -2,7 +2,6 @@ import { AddAccountsChangedListener } from "../../app/event-listeners";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { MainBox } from "../../components/MainBox";
 import { PrimaryButtonSmall } from "../../components/PrimaryButton";
-import { StatusDot } from "../../components/StatusDot";
 import { WhiteSection } from "../../components/WhiteSection";
 import { fetchEthPriceAsync, fetchGovDistributionRateAsync, fetchMintingFeeAsync, fetchRateAsync } from "../../features/minter/minterSlice";
 import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync } from "../../features/wallet/walletSlice";
