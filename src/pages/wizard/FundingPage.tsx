@@ -9,7 +9,6 @@ import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { useEffect } from "react";
 import { LoadingTextComponent } from "../../components/LoadingTextComponent";
 import RefreshIcon from "../../assets/icons/refresh.png";
-import { IS_DEV_ENV } from "../../config";
 
 
 function FundingPage() {
