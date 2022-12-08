@@ -33,7 +33,7 @@ function FundingPage() {
 
   const showOnRamp = () => {
 
-    if (IS_DEV_ENV) {
+    if (true) {
       new RampInstantSDK({
         hostAppName: 'Bustad',
         hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',        
