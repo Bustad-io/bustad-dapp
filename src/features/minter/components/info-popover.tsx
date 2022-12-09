@@ -1,5 +1,4 @@
 import { Popover, Transition } from '@headlessui/react'
-import { ReactComponent as InfoIcon } from '../../../assets/icons/infoIcon.svg';
 import { Fragment } from 'react';
 import { useAppSelector } from '../../../app/hooks';
 import { selectChosenCurrency } from '../../currencyChoice/currencyChoiceSlice';
@@ -24,11 +23,11 @@ export function InfoPopover() {
               {chosenCurrency === 'eth'
                 ? <span className='mr-2'>1 ETH = {bustadPrice.toFixed(0)}  {BustadTokenSymbol}</span>
                 : <span className='mr-2'>1 {BustadTokenSymbol} = {bustadPrice} {chosenCurrency.toUpperCase()}</span>}
-              <Popover.Button
+              {/* <Popover.Button
                 className={''}
               >
                 <InfoIcon className='h-5 w-5 text-white' />
-              </Popover.Button>
+              </Popover.Button> */}
             </div>
             <Transition
               as={Fragment}
