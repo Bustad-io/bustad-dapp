@@ -11,6 +11,7 @@ import { BrowserView, MobileView, CustomView, isIOS, isMobile } from 'react-devi
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectChosenWallet, setChosenWallet } from "../../features/wizard/wizardSlice";
 import { coinbaseAndroidUrl, coinbaseIosUrl } from "../../config";
+import ReactGA from 'react-ga';
 
 function WalletSelectionPage() {
   const navigate = useNavigate();  
@@ -24,6 +25,15 @@ function WalletSelectionPage() {
 
   const hostname = window.location.hostname;
   const isLocalhost = hostname === 'localhost';
+
+  const onContinue = () => {
+    ReactGA.event({
+      category: 'Wizard',
+      action: 'Chosen wallet',
+      label: chosenWallet
+    });
+    navigate('/mint/connect');
+  }
 
   return (
     <MainBox>
@@ -81,7 +91,7 @@ function WalletSelectionPage() {
         <div className="mb-2">
           <Checkbox checked={confirmed} onClick={() => setConfirmed(prev => !prev)} label={`I have downloaded and configured ${isCoinbase ? 'Coinbase Wallet' : 'MetaMask'}`} />
         </div>
-        <PrimaryButtonSmall disabled={!confirmed || (isMobile && isMetaMask)} text="Continue" onClick={() => navigate('/mint/connect')} />
+        <PrimaryButtonSmall disabled={!confirmed || (isMobile && isMetaMask)} text="Continue" onClick={onContinue} />
       </div>
     </MainBox>
   );

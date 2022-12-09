@@ -16,7 +16,7 @@ import { Input } from "./components/input";
 import { BustadTokenSymbol } from "../../config";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { MainBox } from "../../components/MainBox";
-
+import ReactGA from 'react-ga';
 import { ButtonGroup } from "./components/ButtonGroup";
 
 export function Minter() {
@@ -80,6 +80,11 @@ export function Minter() {
       } else {
         tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
       }
+
+      ReactGA.event({
+        category: 'Mint',
+        action: 'Start Minting Process'
+      });
     } catch (e) {
       await dispatch(hideAwaitingModal());
       await dispatch(showRejectedModal());
@@ -104,8 +109,12 @@ export function Minter() {
 
     try {
       tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.constants.MaxUint256);
-    } catch (e) {
-      console.log(e)
+
+      ReactGA.event({
+        category: 'Mint',
+        action: 'Start Allow Process'
+      });
+    } catch (e) {      
       await dispatch(hideAwaitingModal());
       await dispatch(showRejectedModal());
       return;

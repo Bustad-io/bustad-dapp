@@ -4,11 +4,12 @@ import { PrimaryButtonSmall } from "../../components/PrimaryButton";
 import { WhiteSection } from "../../components/WhiteSection";
 import { useNavigate } from 'react-router-dom';
 import { fetchBalanceAsync, selectBalanceLoading, selectWalletBalance } from "../../features/wallet/walletSlice";
-import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+import { RampInstantSDK, RampInstantEventTypes } from "@ramp-network/ramp-instant-sdk";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { useEffect } from "react";
 import { LoadingTextComponent } from "../../components/LoadingTextComponent";
 import RefreshIcon from "../../assets/icons/refresh.png";
+import ReactGA from "react-ga";
 
 
 function FundingPage() {
@@ -39,19 +40,33 @@ function FundingPage() {
         url: 'https://ri-widget-staging.firebaseapp.com/',
         swapAsset: 'GOERLI_ETH',
         userAddress: address!,
-      }).show();
+      })
+      .on(RampInstantEventTypes.WIDGET_CLOSE, (e) => ReactGA.event({category: 'On ramp',action: 'Widget close'}))
+      .on(RampInstantEventTypes.PURCHASE_CREATED, (e) => ReactGA.event({category: 'On ramp',action: 'Purchase created'}))
+      .show();
     } else {
-
       new RampInstantSDK({
         hostAppName: 'Bustad',
         hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',
         swapAsset: 'ETH_ETH',        
-        userAddress: address!,
-      }).show();
+        userAddress: address!,        
+      })
+      .on(RampInstantEventTypes.WIDGET_CLOSE, (e) => ReactGA.event({category: 'On ramp',action: 'Widget close'}))      
+      .on(RampInstantEventTypes.PURCHASE_CREATED, (e) => ReactGA.event({category: 'On ramp',action: 'Purchase created'}))
+      .show();
     }
+
+    ReactGA.event({
+      category: 'On ramp',
+      action: 'Widget open'
+    });
   }
 
   const onRefreshBalance = async () => {
+    ReactGA.event({
+      category: 'Wallet',
+      action: 'Refresh balance'
+    });
     await dispatch(fetchBalanceAsync());
   }
 

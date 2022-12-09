@@ -13,12 +13,24 @@ import WalletSelectionPage from './pages/wizard/WalletSelectionPage';
 import MobileRedirectionPage from './pages/wizard/MobileRedirectionPage';
 import ConnectPage from './pages/wizard/ConnectPage';
 import FundingPage from './pages/wizard/FundingPage';
+import ReactGA from 'react-ga';
+import { ANALYTICS_ID, ANALYTICS_ID_TEST, IS_DEV_ENV } from './config';
 
 function App() {
   const location = useLocation();
-  const [showNavigationTab, setShowNavigationTab] = useState(true);
+  const [showNavigationTab, setShowNavigationTab] = useState(true);  
 
   useEffect(() => {
+    if(IS_DEV_ENV) {
+      ReactGA.initialize(ANALYTICS_ID_TEST, { debug: true });
+    } else {
+      ReactGA.initialize(ANALYTICS_ID);
+    }
+  }, []);
+
+  useEffect(() => {
+    ReactGA.pageview(location.pathname);
+
     if(location.pathname === '/counter') {
       setShowNavigationTab(false);
     }    

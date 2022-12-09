@@ -20,6 +20,9 @@ export const coinbaseAndroidUrl = process.env.REACT_APP_COINBASE_ANDROID_URL ?? 
 
 export const IS_DEV_ENV = process.env.NODE_ENV === 'development';
 
+export const ANALYTICS_ID_TEST = process.env.REACT_APP_ANALYTICS_ID_TEST ?? "";
+export const ANALYTICS_ID = process.env.REACT_APP_ANALYTICS_ID ?? "";
+
 const DaiAddress: string = process.env.REACT_APP_DAI_ADDRESS ?? "";
 const UsdcAddress: string = process.env.REACT_APP_USDC_ADDRESS ?? "";
 

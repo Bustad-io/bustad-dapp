@@ -1,3 +1,4 @@
+import ReactGA from 'react-ga';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk, RootState } from '../../app/store';
 import { formatUnitToNumber, parseToNumber } from '../../utils/format';
@@ -141,6 +142,12 @@ export const connectWalletAsync = createAsyncThunk(
     await connectWallet(walletName);
     const library =  getLibrary();  
     const network = await library.getNetwork()
+    
+    ReactGA.event({
+      category: 'Wallet',
+      action: 'Connected'
+    });
+
     return {
       chainId: network.chainId
     }
@@ -215,6 +222,11 @@ export const disconnectWallet =
   (dispatch) => {        
     web3Modal.clearCachedProvider();
     dispatch(resetWallet());
+
+    ReactGA.event({
+      category: 'Wallet',
+      action: 'Disconnected'
+    });
   };
 
 export const { setAccount, resetWallet, setWalletProvider } = walletSlice.actions;
