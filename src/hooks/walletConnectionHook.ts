@@ -9,6 +9,8 @@ export function useWalletConnection() {
     const firstAccountPart = account?.slice(0, 6);
     const lastAccountPart = account?.slice(38, 42);
 
+    console.log('walletProvider', walletProvider)
+
     return {
         isConnected: walletStatus === "connected",
         isMetaMask: walletProvider === "metamask",

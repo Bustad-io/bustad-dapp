@@ -5,12 +5,14 @@ import { explorerBaseUri } from '../../config';
 import { hideSubmittedModal, selectSubmitted, selectSubmittedShowAddBustadToWalletButton, selectSubmittedShowAddGovToWalletButton } from './dialogSlice'
 import { ReactComponent as SuccessIcon } from '../../assets/icons/SuccessIcon.svg';
 import { addBustadToWallet, addGovTokenToWallet } from '../../providers/web3.provider';
+import { selectNetwork } from '../wallet/walletSlice';
 
 
 export default function SubmittedDialog() {
   const dispatch = useAppDispatch();
 
   const modal = useAppSelector(selectSubmitted);
+  const network = useAppSelector(selectNetwork);
   const showAddBustadToWalletButton = useAppSelector(selectSubmittedShowAddBustadToWalletButton);
   const showAddGovToWalletButton = useAppSelector(selectSubmittedShowAddGovToWalletButton);
 
@@ -19,11 +21,11 @@ export default function SubmittedDialog() {
   }
 
   async function onAddBustadToMetaMask() {
-    await addBustadToWallet();
+    await addBustadToWallet(network);
   }
 
   async function onAddGovToMetaMask() {
-    await addGovTokenToWallet();
+    await addGovTokenToWallet(network);
   }
 
   return (

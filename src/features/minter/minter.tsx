@@ -41,26 +41,6 @@ export function Minter() {
 
   const insufficientBalance = fromAmountNumber > balance;
 
-  /* useEffect(() => {
-    const run = async () => {
-      await dispatch(connectWalletAsync());
-      await dispatch(fetchAccountAsync());
-      await dispatch(fetchBalanceAsync());
-      await dispatch(fetchAllowanceAsync());
-      await dispatch(fetchRateAsync());
-      await dispatch(fetchEthPriceAsync());
-      await dispatch(fetchMintingFeeAsync());
-      await dispatch(fetchGovDistributionRateAsync());
-
-      AddAccountsChangedListener(dispatch);
-    }
-
-    if (web3Modal.cachedProvider && !isConnected) {
-      run();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); */
-
   useEffect(() => {
     if (fromAmount === '') return;
     dispatch(setFromAmountAndCalculateToAmount(fromAmount));

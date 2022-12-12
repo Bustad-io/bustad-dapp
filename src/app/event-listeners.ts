@@ -1,5 +1,5 @@
-import { disconnectWallet, fetchAllowanceAsync, fetchBalanceAsync, setAccount, setWalletProvider } from "../features/wallet/walletSlice";
-import { getProvider, web3Modal } from "../providers/web3.provider";
+import { disconnectWallet, fetchAllowanceAsync, fetchBalanceAsync, fetchGovernanceDistributorShareAsync, NetworkTypes, setAccount, setNetwork, setWalletProvider } from "../features/wallet/walletSlice";
+import { getProvider, getWeb3Modal } from "../providers/web3.provider";
 import { AppDispatch } from "./store";
 
 export function AddAccountsChangedListener(dispatch: AppDispatch) {
@@ -10,9 +10,18 @@ export function AddAccountsChangedListener(dispatch: AppDispatch) {
     await dispatch(fetchBalanceAsync());
     await dispatch(fetchAllowanceAsync());
   });
+
+  provider.on("chainChanged", async (chainId: string) => {        
+    dispatch(setNetwork(chainId.substring(2) === '1' ? 'mainnet' : 'goerli'))
+    await dispatch(fetchBalanceAsync());
+    await dispatch(fetchAllowanceAsync());
+    await dispatch(fetchGovernanceDistributorShareAsync());
+  });
 }
 
-export function AddWeb3EventListeners(dispatch: AppDispatch) {  
+export function AddWeb3EventListeners(dispatch: AppDispatch, network: NetworkTypes) {  
+  const web3Modal = getWeb3Modal(network);
+
   web3Modal.on("connect", async (info) => {
     if (info.isCoinbaseWallet === true) {
       await dispatch(setWalletProvider('coinbase'));

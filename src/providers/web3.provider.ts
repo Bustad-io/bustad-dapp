@@ -1,6 +1,6 @@
 import { Contract, ethers, Signer } from "ethers";
 import Web3Modal from "web3modal";
-import { BustadTokenAddress, CrowdsaleAddress, CoinContractConfig, GovDistAddress, GovTokenAddress, infuraId, network, appName, GovTokenSymbol, GovTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, BustadTokenDecimal, GovTokenRoundIcon } from "../config";
+import { infuraId, appName, GovTokenSymbol, GovTokenDecimal, BustadTokenRoundIcon, BustadTokenSymbol, BustadTokenDecimal, GovTokenRoundIcon, alchemyId, GetContractConfig } from "../config";
 import CrowdsaleDef from '../contracts/Crowdsale.sol/Crowdsale.json';
 import BustadTokenDef from '../contracts/BustadToken.sol/BustadToken.json';
 import GovTokenDef from '../contracts/governance/GovernanceToken.sol/GovernanceToken.json';
@@ -9,6 +9,7 @@ import UsdcDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
 import GovDistDef from '../contracts/governance/GovernanceDistributor.sol/GovernanceDistributor.json';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+import { NetworkTypes } from "../features/wallet/walletSlice";
 
 export interface Contracts {
   crowdsale: Contract;
@@ -41,8 +42,7 @@ export const COINBASE_WALLET: WalletType = 'coinbasewallet';
 export const WALLET_CONNECT: WalletType = 'walletconnect';
 export const METAMASK: WalletType = 'injected';
 
-
-export const web3Modal = new Web3Modal({
+export const getWeb3Modal = (network: NetworkTypes) => new Web3Modal({
   network: network,
   cacheProvider: true,
   providerOptions
@@ -51,13 +51,16 @@ export const web3Modal = new Web3Modal({
 let library: ethers.providers.Web3Provider;
 let provider: any;
 
-export function getDefaultProvider() {
+export function getDefaultProvider(network: NetworkTypes) {
   return ethers.getDefaultProvider(network, {
     infura: infuraId,
+    alchemy: alchemyId
   });
 }
 
-export async function connectWallet(walletName?: WalletType) {
+export async function connectWallet(network: NetworkTypes, walletName?: WalletType) {
+  const web3Modal = getWeb3Modal(network);
+
   provider = !!walletName ? await web3Modal.connectTo(walletName) : await web3Modal.connect();
   library = new ethers.providers.Web3Provider(provider);
 }
@@ -74,26 +77,28 @@ export function getProvider() {
   return provider;
 }
 
-export function getContracts(useSigner = false): Contracts {
-  const providerOrSigner = useSigner ? getSigner() : getDefaultProvider();
+export function getContracts(network: NetworkTypes, useSigner = false, ): Contracts {
+  const providerOrSigner = useSigner ? getSigner() : getDefaultProvider(network);
+  const contractConfig = GetContractConfig(network);
 
   return {
-    crowdsale: new ethers.Contract(CrowdsaleAddress, CrowdsaleDef.abi, providerOrSigner),
-    bustadToken: new ethers.Contract(BustadTokenAddress, BustadTokenDef.abi, providerOrSigner),
-    govToken: new ethers.Contract(GovTokenAddress, GovTokenDef.abi, providerOrSigner),
-    govDist: new ethers.Contract(GovDistAddress, GovDistDef.abi, providerOrSigner),
-    dai: new ethers.Contract(CoinContractConfig.dai.address, DaiDef.abi, providerOrSigner),
-    usdc: new ethers.Contract(CoinContractConfig.usdc.address, UsdcDef.abi, providerOrSigner)
+    crowdsale: new ethers.Contract(contractConfig.crowdsale.address, CrowdsaleDef.abi, providerOrSigner),
+    bustadToken: new ethers.Contract(contractConfig.BustadCoin.address, BustadTokenDef.abi, providerOrSigner),
+    govToken: new ethers.Contract(contractConfig.GovToken.address, GovTokenDef.abi, providerOrSigner),
+    govDist: new ethers.Contract(contractConfig.GovDist.address, GovDistDef.abi, providerOrSigner),
+    dai: new ethers.Contract(contractConfig.dai.address, DaiDef.abi, providerOrSigner),
+    usdc: new ethers.Contract(contractConfig.usdc.address, UsdcDef.abi, providerOrSigner)
   }
 }
 
-export async function addGovTokenToWallet() {
+export async function addGovTokenToWallet(network: NetworkTypes) {
+  const contractConfig = GetContractConfig(network);
   await provider.request({
     method: 'wallet_watchAsset',
     params: {
       type: 'ERC20',
       options: {
-        address: GovTokenAddress,
+        address: contractConfig.GovToken.address,
         symbol: GovTokenSymbol,
         decimals: GovTokenDecimal,
         image: GovTokenRoundIcon
@@ -102,13 +107,14 @@ export async function addGovTokenToWallet() {
   });
 }
 
-export async function addBustadToWallet() {
+export async function addBustadToWallet(network: NetworkTypes) {
+  const contractConfig = GetContractConfig(network);
   await provider.request({
     method: 'wallet_watchAsset',
     params: {
       type: 'ERC20',
       options: {
-        address: BustadTokenAddress,
+        address: contractConfig.BustadCoin.address,
         symbol: BustadTokenSymbol,
         decimals: BustadTokenDecimal,
         image: BustadTokenRoundIcon

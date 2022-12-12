@@ -15,13 +15,16 @@ import ConnectPage from './pages/wizard/ConnectPage';
 import FundingPage from './pages/wizard/FundingPage';
 import ReactGA from 'react-ga';
 import { ANALYTICS_ID, ANALYTICS_ID_TEST, IS_DEV_ENV } from './config';
+import { useAppSelector } from './app/hooks';
+import { selectNetwork } from './features/wallet/walletSlice';
 
 function App() {
   const location = useLocation();
-  const [showNavigationTab, setShowNavigationTab] = useState(true);  
+  const [showNavigationTab, setShowNavigationTab] = useState(true);
+  const network = useAppSelector(selectNetwork);
 
   useEffect(() => {
-    if(IS_DEV_ENV) {
+    if (IS_DEV_ENV) {
       ReactGA.initialize(ANALYTICS_ID_TEST, { debug: true });
     } else {
       ReactGA.initialize(ANALYTICS_ID);
@@ -31,9 +34,9 @@ function App() {
   useEffect(() => {
     ReactGA.pageview(location.pathname);
 
-    if(location.pathname === '/counter') {
+    if (location.pathname === '/counter') {
       setShowNavigationTab(false);
-    }    
+    }
   }, [location.pathname]);
 
   return (
@@ -42,7 +45,7 @@ function App() {
         <header className='flex pt-2 sm:pt-12 px-2 sm:px-11 items-center'>
           <div className='md:grow'>
             <a href="https://bustad.io" className='w-6 sm:w-12 inline-block'>
-              <BustadIcon className='w-6 sm:w-12'/>
+              <BustadIcon className='w-6 sm:w-12' />
             </a>
           </div>
           {showNavigationTab && <div className='grow flex justify-between'>
@@ -53,7 +56,10 @@ function App() {
           </div>}
         </header>
         <div className='flex justify-center items-center md:h-full'>
-          <div className='flex flex-col dialog:w-auto w-full items-center px-2 dialog:px-0'>
+          <div className='flex flex-col dialog:w-auto w-full items-center px-2 dialog:px-0'>            
+            {network !== 'mainnet' && <div className="flex rounded-md w-full mt-2">
+                <span className='bg-Anakiwa px-3 py-1 rounded font-semibold text-xs'>Network: {network.toUpperCase()}</span>              
+            </div>}
             <div className="mb-2">
               <PendingTransactionList />
             </div>

@@ -18,7 +18,9 @@ export const store = configureStore({
   },
 });
 
-AddWeb3EventListeners(store.dispatch);
+const state = store.getState();
+
+AddWeb3EventListeners(store.dispatch, state.wallet.network);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

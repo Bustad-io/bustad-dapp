@@ -27,8 +27,9 @@ const initialState: MinterState = {
 
 export const fetchRateAsync = createAsyncThunk(
   'minter/fetchRate',
-  async () => {
-    const { crowdsale } = getContracts();    
+  async (_, {getState}) => {
+    const state = getState() as RootState;
+    const { crowdsale } = getContracts(state.wallet.network);    
     const res = await crowdsale.callStatic.rate();
     return {
       rate: parseToNumber(res)
@@ -38,8 +39,9 @@ export const fetchRateAsync = createAsyncThunk(
 
 export const fetchEthPriceAsync = createAsyncThunk(
   'minter/fetchEthPrice',
-  async () => {
-    const { crowdsale } = getContracts();    
+  async (_, {getState}) => {
+    const state = getState() as RootState;
+    const { crowdsale } = getContracts(state.wallet.network);    
     const ethPrice = await crowdsale.callStatic.getLatestETHPrice();    
     
     return {
@@ -50,8 +52,9 @@ export const fetchEthPriceAsync = createAsyncThunk(
 
 export const fetchMintingFeeAsync = createAsyncThunk(
   'minter/fetchMintingFee',
-  async () => {
-    const { bustadToken } = getContracts();        
+  async (_, {getState}) => {
+    const state = getState() as RootState;
+    const { bustadToken } = getContracts(state.wallet.network);
     const fee = await bustadToken.callStatic.getMintingFee();
     
     return {      
@@ -62,8 +65,9 @@ export const fetchMintingFeeAsync = createAsyncThunk(
 
 export const fetchGovDistributionRateAsync = createAsyncThunk(
   'minter/fetchGovDistributionRate',
-  async () => {
-    const { govDist } = getContracts();        
+  async (_, {getState}) => {
+    const state = getState() as RootState;
+    const { govDist } = getContracts(state.wallet.network);
     const rate = await govDist.callStatic.bustadToGovDistributionRatio();
     
     return {      
