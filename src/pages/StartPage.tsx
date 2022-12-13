@@ -2,9 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { MainBox } from "../components/MainBox";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { ReactComponent as BustadIcon } from './../assets/coin/bustad_coin.svg';
+import { useEffect } from 'react';
+import { useWalletConnection } from "../hooks/walletConnectionHook";
 
 function StartPage() {
   const navigate = useNavigate();
+  const { isConnected } = useWalletConnection();
+
+  useEffect(() => {
+    if(isConnected) {
+      navigate('/mint');
+    }
+  }, [isConnected, navigate]);
+
   return (
     <MainBox>
       <div className="flex flex-col items-center pt-10">
