@@ -30,8 +30,8 @@ function GovernancePage() {
   useEffect(() => {
     const runAsync = async () => {
       if (walletStatus !== "connected") return;
-      await dispatch(fetchGovernanceDistributorShareAsync());
-      await dispatch(fetchBalanceAsync());
+      dispatch(fetchGovernanceDistributorShareAsync());
+      dispatch(fetchBalanceAsync());
     }
     runAsync();
   }, [dispatch, walletStatus]);
@@ -57,8 +57,8 @@ function GovernancePage() {
 
     await dispatch(removePendingTransaction(tx.hash));
     await dispatch(showConfirmedModal());
-    await dispatch(fetchGovernanceDistributorShareAsync());
-    await dispatch(fetchBalanceAsync());
+    dispatch(fetchGovernanceDistributorShareAsync());
+    dispatch(fetchBalanceAsync());
   }
 
   return <MainBox title="Governance">

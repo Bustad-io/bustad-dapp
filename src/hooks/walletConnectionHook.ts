@@ -7,9 +7,7 @@ export function useWalletConnection() {
     const account = useAppSelector(selectAccount);
 
     const firstAccountPart = account?.slice(0, 6);
-    const lastAccountPart = account?.slice(38, 42);
-
-    console.log('walletProvider', walletProvider)
+    const lastAccountPart = account?.slice(38, 42);    
 
     return {
         isConnected: walletStatus === "connected",

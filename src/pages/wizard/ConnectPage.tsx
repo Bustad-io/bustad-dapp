@@ -25,12 +25,12 @@ function ConnectPage() {
   const onConnect = async () => {  
     await dispatch(connectWalletAsync(walletMapper[chosenWallet]));
     await dispatch(fetchAccountAsync());
-    await dispatch(fetchBalanceAsync());
-    await dispatch(fetchAllowanceAsync());
-    await dispatch(fetchRateAsync());
-    await dispatch(fetchEthPriceAsync());
-    await dispatch(fetchMintingFeeAsync());
-    await dispatch(fetchGovDistributionRateAsync());
+    dispatch(fetchBalanceAsync());
+    dispatch(fetchAllowanceAsync());
+    dispatch(fetchRateAsync());
+    dispatch(fetchEthPriceAsync());
+    dispatch(fetchMintingFeeAsync());
+    dispatch(fetchGovDistributionRateAsync());
 
     AddAccountsChangedListener(dispatch);
   }

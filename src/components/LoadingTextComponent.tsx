@@ -8,7 +8,7 @@ export interface LoadingComponentProps {
 
 export function LoadingTextComponent({ children, loading, useSpinner }: LoadingComponentProps) {
     if (useSpinner) {
-        return loading ? <Spinner className='animate-spin w-4 h-6 mr-2' /> : children
+        return loading ? <Spinner className='animate-spin w-4 h-[20px] mr-2' /> : children
     }
 
     return loading ? <span className='animate-pulse text-l'>~</span> : children

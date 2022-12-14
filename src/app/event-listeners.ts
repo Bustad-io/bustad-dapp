@@ -7,15 +7,15 @@ export function AddAccountsChangedListener(dispatch: AppDispatch) {
 
   provider.on("accountsChanged", async (accounts: string[]) => {
     dispatch(setAccount(accounts[0]));
-    await dispatch(fetchBalanceAsync());
-    await dispatch(fetchAllowanceAsync());
+    dispatch(fetchBalanceAsync());
+    dispatch(fetchAllowanceAsync());
   });
 
   provider.on("chainChanged", async (chainId: string) => {        
     dispatch(setNetwork(chainId.substring(2) === '1' ? 'mainnet' : 'goerli'))
-    await dispatch(fetchBalanceAsync());
-    await dispatch(fetchAllowanceAsync());
-    await dispatch(fetchGovernanceDistributorShareAsync());
+    dispatch(fetchBalanceAsync());
+    dispatch(fetchAllowanceAsync());
+    dispatch(fetchGovernanceDistributorShareAsync());
   });
 }
 
