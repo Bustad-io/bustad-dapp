@@ -8,6 +8,7 @@ export const GovTokenSymbol: string = process.env.REACT_APP_GOVERNANCE_TOKEN_SYM
 export const GovTokenDecimal: string = process.env.REACT_APP_GOVERNANCE_TOKEN_DECIMAL ?? "";
 
 export const explorerBaseUri: string = process.env.REACT_APP_EXPLORER_BASE_URI ?? "";
+export const testExplorerBaseUri: string = process.env.REACT_APP_TEST_EXPLORER_BASE_URI ?? "";
 export const infuraId: string = process.env.REACT_APP_INFURA_ID ?? "";
 export const alchemyId: string = process.env.REACT_APP_ALCHEMY_ID ?? "";
 

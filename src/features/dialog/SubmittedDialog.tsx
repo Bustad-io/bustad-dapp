@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { explorerBaseUri } from '../../config';
+import { explorerBaseUri, testExplorerBaseUri } from '../../config';
 import { hideSubmittedModal, selectSubmitted, selectSubmittedShowAddBustadToWalletButton, selectSubmittedShowAddGovToWalletButton } from './dialogSlice'
 import { ReactComponent as SuccessIcon } from '../../assets/icons/SuccessIcon.svg';
 import { addBustadToWallet, addGovTokenToWallet } from '../../providers/web3.provider';
@@ -14,7 +14,9 @@ export default function SubmittedDialog() {
   const modal = useAppSelector(selectSubmitted);
   const network = useAppSelector(selectNetwork);
   const showAddBustadToWalletButton = useAppSelector(selectSubmittedShowAddBustadToWalletButton);
-  const showAddGovToWalletButton = useAppSelector(selectSubmittedShowAddGovToWalletButton);
+  const showAddGovToWalletButton = useAppSelector(selectSubmittedShowAddGovToWalletButton);  
+
+  const explorerUri = network === 'mainnet' ? explorerBaseUri : testExplorerBaseUri;
 
   function closeModal() {
     dispatch(hideSubmittedModal());
@@ -62,7 +64,7 @@ export default function SubmittedDialog() {
                   Transaction submitted
                 </Dialog.Title>
                 <div className="my-4">
-                  <a href={`${explorerBaseUri}/tx/${modal.txHash}`} target="_blank" rel="noopener noreferrer" className='underline text-blue-700'>View on explorer</a>
+                  <a href={`${explorerUri}/tx/${modal.txHash}`} target="_blank" rel="noopener noreferrer" className='underline text-blue-700'>View on explorer</a>
                 </div>
                 <div className='animate-ping-once'>
                   <SuccessIcon/>
