@@ -2,6 +2,7 @@ import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import { CurrencyOption, selectCurrencyOptions, setCurrency } from './currencyChoiceSlice';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
+import ReactGA from 'react-ga';
 
 export interface CurrencyChoiceModalProp {  
   show: boolean;
@@ -14,6 +15,11 @@ export function CurrencyChoiceModal({ show, onClose }: CurrencyChoiceModalProp) 
   const currencyOptions = useAppSelector(selectCurrencyOptions);
 
   function onChoose(value: CurrencyOption) {
+    ReactGA.event({
+      category: 'Mint',
+      action: 'Select token',
+      label: value.value
+    });
     dispatch(setCurrency(value));
     onClose();
   }

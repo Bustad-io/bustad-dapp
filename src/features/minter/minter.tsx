@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { ConnectButton } from "../wallet/connectButton";
-import { connectWalletAsync, fetchAccountAsync, fetchAllowanceAsync, fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance } from "../wallet/walletSlice";
+import { fetchAllowanceAsync, fetchBalanceAsync, fetchGovernanceDistributorShareAsync, selectWalletBalance } from "../wallet/walletSlice";
 import { useEffect } from 'react';
 import { fromEther } from "../../utils/format";
 import { useWeb3Connector } from '../../hooks/web3Hook';
@@ -10,15 +10,13 @@ import { selectChosenCurrency } from "../currencyChoice/currencyChoiceSlice";
 import { parseEther } from "ethers/lib/utils";
 import { ethers } from "ethers";
 import { hideAwaitingModal, showConfirmedModal, showAwaitingModal, showRejectedModal, showSubmittedModal, addPendingTransaction, removePendingTransaction } from "../dialog/dialogSlice";
-import { fetchEthPriceAsync, fetchMintingFeeAsync, fetchRateAsync, setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount, selectGovDistributionRate, fetchGovDistributionRateAsync, selectFeeAmount } from "./minterSlice";
+import { setFromAmountAndCalculateToAmount, selectFromAmount, selectToAmount, setToAmountAndCalculateFromAmount, selectGovDistributionRate, selectFeeAmount } from "./minterSlice";
 import { InfoPopover } from './components/info-popover';
-import { web3Modal } from "../../providers/web3.provider";
 import { Input } from "./components/input";
 import { BustadTokenSymbol } from "../../config";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { MainBox } from "../../components/MainBox";
-
-import { AddAccountsChangedListener } from '../../app/event-listeners';
+import ReactGA from 'react-ga';
 import { ButtonGroup } from "./components/ButtonGroup";
 
 export function Minter() {
@@ -44,26 +42,6 @@ export function Minter() {
   const insufficientBalance = fromAmountNumber > balance;
 
   useEffect(() => {
-    const run = async () => {
-      await dispatch(connectWalletAsync());
-      await dispatch(fetchAccountAsync());
-      await dispatch(fetchBalanceAsync());
-      await dispatch(fetchAllowanceAsync());
-      await dispatch(fetchRateAsync());
-      await dispatch(fetchEthPriceAsync());
-      await dispatch(fetchMintingFeeAsync());
-      await dispatch(fetchGovDistributionRateAsync());
-
-      AddAccountsChangedListener(dispatch);
-    }
-
-    if (web3Modal.cachedProvider && !isConnected) {
-      run();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     if (fromAmount === '') return;
     dispatch(setFromAmountAndCalculateToAmount(fromAmount));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,6 +60,11 @@ export function Minter() {
       } else {
         tx = await contracts.crowdsale.buyWithStableCoin(parseEther(fromAmount), chosenCurrencyContract!.address);
       }
+
+      ReactGA.event({
+        category: 'Mint',
+        action: 'Start Minting Process'
+      });
     } catch (e) {
       await dispatch(hideAwaitingModal());
       await dispatch(showRejectedModal());
@@ -106,8 +89,12 @@ export function Minter() {
 
     try {
       tx = await chosenCurrencyContract!.approve(contracts.crowdsale.address, ethers.constants.MaxUint256);
-    } catch (e) {
-      console.log(e)
+
+      ReactGA.event({
+        category: 'Mint',
+        action: 'Start Allow Process'
+      });
+    } catch (e) {      
       await dispatch(hideAwaitingModal());
       await dispatch(showRejectedModal());
       return;
@@ -139,9 +126,9 @@ export function Minter() {
   return (
     <MainBox title="Mint">
       <>
-        <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} amount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
+        <Input balance={Number(balance.toFixed(4))} currencyName={chosenCurrency.toUpperCase()} amount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
         <div className="mt-4">
-          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()} />
+          <Input balance={Number(walletBalance.bustadToken.toFixed(2))} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()} />
         </div>
         <div className="flex justify-end mt-2 mb-12 h-5">
           {isConnected && <InfoPopover />}

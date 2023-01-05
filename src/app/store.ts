@@ -3,6 +3,7 @@ import currencyChoiceReducer from '../features/currencyChoice/currencyChoiceSlic
 import walletReducer from '../features/wallet/walletSlice';
 import minterReducer from '../features/minter/minterSlice';
 import dialogReducer from '../features/dialog/dialogSlice';
+import wizardReducer from '../features/wizard/wizardSlice';
 
 import { AddWeb3EventListeners } from '../app/event-listeners';
 
@@ -12,11 +13,14 @@ export const store = configureStore({
     currencyChoice: currencyChoiceReducer,
     wallet: walletReducer,
     minter: minterReducer,
-    dialog: dialogReducer
+    dialog: dialogReducer,
+    wizard: wizardReducer
   },
 });
 
-AddWeb3EventListeners(store.dispatch);
+const state = store.getState();
+
+AddWeb3EventListeners(store.dispatch, state.wallet.network);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;

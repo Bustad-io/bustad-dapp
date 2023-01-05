@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
-import { useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchAccountAsync, fetchGovernanceDistributorShareAsync, selectAccount, selectWalletGovernanceDistributionShare } from "../features/wallet/walletSlice";
 import { useWalletConnection } from '../hooks/walletConnectionHook';
@@ -9,9 +9,10 @@ interface TabProp {
     to: string;
     text: string;
     showBadge: boolean;
+    isActive: boolean;
 }
 
-function Tab({ to, text, showBadge = false }: TabProp) {    
+function Tab({ to, text, showBadge = false, isActive }: TabProp) {    
     return (
         <div className="relative">
             <Transition                
@@ -25,7 +26,7 @@ function Tab({ to, text, showBadge = false }: TabProp) {
             >
                 <Badge></Badge>
             </Transition>
-            <NavLink className={({ isActive }) => isActive ? 'text-PrimaryHordeBlue bg-orange-300 dark:bg-white font-bold py-2 sm:py-3 px-3 sm:px-9 rounded-xl' : 'px-4 sm:px-8'} to={to} >{text}</NavLink>
+            <Link className={isActive ? 'text-PrimaryHordeBlue bg-orange-300 dark:bg-white font-bold py-2 sm:py-3 px-3 sm:px-9 rounded-xl' : 'px-4 sm:px-8'} to={to} >{text}</Link>
         </div>
     )
 }
@@ -40,8 +41,17 @@ export function NavigationTab() {
     const {isConnected} = useWalletConnection();
     const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
     const account = useAppSelector(selectAccount);
+    const location = useLocation();
+
+    const isMintLocation = location.pathname.includes('/mint') || location.pathname === '/';
+
+    const [isMintTab, setIsMintTab] = useState(isMintLocation);
 
     const showBadge = walletGovernanceDistributionShare >= 1;
+
+    useEffect(() => {        
+        setIsMintTab(isMintLocation);        
+    }, [isMintLocation]);
 
     useEffect(() => {
         const runAsync = async () => {
@@ -58,8 +68,8 @@ export function NavigationTab() {
 
     return (
         <nav className="bg-orange-50 dark:bg-PrimaryHordeBlue rounded-xl h-11 dark:text-white text-slate-700 sm:text-2xl flex items-center sm:w-80 sm:justify-between px-1 sm:px-0">
-            <Tab text="Mint" to="/" showBadge={false}/>
-            <Tab text="Governance" to="/governance" showBadge={showBadge} />
+            <Tab text="Mint" to={isConnected ? '/mint' : '/'} showBadge={false} isActive={isMintTab}/>
+            <Tab text="Governance" to="/governance" showBadge={showBadge} isActive={!isMintTab}/>
         </nav>
     )
 }

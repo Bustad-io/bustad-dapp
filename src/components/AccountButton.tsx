@@ -2,7 +2,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { Fragment, useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/solid'
 import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { disconnectWallet, selectAccount } from '../features/wallet/walletSlice';
+import { disconnectWallet, selectAccount, selectNetwork } from '../features/wallet/walletSlice';
 import { useWalletConnection } from '../hooks/walletConnectionHook';
 import { ConnectButton } from '../features/wallet/connectButton';
 import { addBustadToWallet, addGovTokenToWallet } from '../providers/web3.provider';
@@ -11,11 +11,12 @@ export function AccountButton() {
     const dispatch = useAppDispatch();
 
     const account = useAppSelector(selectAccount);
+    const network = useAppSelector(selectNetwork);
     const firstAccountPart = account?.slice(0, 6);
     const lastAccountPart = account?.slice(38, 42);
     const [copyConfirmation, showCopyConfirmation] = useState(false);
 
-    const { isConnected, isMetaMask } = useWalletConnection();
+    const { isConnected } = useWalletConnection();
 
     function onCopyAddress() {
         navigator.clipboard.writeText(account!);
@@ -24,11 +25,11 @@ export function AccountButton() {
     }
 
     async function onAddBustadToWallet() {
-        await addBustadToWallet();
+        await addBustadToWallet(network);
     }
 
     async function onAddGovTokenToWallet() {
-        await addGovTokenToWallet();
+        await addGovTokenToWallet(network);
     }
 
     function onDisconnect() {
@@ -83,7 +84,7 @@ export function AccountButton() {
                                     </button>
                                 )}
                             </Menu.Item>
-                            {isMetaMask && <Menu.Item>
+                            {<Menu.Item>
                                 {({ active }) => (
                                     <button
                                         onClick={onAddBustadToWallet}
@@ -94,7 +95,7 @@ export function AccountButton() {
                                     </button>
                                 )}
                             </Menu.Item>}
-                            {isMetaMask && <Menu.Item>
+                            {<Menu.Item>
                                 {({ active }) => (
                                     <button
                                         onClick={onAddGovTokenToWallet}

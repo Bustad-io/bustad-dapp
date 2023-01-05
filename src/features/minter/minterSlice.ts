@@ -5,9 +5,11 @@ import { calculateFeeAmount, calculateFromAmount, calculateToAmount } from './he
 import { selectChosenCurrency } from '../currencyChoice/currencyChoiceSlice';
 import { getContracts } from '../../providers/web3.provider';
 
-export interface MinterState {  
+export interface MinterState {
   rate: number;
+  rateLoading: boolean;
   ETHPrice: number;
+  ETHPriceLoading: boolean;
   mintingFee: number;
   fromAmount: string;
   toAmount: string;
@@ -15,9 +17,11 @@ export interface MinterState {
   govDistributionRate: number;
 }
 
-const initialState: MinterState = {  
+const initialState: MinterState = {
   rate: 0,
+  rateLoading: false,
   ETHPrice: 0,
+  ETHPriceLoading: false,
   mintingFee: 0,
   fromAmount: '',
   toAmount: '',
@@ -27,8 +31,9 @@ const initialState: MinterState = {
 
 export const fetchRateAsync = createAsyncThunk(
   'minter/fetchRate',
-  async () => {
-    const { crowdsale } = getContracts();    
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+    const { crowdsale } = getContracts(state.wallet.network);
     const res = await crowdsale.callStatic.rate();
     return {
       rate: parseToNumber(res)
@@ -38,23 +43,25 @@ export const fetchRateAsync = createAsyncThunk(
 
 export const fetchEthPriceAsync = createAsyncThunk(
   'minter/fetchEthPrice',
-  async () => {
-    const { crowdsale } = getContracts();    
-    const ethPrice = await crowdsale.callStatic.getLatestETHPrice();    
-    
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+    const { crowdsale } = getContracts(state.wallet.network);
+    const ethPrice = await crowdsale.callStatic.getLatestETHPrice();
+
     return {
-      price: parseToNumber(ethPrice),      
+      price: parseToNumber(ethPrice),
     }
   }
 );
 
 export const fetchMintingFeeAsync = createAsyncThunk(
   'minter/fetchMintingFee',
-  async () => {
-    const { bustadToken } = getContracts();        
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+    const { bustadToken } = getContracts(state.wallet.network);
     const fee = await bustadToken.callStatic.getMintingFee();
-    
-    return {      
+
+    return {
       mintingFee: parseToNumber(fee)
     }
   }
@@ -62,11 +69,12 @@ export const fetchMintingFeeAsync = createAsyncThunk(
 
 export const fetchGovDistributionRateAsync = createAsyncThunk(
   'minter/fetchGovDistributionRate',
-  async () => {
-    const { govDist } = getContracts();        
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+    const { govDist } = getContracts(state.wallet.network);
     const rate = await govDist.callStatic.bustadToGovDistributionRatio();
-    
-    return {      
+
+    return {
       govDistributionRate: parseToNumber(rate)
     }
   }
@@ -74,34 +82,48 @@ export const fetchGovDistributionRateAsync = createAsyncThunk(
 
 export const minterSlice = createSlice({
   name: 'minter',
-  initialState,  
+  initialState,
   reducers: {
     setFromAmount: (state, action: PayloadAction<string>) => {
-      state.fromAmount = action.payload;     
+      state.fromAmount = action.payload;
     },
     setToAmount: (state, action: PayloadAction<string>) => {
-      state.toAmount = action.payload;     
+      state.toAmount = action.payload;
     },
     setFeeAmount: (state, action: PayloadAction<number>) => {
       state.feeAmount = action.payload;
     }
   },
   extraReducers: (builder) => {
-    builder      
+    builder    
       .addCase(fetchRateAsync.fulfilled, (state, action) => {
-        state.rate = action.payload.rate;        
+        state.rate = action.payload.rate;
+        state.rateLoading = state.rateLoading = false;
+      })
+      .addCase(fetchRateAsync.pending, (state) => {
+        state.rateLoading = state.rateLoading = true;
+      })
+      .addCase(fetchRateAsync.rejected, (state) => {
+        state.rateLoading = state.rateLoading = false;
       })
       .addCase(fetchEthPriceAsync.fulfilled, (state, action) => {
-        state.ETHPrice = action.payload.price;        
+        state.ETHPrice = action.payload.price;
+        state.ETHPriceLoading = state.ETHPriceLoading = false;
+      })
+      .addCase(fetchEthPriceAsync.pending, (state) => {        
+        state.ETHPriceLoading = state.ETHPriceLoading = true;
+      })
+      .addCase(fetchEthPriceAsync.rejected, (state) => {        
+        state.ETHPriceLoading = state.ETHPriceLoading = false;
       })
       .addCase(fetchMintingFeeAsync.fulfilled, (state, action) => {
-        state.mintingFee = action.payload.mintingFee;        
+        state.mintingFee = action.payload.mintingFee;
       })
       .addCase(fetchGovDistributionRateAsync.fulfilled, (state, action) => {
-        state.govDistributionRate = action.payload.govDistributionRate;        
+        state.govDistributionRate = action.payload.govDistributionRate;
       });
-    }
   }
+}
 );
 
 export const { setFromAmount, setToAmount, setFeeAmount } = minterSlice.actions;
@@ -113,40 +135,42 @@ export const selectFromAmount = (state: RootState) => state.minter.fromAmount;
 export const selectToAmount = (state: RootState) => state.minter.toAmount;
 export const selectFeeAmount = (state: RootState) => state.minter.feeAmount;
 export const selectGovDistributionRate = (state: RootState) => state.minter.govDistributionRate;
+export const selectRateLoading = (state: RootState) => state.minter.rateLoading;
+export const selectEthPriceLoading = (state: RootState) => state.minter.ETHPriceLoading;
 
 export const setFromAmountAndCalculateToAmount =
   (value: string): AppThunk =>
-  (dispatch, getState) => {        
-    const rate = selectRate(getState());
-    const ethPrice = selectEthPrice(getState());
-    const mintingFee = selectMintingFee(getState());
-    const chosenCurrency = selectChosenCurrency(getState());    
-    
-    const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
+    (dispatch, getState) => {
+      const rate = selectRate(getState());
+      const ethPrice = selectEthPrice(getState());
+      const mintingFee = selectMintingFee(getState());
+      const chosenCurrency = selectChosenCurrency(getState());
 
-    const feeAmount = calculateFeeAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
+      const calculatedToAmount = calculateToAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
 
-    dispatch(setFeeAmount(feeAmount));
-    dispatch(setFromAmount(value));
-    dispatch(setToAmount(calculatedToAmount.toString()));    
-  };
+      const feeAmount = calculateFeeAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
 
-  export const setToAmountAndCalculateFromAmount =
+      dispatch(setFeeAmount(feeAmount));
+      dispatch(setFromAmount(value));
+      dispatch(setToAmount(calculatedToAmount.toString()));
+    };
+
+export const setToAmountAndCalculateFromAmount =
   (value: string): AppThunk =>
-  (dispatch, getState) => {
-    const rate = selectRate(getState());
-    const ethPrice = selectEthPrice(getState());
-    const mintingFee = selectMintingFee(getState());
-    const chosenCurrency = selectChosenCurrency(getState());
+    (dispatch, getState) => {
+      const rate = selectRate(getState());
+      const ethPrice = selectEthPrice(getState());
+      const mintingFee = selectMintingFee(getState());
+      const chosenCurrency = selectChosenCurrency(getState());
 
-    const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
+      const calculatedFromAmount = calculateFromAmount(Number(value), rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
 
-    const feeAmount = calculateFeeAmount(calculatedFromAmount, rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
+      const feeAmount = calculateFeeAmount(calculatedFromAmount, rate, chosenCurrency !== 'eth', ethPrice, mintingFee);
 
-    dispatch(setFeeAmount(feeAmount));
-    dispatch(setToAmount(value));
-    dispatch(setFromAmount(calculatedFromAmount.toString()));
-  };
+      dispatch(setFeeAmount(feeAmount));
+      dispatch(setToAmount(value));
+      dispatch(setFromAmount(calculatedFromAmount.toString()));
+    };
 
 
 export default minterSlice.reducer;
