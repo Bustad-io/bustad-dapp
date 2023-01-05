@@ -34,7 +34,7 @@ export function Input({ amount, onChange, insufficientBalance, currencyName, bal
                 <span className="flex text-sm pl-2 mt-2 space-x-1">
                     <span className="font-semibold">Balance: </span>
                     <LoadingTextComponent loading={balanceLoading} useSpinner>
-                        <span>{balance.toPrecision(4)}</span>
+                        <span>{balance}</span>
                     </LoadingTextComponent>
                 </span>
             </div>

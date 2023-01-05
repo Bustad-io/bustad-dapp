@@ -126,9 +126,9 @@ export function Minter() {
   return (
     <MainBox title="Mint">
       <>
-        <Input balance={balance} currencyName={chosenCurrency.toUpperCase()} amount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
+        <Input balance={Number(balance.toFixed(4))} currencyName={chosenCurrency.toUpperCase()} amount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
         <div className="mt-4">
-          <Input balance={walletBalance.bustadToken} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()} />
+          <Input balance={Number(walletBalance.bustadToken.toFixed(2))} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()} />
         </div>
         <div className="flex justify-end mt-2 mb-12 h-5">
           {isConnected && <InfoPopover />}
