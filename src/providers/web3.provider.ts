@@ -62,7 +62,7 @@ export async function connectWallet(network: NetworkTypes, walletName?: WalletTy
   const web3Modal = getWeb3Modal(network);
 
   provider = !!walletName ? await web3Modal.connectTo(walletName) : await web3Modal.connect();
-  library = new ethers.providers.Web3Provider(provider);
+  library = new ethers.providers.Web3Provider(provider, "any");
 }
 
 export function getSigner(): Signer {

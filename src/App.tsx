@@ -25,7 +25,7 @@ function App() {
 
   useEffect(() => {
     if (IS_DEV_ENV) {
-      ReactGA.initialize(ANALYTICS_ID_TEST, { debug: true });
+      ReactGA.initialize(ANALYTICS_ID_TEST, { debug: false });
     } else {
       ReactGA.initialize(ANALYTICS_ID);
     }
