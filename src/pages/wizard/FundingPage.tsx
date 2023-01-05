@@ -3,7 +3,7 @@ import { MainBox } from "../../components/MainBox";
 import { PrimaryButtonSmall } from "../../components/PrimaryButton";
 import { WhiteSection } from "../../components/WhiteSection";
 import { useNavigate } from 'react-router-dom';
-import { fetchBalanceAsync, selectBalanceLoading, selectWalletBalance } from "../../features/wallet/walletSlice";
+import { fetchBalanceAsync, selectBalanceLoading, selectNetwork, selectWalletBalance } from "../../features/wallet/walletSlice";
 import { RampInstantSDK, RampInstantEventTypes } from "@ramp-network/ramp-instant-sdk";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { useEffect } from "react";
@@ -15,6 +15,7 @@ import ReactGA from "react-ga";
 function FundingPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const network = useAppSelector(selectNetwork);
 
   const walletBalance = useAppSelector(selectWalletBalance);
   const balanceLoading = useAppSelector(selectBalanceLoading);
@@ -23,7 +24,7 @@ function FundingPage() {
 
   const onContinue = () => {
     navigate('/mint');
-  }
+  }  
 
   useEffect(() => {
     if (!isConnected) {
@@ -33,13 +34,13 @@ function FundingPage() {
 
   const showOnRamp = () => {
 
-    if (true) {
+    if (network !== "mainnet") {
       new RampInstantSDK({
         hostAppName: 'Bustad',
         hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',        
         url: 'https://ri-widget-staging.firebaseapp.com/',
         swapAsset: 'GOERLI_ETH',
-        userAddress: address!,
+        userAddress: address!
       })
       .on(RampInstantEventTypes.WIDGET_CLOSE, (e) => ReactGA.event({category: 'On ramp',action: 'Widget close'}))
       .on(RampInstantEventTypes.PURCHASE_CREATED, (e) => ReactGA.event({category: 'On ramp',action: 'Purchase created'}))
@@ -49,7 +50,7 @@ function FundingPage() {
         hostAppName: 'Bustad',
         hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',
         swapAsset: 'ETH_ETH',        
-        userAddress: address!,        
+        userAddress: address!
       })
       .on(RampInstantEventTypes.WIDGET_CLOSE, (e) => ReactGA.event({category: 'On ramp',action: 'Widget close'}))      
       .on(RampInstantEventTypes.PURCHASE_CREATED, (e) => ReactGA.event({category: 'On ramp',action: 'Purchase created'}))
