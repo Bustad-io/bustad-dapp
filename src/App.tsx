@@ -29,7 +29,10 @@ function App() {
     } else {
       ReactGA.initialize(ANALYTICS_ID);
     }
-  }, []);
+    if(location.pathname === '/counter') {
+      setShowNavigationTab(false);
+    }    
+  }, [location.pathname]);
 
   useEffect(() => {
     ReactGA.pageview(location.pathname);
