@@ -5,7 +5,6 @@ import { BustadTokenSymbol } from '../../config';
 import { ReactComponent as BustadIcon } from '../../assets/icons/BustadIcon.svg';
 import { CurrencyChoiceModal } from './CurrencyChoiceModal';
 import { useState } from 'react';
-import ReactGA from 'react-ga';
 
 export interface CurrencyChoiceProp {  
   isBustad: boolean
@@ -18,7 +17,6 @@ export function CurrencyChoice({ isBustad }: CurrencyChoiceProp) {
   const chosenOption = useAppSelector(selectChosenOption);
 
   function onOpenModal() {
-    ReactGA.modalview('/mint/select-token');
     showModal(true);
   }
 

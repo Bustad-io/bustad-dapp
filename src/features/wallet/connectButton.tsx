@@ -16,12 +16,12 @@ export function ConnectButton({wrapperClass = '', buttonClass = '', showIcon = f
   const onClick = async () => {  
     await dispatch(connectWalletAsync());
     await dispatch(fetchAccountAsync());
-    dispatch(fetchBalanceAsync());
-    dispatch(fetchAllowanceAsync());
-    dispatch(fetchRateAsync());
-    dispatch(fetchEthPriceAsync());
-    dispatch(fetchMintingFeeAsync());
-    dispatch(fetchGovDistributionRateAsync());
+    await dispatch(fetchBalanceAsync());
+    await dispatch(fetchAllowanceAsync());
+    await dispatch(fetchRateAsync());
+    await dispatch(fetchEthPriceAsync());
+    await dispatch(fetchMintingFeeAsync());
+    await dispatch(fetchGovDistributionRateAsync());
 
     AddAccountsChangedListener(dispatch);
   }

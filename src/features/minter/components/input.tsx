@@ -28,13 +28,11 @@ export function Input({ amount, onChange, insufficientBalance, currencyName, bal
     return (
         <div onClick={onFocusInput} className="flex items-center bg-white rounded-2xl h-23 px-3">
             <div>
-                <div className="max-w-[110px]">
-                    <CurrencyChoice isBustad={currencyName === BustadTokenSymbol}/>
-                </div>
-                <span className="flex text-sm pl-2 mt-2 space-x-1">
+                <CurrencyChoice isBustad={currencyName === BustadTokenSymbol}/>
+                <span className="text-sm pl-2 mt-2 block">
                     <span className="font-semibold">Balance: </span>
-                    <LoadingTextComponent loading={balanceLoading} useSpinner>
-                        <span>{balance}</span>
+                    <LoadingTextComponent loading={balanceLoading}>
+                        <span>{balance.toPrecision(4)}</span>                    
                     </LoadingTextComponent>
                 </span>
             </div>

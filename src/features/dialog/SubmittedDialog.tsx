@@ -1,33 +1,29 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
-import { explorerBaseUri, testExplorerBaseUri } from '../../config';
+import { explorerBaseUri } from '../../config';
 import { hideSubmittedModal, selectSubmitted, selectSubmittedShowAddBustadToWalletButton, selectSubmittedShowAddGovToWalletButton } from './dialogSlice'
 import { ReactComponent as SuccessIcon } from '../../assets/icons/SuccessIcon.svg';
 import { addBustadToWallet, addGovTokenToWallet } from '../../providers/web3.provider';
-import { selectNetwork } from '../wallet/walletSlice';
 
 
 export default function SubmittedDialog() {
   const dispatch = useAppDispatch();
 
   const modal = useAppSelector(selectSubmitted);
-  const network = useAppSelector(selectNetwork);
   const showAddBustadToWalletButton = useAppSelector(selectSubmittedShowAddBustadToWalletButton);
-  const showAddGovToWalletButton = useAppSelector(selectSubmittedShowAddGovToWalletButton);  
-
-  const explorerUri = network === 'mainnet' ? explorerBaseUri : testExplorerBaseUri;
+  const showAddGovToWalletButton = useAppSelector(selectSubmittedShowAddGovToWalletButton);
 
   function closeModal() {
     dispatch(hideSubmittedModal());
   }
 
   async function onAddBustadToMetaMask() {
-    await addBustadToWallet(network);
+    await addBustadToWallet();
   }
 
   async function onAddGovToMetaMask() {
-    await addGovTokenToWallet(network);
+    await addGovTokenToWallet();
   }
 
   return (
@@ -64,7 +60,7 @@ export default function SubmittedDialog() {
                   Transaction submitted
                 </Dialog.Title>
                 <div className="my-4">
-                  <a href={`${explorerUri}/tx/${modal.txHash}`} target="_blank" rel="noopener noreferrer" className='underline text-blue-700'>View on explorer</a>
+                  <a href={`${explorerBaseUri}/tx/${modal.txHash}`} target="_blank" rel="noopener noreferrer" className='underline text-blue-700'>View on explorer</a>
                 </div>
                 <div className='animate-ping-once'>
                   <SuccessIcon/>

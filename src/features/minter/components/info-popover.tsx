@@ -1,18 +1,16 @@
 import { Popover, Transition } from '@headlessui/react'
+import { ReactComponent as InfoIcon } from '../../../assets/icons/infoIcon.svg';
 import { Fragment } from 'react';
 import { useAppSelector } from '../../../app/hooks';
 import { selectChosenCurrency } from '../../currencyChoice/currencyChoiceSlice';
-import { selectEthPrice, selectEthPriceLoading, selectFeeAmount, selectMintingFee, selectRate, selectRateLoading } from '../minterSlice';
+import { selectEthPrice, selectFeeAmount, selectMintingFee, selectRate } from '../minterSlice';
 import { BustadTokenSymbol } from '../../../config';
-import { LoadingTextComponent } from '../../../components/LoadingTextComponent';
 
 export function InfoPopover() {
   const chosenCurrency = useAppSelector(selectChosenCurrency);
   const feeAmount = useAppSelector(selectFeeAmount);
   const mintingFee = useAppSelector(selectMintingFee);
   const ethPrice = useAppSelector(selectEthPrice);
-  const ethPriceLoading = useAppSelector(selectEthPriceLoading);
-  const rateLoading = useAppSelector(selectRateLoading);
   const rate = useAppSelector(selectRate);
 
   const bustadPrice = (chosenCurrency === 'eth' ? ethPrice : 1) * rate;
@@ -23,11 +21,14 @@ export function InfoPopover() {
         {({ open }) => (
           <>
             <div className='flex text-sm text-white relative'>
-              <LoadingTextComponent loading={ethPriceLoading || rateLoading} useSpinner>
-                {chosenCurrency === 'eth'
-                  ? <span className='mr-2'>1 ETH = {bustadPrice.toFixed(0)}  {BustadTokenSymbol}</span>
-                  : <span className='mr-2'>1 {chosenCurrency.toUpperCase()} = {bustadPrice.toPrecision(2)} {BustadTokenSymbol}</span>}
-              </LoadingTextComponent>              
+              {chosenCurrency === 'eth'
+                ? <span className='mr-2'>1 ETH = {bustadPrice.toFixed(0)}  {BustadTokenSymbol}</span>
+                : <span className='mr-2'>1 {chosenCurrency.toUpperCase()} = {bustadPrice.toPrecision(2)} {BustadTokenSymbol}</span>}
+              <Popover.Button
+                className={''}
+              >
+                <InfoIcon className='h-5 w-5 text-white' />
+              </Popover.Button>
             </div>
             <Transition
               as={Fragment}
@@ -53,5 +54,6 @@ export function InfoPopover() {
         )}
       </Popover>
     </div>
+
   )
 }

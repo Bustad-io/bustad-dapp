@@ -1,5 +1,6 @@
 import { useAppSelector } from "../../../app/hooks";
 import { PrimaryButton } from "../../../components/PrimaryButton";
+import { useWeb3Connector } from "../../../hooks/web3Hook";
 import { selectChosenCurrency } from "../../currencyChoice/currencyChoiceSlice";
 
 export interface ButtonGroupProp {
@@ -11,7 +12,8 @@ export interface ButtonGroupProp {
 }
 
 export function ButtonGroup({ insufficientBalance, fromAmountNumber, onClickMint, onClickAllow, allowance }: ButtonGroupProp) {
-  const chosenCurrency = useAppSelector(selectChosenCurrency);  
+  const chosenCurrency = useAppSelector(selectChosenCurrency);
+  const { correctChain } = useWeb3Connector();
 
   return (
     <div className="flex flex-col">
@@ -26,13 +28,13 @@ export function ButtonGroup({ insufficientBalance, fromAmountNumber, onClickMint
         </div>}
       <div className="flex">
         {chosenCurrency === 'eth' ?
-          <PrimaryButton text="Mint" disabled={insufficientBalance || fromAmountNumber === 0} onClick={onClickMint} /> :
+          <PrimaryButton text="Mint" disabled={insufficientBalance || fromAmountNumber === 0 || !correctChain} onClick={onClickMint} /> :
           <>
             <div className="grow  mr-2">
-              <PrimaryButton text="Allow" disabled={allowance >= fromAmountNumber} onClick={onClickAllow} />
+              <PrimaryButton text="Allow" disabled={allowance >= fromAmountNumber || !correctChain} onClick={onClickAllow} />
             </div>
             <div className="grow">
-              <PrimaryButton text="Mint" disabled={allowance < fromAmountNumber || insufficientBalance || fromAmountNumber === 0} onClick={onClickMint} />
+              <PrimaryButton text="Mint" disabled={allowance < fromAmountNumber || insufficientBalance || fromAmountNumber === 0 || !correctChain} onClick={onClickMint} />
             </div>
           </>
         }

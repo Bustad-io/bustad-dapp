@@ -15,14 +15,10 @@ export interface CurrencyChoice {
 
 const initialState: CurrencyChoice = {
   chosenOption: {
-    value: 'eth',
-    img: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022'
+    value: 'usdc',
+    img: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg?v=022'
   },
   options: [
-    {
-      value: 'eth',
-      img: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022'
-    },
     {
       value: 'usdc',
       img: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.svg?v=022'
@@ -30,6 +26,10 @@ const initialState: CurrencyChoice = {
     {
       value: 'dai',
       img: 'https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.svg?v=022'
+    },
+    {
+      value: 'eth',
+      img: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=022'
     }
   ]
 };

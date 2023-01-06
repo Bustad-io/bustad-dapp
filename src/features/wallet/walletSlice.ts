@@ -1,13 +1,11 @@
-import ReactGA from 'react-ga';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk, RootState } from '../../app/store';
 import { formatUnitToNumber, parseToNumber } from '../../utils/format';
-import { GetContractConfig } from '../../config';
-import { connectWallet, getContracts, getLibrary, getSigner, WalletType, getWeb3Modal } from '../../providers/web3.provider';
+import { CoinContractConfig } from '../../config';
+import { connectWallet, getContracts, getLibrary, getSigner, web3Modal } from '../../providers/web3.provider';
 
 export type WalletStatus = 'connected' | 'not_connected' | 'failed_to_connect' | 'loading';
 export type WalletProvider = 'metamask' | 'wallet_connect' | 'coinbase' | 'none';
-export type NetworkTypes = 'mainnet' | 'goerli' | 'unknown';
 
 export interface WalletState {  
   status: WalletStatus;  
@@ -16,8 +14,7 @@ export interface WalletState {
   allowance: WalletAllowance;
   governance: WalletGovernance;
   provider: WalletProvider;
-  chainId: number;
-  network: NetworkTypes
+  chainId: number
 }
 
 export interface WalletBalance {
@@ -42,7 +39,6 @@ const initialState: WalletState = {
   status: 'not_connected',
   provider: 'none',
   chainId: 0,
-  network: 'mainnet',
   account: null,
   governance: {
     distributionShare: 0
@@ -70,7 +66,7 @@ export const fetchGovernanceDistributorShareAsync = createAsyncThunk(
       throw Error('Wallet not connected');
     }
 
-    const { govDist } = getContracts(state.wallet.network);
+    const { govDist } = getContracts();    
 
     const distAmount = await govDist.getGovTokenShareForUser(state.wallet.account);
 
@@ -84,21 +80,20 @@ export const fetchAllowanceAsync = createAsyncThunk(
   'wallet/fetchAllowance',
   async (_, {getState}) => {
     const state = getState() as RootState;
-    const network = state.wallet.network;
 
     if(state.wallet.status !== 'connected') {
       throw Error('Wallet not connected');
     }
 
-    const { dai, usdc, crowdsale } = getContracts(state.wallet.network);    
+    const { dai, usdc, crowdsale } = getContracts();    
 
     const daiAllowance = await dai.allowance(state.wallet.account, crowdsale.address);
     const usdcAllowance = await usdc.allowance(state.wallet.account, crowdsale.address);    
 
     return {          
-      allowance: {        
-        dai: formatUnitToNumber(daiAllowance, GetContractConfig(network).dai.decimal),
-        usdc: formatUnitToNumber(usdcAllowance, GetContractConfig(network).usdc.decimal),
+      allowance: {
+        dai: formatUnitToNumber(daiAllowance, CoinContractConfig.dai.decimal),
+        usdc: formatUnitToNumber(usdcAllowance, CoinContractConfig.usdc.decimal),
       }
     }
   }
@@ -108,7 +103,6 @@ export const fetchBalanceAsync = createAsyncThunk(
   'wallet/fetchBalance',
   async (_, {getState}) => {    
     const state = getState() as RootState;
-    const network = state.wallet.network;
 
     if(state.wallet.status !== 'connected') {
       throw Error('Wallet not connected');
@@ -120,7 +114,7 @@ export const fetchBalanceAsync = createAsyncThunk(
 
     const library =  getLibrary();  
 
-    const { bustadToken, govToken, dai, usdc } = getContracts(state.wallet.network);
+    const { bustadToken, govToken, dai, usdc } = getContracts();
 
     const ethBalance = await library.getBalance(state.wallet.account!);
     const bustadBalance = await bustadToken.balanceOf(state.wallet.account);
@@ -134,8 +128,8 @@ export const fetchBalanceAsync = createAsyncThunk(
         eth: parseToNumber(ethBalance),
         bustadToken: parseToNumber(bustadBalance),
         govToken: parseToNumber(govBalance),
-        dai: formatUnitToNumber(daiBalance, GetContractConfig(network).dai.decimal),
-        usdc: formatUnitToNumber(usdcBalance, GetContractConfig(network).usdc.decimal),
+        dai: formatUnitToNumber(daiBalance, CoinContractConfig.dai.decimal),
+        usdc: formatUnitToNumber(usdcBalance, CoinContractConfig.usdc.decimal),
       }      
     }
   }
@@ -143,23 +137,12 @@ export const fetchBalanceAsync = createAsyncThunk(
 
 export const connectWalletAsync = createAsyncThunk(
   'wallet/connectWallet',
-  async (walletName: WalletType | undefined, {getState}) => {    
-    const state = getState() as RootState;
-
-    await connectWallet(state.wallet.network, walletName);
+  async () => {    
+    await connectWallet();
     const library =  getLibrary();  
     const network = await library.getNetwork()
-    
-    ReactGA.event({
-      category: 'Wallet',
-      action: 'Connected'
-    });
-
-    const networkType: NetworkTypes = network.chainId === 1 ? 'mainnet' : 'goerli';
-
     return {
-      chainId: network.chainId,
-      network: networkType
+      chainId: network.chainId
     }
   }
 );
@@ -185,9 +168,6 @@ export const walletSlice = createSlice({
     setAccount: (state, action: PayloadAction<string>) => {      
       state.account = action.payload      
     },
-    setNetwork: (state, action: PayloadAction<NetworkTypes>) => {
-      state.network = action.payload;
-    },
     resetWallet: (state) => {            
       state.status = initialState.status;
       state.account = initialState.account;      
@@ -202,7 +182,6 @@ export const walletSlice = createSlice({
       .addCase(connectWalletAsync.fulfilled, (state, action) => {
         state.status = 'connected';                
         state.chainId = action.payload.chainId;
-        state.network = action.payload.network;
       })
       .addCase(connectWalletAsync.pending, (state) => {
         state.status = 'loading';        
@@ -233,25 +212,16 @@ export const walletSlice = createSlice({
 
 export const disconnectWallet =
   (): AppThunk =>
-  (dispatch, getState) => {
-    const state = getState();
-    const web3Modal = getWeb3Modal(state.wallet.network);
-
+  (dispatch) => {        
     web3Modal.clearCachedProvider();
     dispatch(resetWallet());
-
-    ReactGA.event({
-      category: 'Wallet',
-      action: 'Disconnected'
-    });
   };
 
-export const { setAccount, resetWallet, setWalletProvider, setNetwork } = walletSlice.actions;
+export const { setAccount, resetWallet, setWalletProvider } = walletSlice.actions;
 
 export const selectAccount = (state: RootState) => state.wallet.account;
 export const selectBalanceLoading = (state: RootState) => state.wallet.balance.loading;
 export const selectWalletStatus = (state: RootState) => state.wallet.status;
-export const selectNetwork = (state: RootState) => state.wallet.network;
 export const selectWalletBalance = (state: RootState) => state.wallet.balance;
 export const selectWalletAllowance = (state: RootState) => state.wallet.allowance;
 export const selectWalletGovernanceDistributionShare = (state: RootState) => state.wallet.governance.distributionShare;
