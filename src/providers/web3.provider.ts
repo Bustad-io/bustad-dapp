@@ -6,6 +6,7 @@ import BustadTokenDef from '../contracts/BustadToken.sol/BustadToken.json';
 import GovTokenDef from '../contracts/governance/GovernanceToken.sol/GovernanceToken.json';
 import DaiDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
 import UsdcDef from '../contracts/Crowdsale.sol/IERC20Extended.json';
+import UniswapLpNftDef from '../contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json';
 import GovDistDef from '../contracts/governance/GovernanceDistributor.sol/GovernanceDistributor.json';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
@@ -18,6 +19,7 @@ export interface Contracts {
   usdc: Contract;
   govDist: Contract;
   govToken: Contract;
+  uniswapLpNft: Contract;
 }
 
 const providerOptions = {
@@ -87,7 +89,8 @@ export function getContracts(network: NetworkTypes, useSigner = false, ): Contra
     govToken: new ethers.Contract(contractConfig.GovToken.address, GovTokenDef.abi, providerOrSigner),
     govDist: new ethers.Contract(contractConfig.GovDist.address, GovDistDef.abi, providerOrSigner),
     dai: new ethers.Contract(contractConfig.dai.address, DaiDef.abi, providerOrSigner),
-    usdc: new ethers.Contract(contractConfig.usdc.address, UsdcDef.abi, providerOrSigner)
+    usdc: new ethers.Contract(contractConfig.usdc.address, UsdcDef.abi, providerOrSigner),
+    uniswapLpNft: new ethers.Contract(contractConfig.UniswapLpNft.address, UniswapLpNftDef.abi, providerOrSigner),
   }
 }
 

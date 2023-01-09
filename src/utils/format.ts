@@ -12,7 +12,7 @@ export function parseToNumber(weiValue: BigNumberish) {
   return Number(toEther(weiValue));  
 }
 
-export function formatUnitToNumber(weiValue: BigNumberish, decimal: number) {
+export function formatUnitToNumber(weiValue: BigNumberish, decimal: number = 0) {
   return Number(ethers.utils.formatUnits(weiValue, decimal));
 }
 

@@ -17,6 +17,7 @@ import ReactGA from 'react-ga';
 import { ANALYTICS_ID, ANALYTICS_ID_TEST, IS_DEV_ENV } from './config';
 import { useAppSelector } from './app/hooks';
 import { selectNetwork } from './features/wallet/walletSlice';
+import StakingPage from './pages/staking/StakingPage';
 
 function App() {
   const location = useLocation();
@@ -75,6 +76,7 @@ function App() {
               <Route path="mint/app-store-redirect" element={<MobileRedirectionPage />} />
               <Route path="mint/connect" element={<ConnectPage />} />
               <Route path="mint/funding" element={<FundingPage />} />
+              <Route path="stake" element={<StakingPage />} />
             </Routes>
           </div>
         </div>

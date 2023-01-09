@@ -40,6 +40,10 @@ const GovTokenGoerliAddress: string = process.env.REACT_APP_GOVERNANCE_TOKEN_ADD
 const DaiGoerliAddress: string = process.env.REACT_APP_DAI_ADDRESS_GOERLI ?? "";
 const UsdcGoerliAddress: string = process.env.REACT_APP_USDC_ADDRESS_GOERLI ?? "";
 
+const UniswapLpNftGoerliAddress: string = process.env.REACT_APP_UNISWAP_LP_NFT_GOERLI ?? "";
+const UniswapLpNftAddress: string = process.env.REACT_APP_UNISWAP_LP_NFT ?? "";
+
+
 export const GetContractConfig = (network: NetworkTypes) => {
 
     if (network === "mainnet") {
@@ -63,6 +67,9 @@ export const GetContractConfig = (network: NetworkTypes) => {
             },
             GovToken: {
                 address: GovTokenAddress
+            },
+            UniswapLpNft: {
+                address: UniswapLpNftAddress
             }
         };
     }
@@ -87,6 +94,9 @@ export const GetContractConfig = (network: NetworkTypes) => {
         },
         GovToken: {
             address: GovTokenGoerliAddress
+        },
+        UniswapLpNft: {
+            address: UniswapLpNftGoerliAddress
         }
     }
 };
