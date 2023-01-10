@@ -4,6 +4,7 @@ import walletReducer from '../features/wallet/walletSlice';
 import minterReducer from '../features/minter/minterSlice';
 import dialogReducer from '../features/dialog/dialogSlice';
 import wizardReducer from '../features/wizard/wizardSlice';
+import adminReducer from '../features/admin/adminSlice';
 
 import { AddWeb3EventListeners } from '../app/event-listeners';
 
@@ -14,7 +15,8 @@ export const store = configureStore({
     wallet: walletReducer,
     minter: minterReducer,
     dialog: dialogReducer,
-    wizard: wizardReducer
+    wizard: wizardReducer,
+    admin: adminReducer
   },
 });
 

@@ -6,9 +6,11 @@ import { disconnectWallet, selectAccount, selectNetwork } from '../features/wall
 import { useWalletConnection } from '../hooks/walletConnectionHook';
 import { ConnectButton } from '../features/wallet/connectButton';
 import { addBustadToWallet, addGovTokenToWallet } from '../providers/web3.provider';
+import { useNavigate } from 'react-router-dom';
 
 export function AccountButton() {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     const account = useAppSelector(selectAccount);
     const network = useAppSelector(selectNetwork);
@@ -16,7 +18,7 @@ export function AccountButton() {
     const lastAccountPart = account?.slice(38, 42);
     const [copyConfirmation, showCopyConfirmation] = useState(false);
 
-    const { isConnected } = useWalletConnection();
+    const { isConnected, isAdmin } = useWalletConnection();
 
     function onCopyAddress() {
         navigator.clipboard.writeText(account!);
@@ -34,6 +36,10 @@ export function AccountButton() {
 
     function onDisconnect() {
         dispatch(disconnectWallet());
+    }
+
+    function goToAdmin() {
+        navigate('admin');
     }
 
     return isConnected && !!account ? (
@@ -103,6 +109,17 @@ export function AccountButton() {
                                             } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                                     >
                                         Add EIG to wallet
+                                    </button>
+                                )}
+                            </Menu.Item>}
+                            {isAdmin && <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        onClick={goToAdmin}
+                                        className={`${active ? 'bg-Coral text-white' : 'text-gray-900'
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                    >
+                                        Admin
                                     </button>
                                 )}
                             </Menu.Item>}

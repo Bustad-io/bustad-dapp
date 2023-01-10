@@ -42,6 +42,12 @@ const UsdcGoerliAddress: string = process.env.REACT_APP_USDC_ADDRESS_GOERLI ?? "
 
 const UniswapLpNftGoerliAddress: string = process.env.REACT_APP_UNISWAP_LP_NFT_GOERLI ?? "";
 const UniswapLpNftAddress: string = process.env.REACT_APP_UNISWAP_LP_NFT ?? "";
+const UniswapLpPoolEthEigAddress: string = process.env.REACT_APP_UNISWAP_LP_POOL_ETH_EIG_GOERLI ?? "";
+const UniswapLpPoolEthEigGoerliAddress: string = process.env.REACT_APP_UNISWAP_LP_POOL_ETH_EIG_GOERLI ?? "";
+const UniswapStakerAddress: string = process.env.REACT_APP_UNISWAP_STAKER ?? "";
+const UniswapStakerGoerliAddress: string = process.env.REACT_APP_UNISWAP_STAKER_GOERLI ?? "";
+
+export const AdminAddress: string = process.env.REACT_APP_ADMIN_ADDRESS ?? "";
 
 
 export const GetContractConfig = (network: NetworkTypes) => {
@@ -66,10 +72,18 @@ export const GetContractConfig = (network: NetworkTypes) => {
                 address: GovDistAddress
             },
             GovToken: {
+                label: "EIG",
                 address: GovTokenAddress
             },
             UniswapLpNft: {
                 address: UniswapLpNftAddress
+            },
+            UniswapPoolEthEig: {
+                label: "ETH/EIG 1%",
+                address: UniswapLpPoolEthEigAddress
+            },
+            UniswapStaker: {
+                address: UniswapStakerAddress
             }
         };
     }
@@ -93,10 +107,18 @@ export const GetContractConfig = (network: NetworkTypes) => {
             address: GovDistGoerliAddress
         },
         GovToken: {
+            label: "EIG",
             address: GovTokenGoerliAddress
         },
         UniswapLpNft: {
             address: UniswapLpNftGoerliAddress
+        },
+        UniswapPoolEthEig: {
+            label: "ETH/EIG 1%",
+            address: UniswapLpPoolEthEigGoerliAddress
+        },
+        UniswapStaker: {
+            address: UniswapStakerGoerliAddress
         }
     }
 };

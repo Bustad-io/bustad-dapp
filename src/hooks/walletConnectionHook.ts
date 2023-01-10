@@ -1,10 +1,12 @@
 import { useAppSelector } from "../app/hooks";
+import { AdminAddress } from "../config";
 import { selectAccount, selectWalletProvider, selectWalletStatus } from "../features/wallet/walletSlice";
 
 export function useWalletConnection() {
     const walletStatus = useAppSelector(selectWalletStatus);
     const walletProvider = useAppSelector(selectWalletProvider);
     const account = useAppSelector(selectAccount);
+    const isAdmin = account === AdminAddress;
 
     const firstAccountPart = account?.slice(0, 6);
     const lastAccountPart = account?.slice(38, 42);    
@@ -16,5 +18,6 @@ export function useWalletConnection() {
         isWalletConnect: walletProvider === "wallet_connect",
         truncatedAddress: `${firstAccountPart}...${lastAccountPart}`,
         address: account,
+        isAdmin
     }
 }
