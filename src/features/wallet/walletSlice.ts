@@ -97,8 +97,8 @@ export const fetchAllowanceAsync = createAsyncThunk(
 
     return {          
       allowance: {        
-        dai: formatUnitToNumber(daiAllowance, GetContractConfig(network).dai.decimal),
-        usdc: formatUnitToNumber(usdcAllowance, GetContractConfig(network).usdc.decimal),
+        dai: formatUnitToNumber(daiAllowance, GetContractConfig(network).Dai.decimal),
+        usdc: formatUnitToNumber(usdcAllowance, GetContractConfig(network).Usdc.decimal),
       }
     }
   }
@@ -134,8 +134,8 @@ export const fetchBalanceAsync = createAsyncThunk(
         eth: parseToNumber(ethBalance),
         bustadToken: parseToNumber(bustadBalance),
         govToken: parseToNumber(govBalance),
-        dai: formatUnitToNumber(daiBalance, GetContractConfig(network).dai.decimal),
-        usdc: formatUnitToNumber(usdcBalance, GetContractConfig(network).usdc.decimal),
+        dai: formatUnitToNumber(daiBalance, GetContractConfig(network).Dai.decimal),
+        usdc: formatUnitToNumber(usdcBalance, GetContractConfig(network).Usdc.decimal),
       }      
     }
   }

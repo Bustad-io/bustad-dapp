@@ -1,4 +1,5 @@
 import { NetworkTypes } from "./features/wallet/walletSlice";
+import { ContractConfig } from "./types/ContractConfigType";
 
 export const BustadTokenSymbol: string = process.env.REACT_APP_BUSTAD_TOKEN_SYMBOL ?? "";
 export const BustadTokenDecimal: string = process.env.REACT_APP_BUSTAD_TOKEN_DECIMAL ?? "";
@@ -49,26 +50,38 @@ const UniswapStakerGoerliAddress: string = process.env.REACT_APP_UNISWAP_STAKER_
 
 export const AdminAddress: string = process.env.REACT_APP_ADMIN_ADDRESS ?? "";
 
+export const WETHGoerliAddress: string = process.env.REACT_APP_WETH_TOKEN_GOERLI_ADDRESS ?? "";
+export const WETHAddress: string = process.env.REACT_APP_WETH_TOKEN_ADDRESS ?? "";
 
-export const GetContractConfig = (network: NetworkTypes) => {
+
+export function GetContractConfig(network: NetworkTypes): ContractConfig {
 
     if (network === "mainnet") {
         return {
-            usdc: {
+            Weth: {
+                label: "ETH",
+                address: WETHAddress,                
+            },
+            Usdc: {
+                label: "USDC",
                 address: UsdcAddress,
                 decimal: UsdcDecimal
             },
-            dai: {
+            Dai: {
+                label: "DAI",
                 address: DaiAddress,
                 decimal: DaiDecimal
             },
-            crowdsale: {
+            Crowdsale: {
+                label: "Crowdsale",
                 address: CrowdsaleAddress
             },
             BustadCoin: {
+                label: "BUSC",
                 address: BustadTokenAddress
             },
             GovDist: {
+                label: "GovDist",
                 address: GovDistAddress
             },
             GovToken: {
@@ -76,6 +89,7 @@ export const GetContractConfig = (network: NetworkTypes) => {
                 address: GovTokenAddress
             },
             UniswapLpNft: {
+                label: "Uniswap V3 LP NFT",
                 address: UniswapLpNftAddress
             },
             UniswapPoolEthEig: {
@@ -83,27 +97,37 @@ export const GetContractConfig = (network: NetworkTypes) => {
                 address: UniswapLpPoolEthEigAddress
             },
             UniswapStaker: {
+                label: "Uniswap V3 Staker",
                 address: UniswapStakerAddress
             }
         };
     }
 
     return {
-        usdc: {
+        Weth: {
+            label: "ETH",
+            address: WETHGoerliAddress,                
+        },
+        Usdc: {
+            label: "USDC",
             address: UsdcGoerliAddress,
             decimal: UsdcDecimal
         },
-        dai: {
+        Dai: {
+            label: "DAI",
             address: DaiGoerliAddress,
             decimal: DaiDecimal
         },
-        crowdsale: {
+        Crowdsale: {
+            label: "Crowdsale",
             address: CrowdsaleGoerliAddress
         },
         BustadCoin: {
+            label: "BUSC",
             address: BustadTokenGoerliAddress
         },
         GovDist: {
+            label: "GovDist",
             address: GovDistGoerliAddress
         },
         GovToken: {
@@ -111,6 +135,7 @@ export const GetContractConfig = (network: NetworkTypes) => {
             address: GovTokenGoerliAddress
         },
         UniswapLpNft: {
+            label: "Uniswap V3 LP NFT",
             address: UniswapLpNftGoerliAddress
         },
         UniswapPoolEthEig: {
@@ -118,6 +143,7 @@ export const GetContractConfig = (network: NetworkTypes) => {
             address: UniswapLpPoolEthEigGoerliAddress
         },
         UniswapStaker: {
+            label: "Uniswap V3 Staker",
             address: UniswapStakerGoerliAddress
         }
     }

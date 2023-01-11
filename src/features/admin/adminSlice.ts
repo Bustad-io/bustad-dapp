@@ -3,6 +3,7 @@ import { RootState } from '../../app/store';
 
 export interface AdminState {  
   createIncentiveForm: CreateIncentiveForm
+  generatedIncentiveId: string  
 }
 
 interface CreateIncentiveForm {
@@ -19,6 +20,7 @@ interface LabelValue {
 }
 
 const initialState: AdminState = {  
+  generatedIncentiveId: "",
   createIncentiveForm: {
     rewardToken: {
       label: "",
@@ -40,12 +42,16 @@ export const adminSlice = createSlice({
   reducers: {
     setCreateIncentiveForm: (state, action: PayloadAction<CreateIncentiveForm>) => {
       state.createIncentiveForm = action.payload;
+    },
+    setGeneratedIncentiveId: (state, action: PayloadAction<string>) => {
+      state.generatedIncentiveId = action.payload;
     }
   },  
 });
 
-export const { setCreateIncentiveForm } = adminSlice.actions;
+export const { setCreateIncentiveForm, setGeneratedIncentiveId } = adminSlice.actions;
 
 export const selectCreateInsentiveForm = (state: RootState) => state.admin.createIncentiveForm;
+export const selectGeneratedIncentiveId = (state: RootState) => state.admin.generatedIncentiveId;
 
 export default adminSlice.reducer;

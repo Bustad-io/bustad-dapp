@@ -86,12 +86,12 @@ export function getContracts(network: NetworkTypes, useSigner = false, ): Contra
   const contractConfig = GetContractConfig(network);
 
   return {
-    crowdsale: new ethers.Contract(contractConfig.crowdsale.address, CrowdsaleDef.abi, providerOrSigner),
+    crowdsale: new ethers.Contract(contractConfig.Crowdsale.address, CrowdsaleDef.abi, providerOrSigner),
     bustadToken: new ethers.Contract(contractConfig.BustadCoin.address, BustadTokenDef.abi, providerOrSigner),
     govToken: new ethers.Contract(contractConfig.GovToken.address, GovTokenDef.abi, providerOrSigner),
     govDist: new ethers.Contract(contractConfig.GovDist.address, GovDistDef.abi, providerOrSigner),
-    dai: new ethers.Contract(contractConfig.dai.address, DaiDef.abi, providerOrSigner),
-    usdc: new ethers.Contract(contractConfig.usdc.address, UsdcDef.abi, providerOrSigner),
+    dai: new ethers.Contract(contractConfig.Dai.address, DaiDef.abi, providerOrSigner),
+    usdc: new ethers.Contract(contractConfig.Usdc.address, UsdcDef.abi, providerOrSigner),
     uniswapLpNft: new ethers.Contract(contractConfig.UniswapLpNft.address, UniswapLpNftDef.abi, providerOrSigner),
     uniswapStaker: new ethers.Contract(contractConfig.UniswapStaker.address, UniswapStakerDef.abi, providerOrSigner),
   }

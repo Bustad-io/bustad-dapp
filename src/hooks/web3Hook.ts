@@ -13,8 +13,7 @@ export function useWeb3Connector() {
     const chosenCurrency = useAppSelector(selectChosenCurrency);
     const network = useAppSelector(selectNetwork);
     
-
-    const contracts = getContracts(network, walletStatus === "connected");
+    const contracts = getContracts(network, walletStatus === "connected");    
 
     let chosenCurrencyContract;
 
@@ -29,7 +28,7 @@ export function useWeb3Connector() {
           chosenCurrencyContract = null;          
       }    
 
-    return {
+    return {        
         contracts,
         chosenCurrencyContract,        
         networkName: network
