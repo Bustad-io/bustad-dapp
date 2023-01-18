@@ -5,6 +5,7 @@ import minterReducer from '../features/minter/minterSlice';
 import dialogReducer from '../features/dialog/dialogSlice';
 import wizardReducer from '../features/wizard/wizardSlice';
 import adminReducer from '../features/admin/adminSlice';
+import incentiveReducer from '../features/incentive/incentiveSlice';
 
 import { AddWeb3EventListeners } from '../app/event-listeners';
 
@@ -16,7 +17,8 @@ export const store = configureStore({
     minter: minterReducer,
     dialog: dialogReducer,
     wizard: wizardReducer,
-    admin: adminReducer
+    admin: adminReducer,
+    incentive: incentiveReducer
   },
 });
 

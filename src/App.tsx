@@ -21,6 +21,7 @@ import StakingPage from './pages/staking/StakingPage';
 import RestrictedPage from './pages/RestrictedPage';
 import AdminPage from './pages/admin/AdminPage';
 import { AdminCreateLPRewardPage, AdminLPRewardPage } from './pages/admin/AdminLPRewardPage';
+import { AdminIncentiveDetailPage } from './pages/admin/incentive/AdminIncentiveDetailPage';
 
 function App() {
   const location = useLocation();
@@ -79,7 +80,7 @@ function App() {
               <Route path="mint/app-store-redirect" element={<MobileRedirectionPage />} />
               <Route path="mint/connect" element={<ConnectPage />} />
               <Route path="mint/funding" element={<FundingPage />} />
-              <Route path="stake" element={<StakingPage />} />
+              <Route path="stake" element={<StakingPage />} />              
               <Route path="admin" element={
                 <RestrictedPage>
                   <AdminPage />
@@ -93,6 +94,11 @@ function App() {
               <Route path="admin/reward/create" element={
                 <RestrictedPage>
                   <AdminCreateLPRewardPage />
+                </RestrictedPage>}
+              />
+              <Route path="admin/reward/:id" element={
+                <RestrictedPage>
+                  <AdminIncentiveDetailPage />
                 </RestrictedPage>}
               />
             </Routes>

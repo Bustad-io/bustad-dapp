@@ -1,17 +1,12 @@
-import { useAppSelector } from "../../app/hooks";
 import { MainBox } from "../../components/MainBox";
-import { selectNetwork } from "../../features/wallet/walletSlice";
 import { useWeb3Connector } from "../../hooks/web3Hook";
 import { useEffect, useState } from 'react';
-import { isConstructorTypeNode } from "typescript";
-import { formatUnitToNumber, parseToNumber } from "../../utils/format";
-import { ethers, utils } from "ethers";
+import { formatUnitToNumber } from "../../utils/format";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { useContractConfig } from "../../hooks/contractConfigHook";
 import { PositionView } from "../../types/StakingTypes";
 
-function StakingPage() {
-  const network = useAppSelector(selectNetwork);
+function StakingPage() {  
   const { contracts } = useWeb3Connector();
   const { isConnected, address } = useWalletConnection();
   const { getContractByAddress } = useContractConfig();
@@ -49,8 +44,7 @@ function StakingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected]);
 
-  const onClick = async (tokenId: number) => {
-    //console.log(utils.defaultAbiCoder.encode(["bytes32"], ["0x206cd2809da6c5ca1cc8f6a07fbb77879360e166637c391825561bcc51340ba0"]));
+  const onClick = async (tokenId: number) => {    
     await contracts.uniswapLpNft["safeTransferFrom(address,address,uint256,bytes)"]("0x7D026BEf6541C933D20ad4156912B97e1c86bbec", "0xe34139463bA50bD61336E0c446Bd8C0867c6fE65", tokenId, "0x0000000000000000000000002943864be07a0f1fb2e3cb48fde09d9fc2621b070000000000000000000000004f309ba2a412d25f7db720e36c98b0e87cf1fdc40000000000000000000000000000000000000000000000000000000063bd717c0000000000000000000000000000000000000000000000000000000063bd7d700000000000000000000000007d026bef6541c933d20ad4156912b97e1c86bbec");
   }
 

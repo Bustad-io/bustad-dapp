@@ -53,6 +53,8 @@ export const AdminAddress: string = process.env.REACT_APP_ADMIN_ADDRESS ?? "";
 export const WETHGoerliAddress: string = process.env.REACT_APP_WETH_TOKEN_GOERLI_ADDRESS ?? "";
 export const WETHAddress: string = process.env.REACT_APP_WETH_TOKEN_ADDRESS ?? "";
 
+export const ServiceBaseUri: string = process.env.REACT_APP_SERVICE_BASE_URI ?? "";
+
 
 export function GetContractConfig(network: NetworkTypes): ContractConfig {
 
