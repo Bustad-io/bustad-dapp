@@ -6,6 +6,10 @@ export function StringToEpoch(date: string) {
     return Date.parse(date) / 1000
 }
 
+export function DateNowEpoch() {
+    return Date.now() / 1000;
+}
+
 export function StringToDate(date: string) {
     return new Date(date);
 }

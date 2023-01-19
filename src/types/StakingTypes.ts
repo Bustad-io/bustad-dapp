@@ -1,3 +1,5 @@
+import { Incentive } from "./IncentiveType";
+
 export interface PositionView {
     tokenId: number;
     fee: number;
@@ -5,4 +7,9 @@ export interface PositionView {
     token1Label: string;
     token0Address: string;
     token1Address: string;
+}
+
+export interface IncentivePositionsAllowance {
+    allowedIncentives: Incentive[];
+    deniedIncentives: Incentive[];
 }

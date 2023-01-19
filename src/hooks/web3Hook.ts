@@ -1,8 +1,8 @@
-import { Contract } from "ethers";
+import { Contract, ContractInterface, getDefaultProvider } from "ethers";
 import { useAppSelector } from "../app/hooks";
 import { selectChosenCurrency } from "../features/currencyChoice/currencyChoiceSlice";
 import { selectNetwork, selectWalletStatus } from "../features/wallet/walletSlice";
-import { Contracts, getContracts } from "../providers/web3.provider";
+import { Contracts, getContracts, getSigner } from "../providers/web3.provider";
 
 export interface ExtendedContracts extends Contracts  {
     chosenCurrencyContract: Contract | null
@@ -26,11 +26,17 @@ export function useWeb3Connector() {
           break;
           default: 
           chosenCurrencyContract = null;          
-      }    
+      }
+      
+      function connectContractInstance(address: string, abi: ContractInterface, useSigner: boolean = false) {
+        const providerOrSigner = useSigner ? getSigner() : getDefaultProvider(network);
+        return new Contract(address, abi, providerOrSigner)
+      }
 
     return {        
         contracts,
-        chosenCurrencyContract,        
+        chosenCurrencyContract,
+        connectContractInstance,
         networkName: network
     }
 }

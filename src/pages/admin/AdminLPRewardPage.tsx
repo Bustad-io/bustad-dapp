@@ -11,24 +11,19 @@ import { deepCopy } from "../../utils/helper";
 import { BigNumberish, ethers, utils } from "ethers";
 import { getContracts } from "../../providers/web3.provider";
 import { fromEther, toEther } from "../../utils/format";
-import { fetchCreatedIncentivesAsync, postIncentiveAsync, selectIncentives } from "../../features/incentive/incentiveSlice";
+import { postIncentiveAsync } from "../../features/incentive/incentiveSlice";
 import { IncentiveItem } from "./components/IncentiveItem";
 import { StringToEpoch } from "../../utils/date";
 import { SortIncentiveByDate } from "../../features/incentive/utils";
 import RefreshIcon from "../../assets/icons/refresh.png";
+import { useIncentive } from "../../hooks/incentiveHook";
+import { useWeb3Connector } from "../../hooks/web3Hook";
+import UniswapV3PoolDef from '../../contracts/UniswapV3Pool.sol/UniswapV3Pool.json';
 
 export function AdminLPRewardPage() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const incentives = useAppSelector(selectIncentives);
-
-  useEffect(() => {
-    if (incentives.length === 0) {
-      dispatch(fetchCreatedIncentivesAsync());
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { incentives } = useIncentive();
 
   const incentivePoolList = [...incentives].sort(SortIncentiveByDate).map((data, i) => (
     <Fragment key={i}>
@@ -53,12 +48,13 @@ export function AdminLPRewardPage() {
 
 export function AdminCreateLPRewardPage() {
   const dispatch = useAppDispatch();
-  const network = useAppSelector(selectNetwork);  
+  const network = useAppSelector(selectNetwork);
   const contractConfig = GetContractConfig(network);
   const contracts = getContracts(network, true);
   const { address } = useWalletConnection();
   const createInsentiveForm = useAppSelector(selectCreateInsentiveForm);
   const [stakingContractEigAllowance, setStakingContractEigAllowance] = useState(0);
+  const { connectContractInstance } = useWeb3Connector();
 
   useEffect(() => {
     contracts.govToken.allowance(address, contracts.uniswapStaker.address).then((allowance: BigNumberish) => {
@@ -111,7 +107,7 @@ export function AdminCreateLPRewardPage() {
 
   async function onCreate() {
     const startTimeEpoch = StringToEpoch(createInsentiveForm.startTime);
-    const endTimeEpoch = StringToEpoch(createInsentiveForm.endTime);    
+    const endTimeEpoch = StringToEpoch(createInsentiveForm.endTime);
 
     await contracts.uniswapStaker.createIncentive({
       rewardToken: createInsentiveForm.rewardToken.value,
@@ -121,8 +117,12 @@ export function AdminCreateLPRewardPage() {
       refundee: createInsentiveForm.refundee
     }, fromEther(createInsentiveForm.rewardAmount));
 
-    const incentiveId = await generateIncentiveId([createInsentiveForm.rewardToken.value, createInsentiveForm.pool.value, startTimeEpoch, endTimeEpoch, createInsentiveForm.refundee]);    
-    
+    const incentiveId = await generateIncentiveId([createInsentiveForm.rewardToken.value, createInsentiveForm.pool.value, startTimeEpoch, endTimeEpoch, createInsentiveForm.refundee]);
+
+    const uniswapPoolContract = connectContractInstance(createInsentiveForm.pool.value, UniswapV3PoolDef.abi, true);
+    const poolToken0 = await uniswapPoolContract.token0();
+    const poolToken1 = await uniswapPoolContract.token1();    
+
     await dispatch(postIncentiveAsync({
       startTime: createInsentiveForm.startTime,
       endTime: createInsentiveForm.endTime,
@@ -131,13 +131,15 @@ export function AdminCreateLPRewardPage() {
       rewardTokenAddress: createInsentiveForm.rewardToken.value,
       activelyEnded: false,
       onChainIncentiveId: incentiveId,
-      rewardAmount: createInsentiveForm.rewardAmount
-    }))    
+      rewardAmount: createInsentiveForm.rewardAmount,
+      token0: poolToken0,
+      token1: poolToken1
+    }))
   }
 
   async function onAllow() {
     await contracts.govToken.approve(contracts.uniswapStaker.address, fromEther(createInsentiveForm.rewardAmount));
-  }  
+  }
 
   async function generateIncentiveId(arr: [string, string, number, number, string]) {
     return utils.defaultAbiCoder.encode(["address", "address", "uint", "uint", "address"], arr);
@@ -153,7 +155,7 @@ export function AdminCreateLPRewardPage() {
       startTime: startTimeEpoch,
       endTime: endTimeEpoch,
       refundee: createInsentiveForm.refundee
-    }, 49451);    
+    }, 49451);
   }
 
   async function unStake() {
@@ -220,7 +222,7 @@ export function AdminCreateLPRewardPage() {
           {/* <PrimaryButtonSmall text={"End"} onClick={onEnd}></PrimaryButtonSmall>
           <PrimaryButtonSmall text={"Get Reward info"} onClick={getRewardInfo}></PrimaryButtonSmall>
           <PrimaryButtonSmall text={"Unstake"} onClick={unStake}></PrimaryButtonSmall> */}
-        </div>        
+        </div>
       </div>
     </MainBox>
   );

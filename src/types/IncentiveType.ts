@@ -8,4 +8,6 @@ export interface Incentive {
  activelyEnded: boolean;
  onChainIncentiveId: string;
  rewardAmount: number;
+ token0: string;
+ token1: string;
 }

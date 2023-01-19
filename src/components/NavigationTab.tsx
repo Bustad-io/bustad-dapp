@@ -70,6 +70,7 @@ export function NavigationTab() {
         <nav className="bg-orange-50 dark:bg-PrimaryHordeBlue rounded-xl h-11 dark:text-white text-slate-700 sm:text-2xl flex items-center sm:w-80 sm:justify-between px-1 sm:px-0">
             <Tab text="Mint" to={isConnected ? '/mint' : '/'} showBadge={false} isActive={isMintTab}/>
             <Tab text="Governance" to="/governance" showBadge={showBadge} isActive={!isMintTab}/>
+            <Tab text="Stake" to="/stake" showBadge={false} isActive={false}/>
         </nav>
     )
 }
