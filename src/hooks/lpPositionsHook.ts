@@ -5,7 +5,7 @@ import { useContractConfig } from "./contractConfigHook";
 import { useWalletConnection } from "./walletConnectionHook";
 import { useWeb3Connector } from "./web3Hook";
 
-export function UseLpPositions() {
+export function useLpPositions() {
     const { contracts } = useWeb3Connector();
     const { isConnected, address } = useWalletConnection();
     const { getContractByAddress } = useContractConfig();

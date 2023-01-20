@@ -3,19 +3,43 @@ import { RootState } from '../../app/store';
 
 import { Incentive } from '../../types/IncentiveType';
 import { endIncentive, getAllIncentives, postIncentive } from '../../api/incentiveApi';
+import { UserStake } from '../../types/UserStakeType';
+import { getUserStake, postUserStake, setToUnstaked } from '../../api/stakeApi';
 
 export interface IncentiveState {  
   incentives: Incentive[]
+  userStakes: UserStake[]
 }
 
 const initialState: IncentiveState = {  
-  incentives: []
+  incentives: [],
+  userStakes: []
 };
+
+export const postUnstakedAsync = createAsyncThunk(
+  'incentive/postUnstaked',
+  async (tokenId: number,) => {
+    await setToUnstaked(tokenId);
+    return {
+      tokenId
+    }
+  }
+);
 
 export const fetchCreatedIncentivesAsync = createAsyncThunk(
   'incentive/fetchCreatedIncentives',
   async (_,) => {
     const { data } = await getAllIncentives();
+    return {
+      data
+    }
+  }
+);
+
+export const fetchUserStakesAsync = createAsyncThunk(
+  'incentive/fetchUserStakes',
+  async (userAddress: string) => {
+    const { data } = await getUserStake(userAddress);
     return {
       data
     }
@@ -29,6 +53,21 @@ export const postIncentiveAsync = createAsyncThunk(
 
     if(res.status !== 200) {
       throw Error("Could not post new incentive");
+    }    
+    
+    return {
+      data: res.data
+    }
+  }
+);
+
+export const postUserStakeAsync = createAsyncThunk(
+  'incentive/postUserStake',
+  async (userStake: UserStake) => {
+    const res = await postUserStake(userStake);
+
+    if(res.status !== 200) {
+      throw Error("Could not post userStake");
     }    
     
     return {
@@ -61,8 +100,18 @@ export const incentiveSlice = createSlice({
     .addCase(fetchCreatedIncentivesAsync.fulfilled, (state, action) => {
       state.incentives = [...state.incentives, ...action.payload.data]
     })
+    .addCase(postUnstakedAsync.fulfilled, (state, action) => {
+      const removeIndex = state.userStakes.findIndex(x => x.tokenId === action.payload.tokenId);
+      state.userStakes.splice(removeIndex, 1);
+    })
+    .addCase(fetchUserStakesAsync.fulfilled, (state, action) => {
+      state.userStakes = [...state.userStakes, ...action.payload.data]
+    })
     .addCase(postIncentiveAsync.fulfilled, (state, action) => {
       state.incentives.push(action.payload.data);
+    })
+    .addCase(postUserStakeAsync.fulfilled, (state, action) => {
+      state.userStakes.push(action.payload.data);
     })
     .addCase(endIncentiveAsync.fulfilled, (state, action) => {
       state.incentives = state.incentives.map(incentive => {
@@ -78,5 +127,6 @@ export const incentiveSlice = createSlice({
 export const {  } = incentiveSlice.actions;
 
 export const selectIncentives = (state: RootState) => state.incentive.incentives;
+export const selectUserStakes = (state: RootState) => state.incentive.userStakes;
 
 export default incentiveSlice.reducer;

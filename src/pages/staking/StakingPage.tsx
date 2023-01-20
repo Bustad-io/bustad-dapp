@@ -5,18 +5,24 @@ import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { useIncentive } from "../../hooks/incentiveHook";
 import { StakeIncentiveItem } from "./components/StakeIncentiveItem";
 import { SortIncentiveByDate } from "../../features/incentive/utils";
-import { UseLpPositions } from "../../hooks/UseLpPositionsHook";
+import { useLpPositions } from "../../hooks/lpPositionsHook";
 import { generateIncentivePositionAllowance } from "./helpers";
+import { useUserStakes } from "../../hooks/userStakesHook";
 
 function StakingPage() {
   const { contracts } = useWeb3Connector();
   const { address } = useWalletConnection();
 
   const { incentives } = useIncentive();
-  const { positions } = UseLpPositions();    
+  const { positions } = useLpPositions();    
+  const { userStakes } = useUserStakes();
 
   const {allowedIncentives} = generateIncentivePositionAllowance(positions, incentives);
-  const sortedIncentives = [...allowedIncentives].sort(SortIncentiveByDate);  
+  const sortedIncentives = [...allowedIncentives].sort(SortIncentiveByDate);
+
+  const stakedIncentive = incentives.filter(incentive => {
+    return userStakes.some(userStake => incentive.id === userStake.incentiveId);
+  });
 
   async function onClaim() {
     await contracts.uniswapStaker.claimReward(contracts.govToken.address, address, 0);
@@ -31,7 +37,12 @@ function StakingPage() {
               <StakeIncentiveItem incentive={data} />
             </Fragment>
           ))
-
+          }
+          {stakedIncentive.map((data, index) => (
+            <Fragment key={index}>
+              <StakeIncentiveItem incentive={data} />
+            </Fragment>
+          ))
           }
 
           {/* {positions.map((data, index) => (
