@@ -18,8 +18,8 @@ const initialState: IncentiveState = {
 
 export const postUnstakedAsync = createAsyncThunk(
   'incentive/postUnstaked',
-  async (tokenId: number,) => {
-    await setToUnstaked(tokenId);
+  async ({tokenId, incentiveId}: {tokenId: Number, incentiveId: Number},) => {
+    await setToUnstaked(tokenId, incentiveId);
     return {
       tokenId
     }

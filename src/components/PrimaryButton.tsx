@@ -19,3 +19,11 @@ export function PrimaryButtonSmall({ text, onClick, disabled = false }: PrimaryB
         </button>
     )
 }
+
+export function PrimaryButtonXSmall({ text, onClick, disabled = false }: PrimaryButtonProp) {    
+    return (
+        <button disabled={disabled} onClick={onClick} className='disabled:opacity-40 disabled:cursor-default cursor-pointer px-3 py-[5px] rounded-lg bg-Tuscanyapprox text-center text-white font-semibold text-sm'>
+            {text}            
+        </button>
+    )
+}

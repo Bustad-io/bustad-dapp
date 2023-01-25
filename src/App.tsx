@@ -23,6 +23,7 @@ import AdminPage from './pages/admin/AdminPage';
 import { AdminCreateLPRewardPage, AdminLPRewardPage } from './pages/admin/AdminLPRewardPage';
 import { AdminIncentiveDetailPage } from './pages/admin/incentive/AdminIncentiveDetailPage';
 import StakeIncentiveDetailsPage from './pages/staking/StakeIncentiveDetailsPage';
+import RewardPage from './pages/staking/RewardPage';
 
 function App() {
   const location = useLocation();
@@ -82,6 +83,7 @@ function App() {
               <Route path="mint/connect" element={<ConnectPage />} />
               <Route path="mint/funding" element={<FundingPage />} />
               <Route path="stake" element={<StakingPage />} />
+              <Route path="reward" element={<RewardPage />} />
               <Route path="stake/:id" element={<StakeIncentiveDetailsPage />} />
               <Route path="admin" element={
                 <RestrictedPage>

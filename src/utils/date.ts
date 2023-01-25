@@ -39,3 +39,7 @@ export function StringToUtcEpoch(dateString: string) {
 
     return new Date(Date.UTC(year, month, day, hours, minutes)).getTime() / 1000;
 }
+
+export function FormateDateString(dateString: string) {
+    return new Date(dateString).toLocaleDateString();
+}

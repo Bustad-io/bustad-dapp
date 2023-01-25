@@ -56,12 +56,26 @@ function StakeIncentiveDetailsPage() {
     ];
 
     await contracts.uniswapStaker.multicall(calls);    
-    await dispatch(postUnstakedAsync(Number(staked?.tokenId)));
+    await dispatch(postUnstakedAsync({tokenId: Number(staked?.tokenId), incentiveId: Number(id)}));
   }
 
   async function onClaim() {
     await console.log(toEther(await contracts.uniswapStaker.callStatic.claimReward(contracts.govToken.address, address, 0)));
     await contracts.uniswapStaker.claimReward(contracts.govToken.address, address, 0);    
+  }
+
+  async function onReadEarned() {
+    const startTimeEpoch = StringToEpoch(incentive?.startTime!);
+    const endTimeEpoch = StringToEpoch(incentive?.endTime!);
+
+    const a = await contracts.uniswapStaker.getRewardInfo({
+      rewardToken: incentive?.rewardTokenAddress,
+      pool: incentive?.poolAddress,
+      startTime: startTimeEpoch,
+      endTime: endTimeEpoch,
+      refundee: incentive?.refundeeAddress
+    }, Number(staked?.tokenId));
+    console.log(toEther(a.reward));
   }
 
   return (
@@ -71,6 +85,7 @@ function StakeIncentiveDetailsPage() {
         <div>{incentive?.poolAddress}</div>
         {!!staked ? <button onClick={onUnStake} className="bg-yellow-300 px-4 py-1 rounded">Un-stake</button> : <button onClick={onStake} className="bg-green-500 px-4 py-1 rounded">Stake</button>}
         <button onClick={onClaim} className="bg-green-500 px-4 py-1 rounded">Claim</button>
+        <button onClick={onReadEarned} className="bg-blue-500 px-4 py-1 rounded">REad</button>
       </div>
     </MainBox>
   );
