@@ -7,17 +7,18 @@ import { StakeIncentiveItem } from "./components/StakeIncentiveItem";
 import { SortIncentiveByDate } from "../../features/incentive/utils";
 import { useLpPositions } from "../../hooks/lpPositionsHook";
 import { generateIncentivePositionAllowance } from "./helpers";
-import { useUserStakes } from "../../hooks/userStakesHook";
+import { selectUserStakes } from "../../features/incentive/incentiveSlice";
+import { useAppSelector } from "../../app/hooks";
 
 function StakingPage() {
   const { contracts } = useWeb3Connector();
   const { address } = useWalletConnection();
 
   const { incentives } = useIncentive();
-  const { positions } = useLpPositions();    
-  const { userStakes } = useUserStakes();
+  const { positions } = useLpPositions();
+  const userStakes = useAppSelector(selectUserStakes);
 
-  const {allowedIncentives} = generateIncentivePositionAllowance(positions, incentives);
+  const { allowedIncentives } = generateIncentivePositionAllowance(positions, incentives);
   const sortedIncentives = [...allowedIncentives].sort(SortIncentiveByDate);
 
   const stakedIncentive = incentives.filter(incentive => {
@@ -44,10 +45,6 @@ function StakingPage() {
             </Fragment>
           ))
           }
-
-          {/* {positions.map((data, index) => (
-            <button onClick={() => onClick(data.tokenId)} className="bg-white" key={index}>{`${data.token0Label}/${data.token1Label} ${data.fee}% - ${data.tokenId}`}</button>
-          ))}  */}
           <button onClick={onClaim} className="bg-green-400">Claim</button>
         </div>
       </div>

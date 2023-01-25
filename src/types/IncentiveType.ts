@@ -10,4 +10,5 @@ export interface Incentive {
  rewardAmount: number;
  token0: string;
  token1: string;
+ poolFee: number;
 }

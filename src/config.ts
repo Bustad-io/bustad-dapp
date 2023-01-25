@@ -43,8 +43,6 @@ const UsdcGoerliAddress: string = process.env.REACT_APP_USDC_ADDRESS_GOERLI ?? "
 
 const UniswapLpNftGoerliAddress: string = process.env.REACT_APP_UNISWAP_LP_NFT_GOERLI ?? "";
 const UniswapLpNftAddress: string = process.env.REACT_APP_UNISWAP_LP_NFT ?? "";
-const UniswapLpPoolEthEigAddress: string = process.env.REACT_APP_UNISWAP_LP_POOL_ETH_EIG_GOERLI ?? "";
-const UniswapLpPoolEthEigGoerliAddress: string = process.env.REACT_APP_UNISWAP_LP_POOL_ETH_EIG_GOERLI ?? "";
 const UniswapStakerAddress: string = process.env.REACT_APP_UNISWAP_STAKER ?? "";
 const UniswapStakerGoerliAddress: string = process.env.REACT_APP_UNISWAP_STAKER_GOERLI ?? "";
 
@@ -54,6 +52,11 @@ export const WETHGoerliAddress: string = process.env.REACT_APP_WETH_TOKEN_GOERLI
 export const WETHAddress: string = process.env.REACT_APP_WETH_TOKEN_ADDRESS ?? "";
 
 export const ServiceBaseUri: string = process.env.REACT_APP_SERVICE_BASE_URI ?? "";
+
+const UniswapLpPoolEthEigAddress: string = process.env.REACT_APP_UNISWAP_LP_POOL_ETH_EIG ?? "";
+const UniswapLpPoolEthEigGoerliAddress: string = process.env.REACT_APP_UNISWAP_LP_POOL_ETH_EIG_GOERLI ?? "";
+const UniswapLpPoolBuscUsdcAddress: string = process.env.REACT_APP_UNISWAP_LP_POOL_BUSC_USDC ?? "";
+const UniswapLpPoolBuscUsdcGoerliAddress: string = process.env.REACT_APP_UNISWAP_LP_POOL_BUSC_USDC_GOERLI ?? "";
 
 
 export function GetContractConfig(network: NetworkTypes): ContractConfig {
@@ -97,6 +100,10 @@ export function GetContractConfig(network: NetworkTypes): ContractConfig {
             UniswapPoolEthEig: {
                 label: "ETH/EIG 1%",
                 address: UniswapLpPoolEthEigAddress
+            },
+            UniswapPoolBuscUsdc: {
+                label: "BUSC/USDC 0.3%",
+                address: UniswapLpPoolBuscUsdcAddress
             },
             UniswapStaker: {
                 label: "Uniswap V3 Staker",
@@ -143,6 +150,10 @@ export function GetContractConfig(network: NetworkTypes): ContractConfig {
         UniswapPoolEthEig: {
             label: "ETH/EIG 1%",
             address: UniswapLpPoolEthEigGoerliAddress
+        },
+        UniswapPoolBuscUsdc: {
+            label: "BUSC/USDC 0.3%",
+            address: UniswapLpPoolBuscUsdcGoerliAddress
         },
         UniswapStaker: {
             label: "Uniswap V3 Staker",

@@ -1,11 +1,12 @@
 import { Incentive } from '../../../types/IncentiveType';
 import { StringToEpoch } from '../../../utils/date';
 import { useWeb3Connector } from '../../../hooks/web3Hook';
-import { useUserStakes } from '../../../hooks/userStakesHook';
 import { toEther } from '../../../utils/format';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useWalletConnection } from '../../../hooks/walletConnectionHook';
+import { useAppSelector } from '../../../app/hooks';
+import { selectUserStakes } from '../../../features/incentive/incentiveSlice';
 
 interface Props {
     incentive: Incentive
@@ -13,7 +14,7 @@ interface Props {
 
 export function AccruedStatus({ incentive }: Props) {
     const { contracts } = useWeb3Connector();
-    const { userStakes } = useUserStakes();
+    const userStakes = useAppSelector(selectUserStakes);
     const { isConnected, address } = useWalletConnection();
     const staked = userStakes.find(x => x.incentiveId === Number(incentive.id));
     const [accrued, setAccrued] = useState<number>(0);

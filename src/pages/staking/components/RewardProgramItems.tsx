@@ -8,11 +8,11 @@ import { Disclosure, Transition } from '@headlessui/react';
 import { useWeb3Connector } from '../../../hooks/web3Hook';
 import { getPositionByIncentive } from '../helpers';
 import { useLpPositions } from '../../../hooks/lpPositionsHook';
-import { useAppDispatch } from '../../../app/hooks';
-import { postUnstakedAsync, postUserStakeAsync } from '../../../features/incentive/incentiveSlice';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { postUnstakedAsync, postUserStakeAsync, selectUserStakes } from '../../../features/incentive/incentiveSlice';
 import { useWalletConnection } from '../../../hooks/walletConnectionHook';
-import { useUserStakes } from '../../../hooks/userStakesHook';
 import { AccruedStatus } from './AccruedStatus';
+import { ReactComponent as Arrow } from '../../../assets/icons/Arrow_up_right.svg';
 import { utils } from 'ethers';
 
 interface Props {
@@ -23,11 +23,10 @@ interface Props {
 export function RewardProgramItems({ incentive }: Props) {
     const { contracts } = useWeb3Connector();
     const { address } = useWalletConnection();
-    const { positions } = useLpPositions();
-    const { userStakes } = useUserStakes();
+    const { positions } = useLpPositions();    
     const { getContractByAddress } = useContractConfig();
     const dispatch = useAppDispatch();
-
+    const userStakes = useAppSelector(selectUserStakes);
     const poolContract = getContractByAddress(incentive.poolAddress);
     const position = getPositionByIncentive(incentive!, positions);
     const staked = userStakes.find(x => x.incentiveId === Number(incentive.id));
@@ -70,7 +69,7 @@ export function RewardProgramItems({ incentive }: Props) {
     return (
         <div className='bg-white rounded-lg p-3'>
             <Disclosure as='div'>
-                {({ open }) => (
+                {() => (
                     <>
                         <Disclosure.Button as="div" className="flex flex-row justify-between items-center cursor-pointer">
                             <div className='flex flex-col space-y-1'>
@@ -90,9 +89,13 @@ export function RewardProgramItems({ incentive }: Props) {
                             leaveFrom="transform scale-100 opacity-100"
                             leaveTo="transform scale-95 opacity-0"
                         >
-                            <Disclosure.Panel as="div" className='flex flex-row space-x-2 max-w-[235px] mt-5' static>
-                                <PrimaryButtonXSmall disabled={!!staked} onClick={onStake} text='Stake' />
-                                <PrimaryButtonXSmall disabled={!!!staked} onClick={onUnstake} text='Unstake' />                                
+                            <Disclosure.Panel as="div" className='flex flex-row space-x-2 max-w-[235px] mt-5' static>                                
+                                {staked
+                                    ? <PrimaryButtonXSmall onClick={onUnstake} text='Unstake' />
+                                    : (position ? <PrimaryButtonXSmall disabled={!!staked} onClick={onStake} text='Stake' /> : <a href='https://app.uniswap.org/#/add/ETH/0x2943864BE07a0F1Fb2E3CB48fDe09d9FC2621B07/10000' className='flex items-center space-x-[2px] cursor-pointer' target="_blank" rel="noopener noreferrer">
+                                        <span className='text-sm text-stone-800 underline'>Add liquidity on Uniswap</span>
+                                        <Arrow className='-top-[2px] relative' />
+                                    </a>)}
                             </Disclosure.Panel>
                         </Transition>
                     </>

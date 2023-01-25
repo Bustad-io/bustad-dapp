@@ -6,32 +6,21 @@ export interface AdminState {
 }
 
 export interface CreateIncentiveForm {
-  rewardToken: LabelValue;
-  pool: LabelValue;
+  rewardToken: string;
+  pool: string;
   startTime: string;
   endTime: string;
   refundee: string;
   rewardAmount: number;
 }
 
-interface LabelValue {
-  label: string;
-  value: string;
-}
-
 const initialState: AdminState = {    
   createIncentiveForm: {
     rewardAmount: 0,
-    rewardToken: {
-      label: "",
-      value: ""
-    },
+    rewardToken: "",
     startTime: "",
     endTime: "",
-    pool: {
-      label: "",
-      value: ""
-    },
+    pool: "",
     refundee: ""
   }
 };

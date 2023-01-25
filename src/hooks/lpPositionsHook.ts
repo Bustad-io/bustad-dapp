@@ -21,7 +21,7 @@ export function useLpPositions() {
           .fill('')
           .map(async (_, index) => {
             const tokenId = formatUnitToNumber(await contracts.uniswapLpNft.tokenOfOwnerByIndex(address, index));
-            const position = await contracts.uniswapLpNft.positions(tokenId);            
+            const position = await contracts.uniswapLpNft.positions(tokenId);
 
             const res: PositionView = {
               tokenId,
