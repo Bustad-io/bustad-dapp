@@ -63,7 +63,7 @@ function StakeIncentiveDetailsPage() {
     const startTimeEpoch = StringToEpoch(incentive?.startTime!);
     const endTimeEpoch = StringToEpoch(incentive?.endTime!);
 
-    const a = await contracts.uniswapStaker.getRewardInfo({
+    await contracts.uniswapStaker.getRewardInfo({
       rewardToken: incentive?.rewardTokenAddress,
       pool: incentive?.poolAddress,
       startTime: startTimeEpoch,

@@ -8,7 +8,7 @@ import { GetContractConfig } from "../../config";
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { CreateIncentiveForm, selectCreateInsentiveForm, setCreateIncentiveForm } from "../../features/admin/adminSlice";
 import { deepCopy } from "../../utils/helper";
-import { BigNumberish, ethers, utils } from "ethers";
+import { BigNumberish, ethers } from "ethers";
 import { getContracts } from "../../providers/web3.provider";
 import { fromEther, toEther } from "../../utils/format";
 import { fetchCreatedIncentivesAsync, postIncentiveAsync, selectIncentives } from "../../features/incentive/incentiveSlice";

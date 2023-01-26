@@ -207,8 +207,6 @@ export const incentiveSlice = createSlice({
   }
 });
 
-export const { } = incentiveSlice.actions;
-
 export const selectIncentives = (state: RootState) => state.incentive.incentives;
 export const selectUserStakes = (state: RootState) => state.incentive.userStakes;
 export const selectUserPositions = (state: RootState) => state.incentive.positions;
