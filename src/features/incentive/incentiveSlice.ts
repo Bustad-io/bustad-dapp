@@ -6,20 +6,23 @@ import { endIncentive, getAllIncentives, postIncentive } from '../../api/incenti
 import { UserStake } from '../../types/UserStakeType';
 import { getUserStake, postUserStake, setToUnstaked } from '../../api/stakeApi';
 import { PositionView } from '../../types/StakingTypes';
-import { formatUnitToNumber } from '../../utils/format';
+import { formatUnitToNumber, toEther } from '../../utils/format';
 import { getContracts } from '../../providers/web3.provider';
 import { getContractByAddressHelper } from '../../utils/helper';
+import { isAddress } from 'ethers/lib/utils';
 
 export interface IncentiveState {
   incentives: Incentive[]
   userStakes: UserStake[],
-  positions: PositionView[]
+  positions: PositionView[],
+  totalAccrued: number
 }
 
 const initialState: IncentiveState = {
   incentives: [],
   userStakes: [],
-  positions: []
+  positions: [],
+  totalAccrued: 0
 };
 
 export const postUnstakedAsync = createAsyncThunk(
@@ -28,6 +31,45 @@ export const postUnstakedAsync = createAsyncThunk(
     await setToUnstaked(tokenId, incentiveId);
     return {
       tokenId
+    }
+  }
+);
+
+export const fetchUserStakesAsync = createAsyncThunk(
+  'incentive/fetchUserStakes',
+  async (_, { getState }) => {
+    const state = getState() as RootState;    
+
+    if (state.wallet.status !== 'connected') {
+      throw Error('Wallet not connected');
+    }
+
+    if (state.wallet.account === null || isAddress(state.wallet.account)) {
+      throw Error('Wallet address is null or invalid');
+    }
+
+    const { data } = await getUserStake(state.wallet.account);
+    return {
+      data
+    }
+  }
+);
+
+export const fetchTotalAccruedAsync = createAsyncThunk(
+  'incentive/fetchTotalAccrued',
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+    const network = state.wallet.network;
+
+    if (state.wallet.status !== 'connected') {
+      throw Error('Wallet not connected');
+    }
+    const { uniswapStaker, govToken } = getContracts(network, true);
+
+    const accrued = await toEther(await uniswapStaker.callStatic.claimReward(govToken.address, state.wallet.account, 0));
+
+    return {
+      accrued: Number(accrued)
     }
   }
 );
@@ -75,16 +117,6 @@ export const fetchCreatedIncentivesAsync = createAsyncThunk(
   'incentive/fetchCreatedIncentives',
   async (_,) => {
     const { data } = await getAllIncentives();
-    return {
-      data
-    }
-  }
-);
-
-export const fetchUserStakesAsync = createAsyncThunk(
-  'incentive/fetchUserStakes',
-  async (userAddress: string) => {
-    const { data } = await getUserStake(userAddress);
     return {
       data
     }
@@ -150,7 +182,7 @@ export const incentiveSlice = createSlice({
         state.userStakes.splice(removeIndex, 1);
       })
       .addCase(fetchUserStakesAsync.fulfilled, (state, action) => {
-        state.userStakes = [...state.userStakes, ...action.payload.data]
+        state.userStakes = action.payload.data;
       })
       .addCase(postIncentiveAsync.fulfilled, (state, action) => {
         state.incentives.push(action.payload.data);
@@ -168,6 +200,9 @@ export const incentiveSlice = createSlice({
       })
       .addCase(fetchUserPositionsAsync.fulfilled, (state, action) => {
         state.positions = action.payload.pos;
+      })
+      .addCase(fetchTotalAccruedAsync.fulfilled, (state, action) => {
+        state.totalAccrued = action.payload.accrued;
       });
   }
 });
@@ -177,5 +212,6 @@ export const { } = incentiveSlice.actions;
 export const selectIncentives = (state: RootState) => state.incentive.incentives;
 export const selectUserStakes = (state: RootState) => state.incentive.userStakes;
 export const selectUserPositions = (state: RootState) => state.incentive.positions;
+export const selectTotalAccrued = (state: RootState) => state.incentive.totalAccrued;
 
 export default incentiveSlice.reducer;

@@ -1,37 +1,55 @@
 import { useWeb3Connector } from '../../../hooks/web3Hook';
-import { formatNumberToSpaces, toEther } from '../../../utils/format';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { formatNumberToSpaces } from '../../../utils/format';
 import { useWalletConnection } from '../../../hooks/walletConnectionHook';
 import { PrimaryButtonXSmall } from '../../../components/PrimaryButton';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { addPendingTransaction, hideAwaitingModal, removePendingTransaction, showAwaitingModal, showConfirmedModal, showRejectedModal, showSubmittedModal } from '../../../features/dialog/dialogSlice';
+import { fetchTotalAccruedAsync, selectTotalAccrued } from '../../../features/incentive/incentiveSlice';
 
 export function TotalAccrued() {
     const { contracts } = useWeb3Connector();
-    const { isConnected, address } = useWalletConnection();
-    const [accrued, setAccrued] = useState<number>(0);
-
-
-    useEffect(() => {
-        if (isConnected && address != null) {
-            (async () => {
-                const res = await toEther(await contracts.uniswapStaker.callStatic.claimReward(contracts.govToken.address, address, 0));
-                setAccrued(Number(res));
-            })();
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isConnected, address]);
+    const { address } = useWalletConnection();    
+    const dispatch = useAppDispatch();
+    const totalAccrued = useAppSelector(selectTotalAccrued);
+    
 
     async function onClaim() {
-        await contracts.uniswapStaker.claimReward(contracts.govToken.address, address, 0);
+        let tx;
+
+        dispatch(showAwaitingModal(`Claim ${formatNumberToSpaces(totalAccrued, 2)} EIG`));
+
+        try {
+            tx = await contracts.uniswapStaker.claimReward(contracts.govToken.address, address, 0);
+        } catch(e) {
+            dispatch(hideAwaitingModal());
+            dispatch(showRejectedModal());
+        }
+
+        dispatch(hideAwaitingModal());
+        dispatch(showSubmittedModal({ txHash: tx.hash }));
+        dispatch(addPendingTransaction({txHash: tx.hash, type: 'claim'}));
+
+        try {
+            await tx.wait();
+        } catch(e) {
+            dispatch(removePendingTransaction(tx.hash));
+            dispatch(showRejectedModal());
+            return;
+        }
+
+        dispatch(removePendingTransaction(tx.hash));
+        dispatch(showConfirmedModal());
+        
+        await dispatch(fetchTotalAccruedAsync());
     }
 
     return (
         <div className='flex flex-row bg-white items-center rounded-lg px-[10px] py-2 space-x-5 max-w-fit'>
             <div className='space-x-1'>
                 <span className='font-medium text-sm'>Total accrued:</span>
-                <span className='font-semibold text-base'>{formatNumberToSpaces(accrued, 2)} EIG</span>
+                <span className='font-semibold text-base'>{formatNumberToSpaces(totalAccrued, 2)} EIG</span>
             </div>
-            <PrimaryButtonXSmall text='Claim' onClick={onClaim} disabled={accrued === 0} />                
+            <PrimaryButtonXSmall text='Claim' onClick={onClaim} disabled={totalAccrued === 0} />                
         </div>)
 
 

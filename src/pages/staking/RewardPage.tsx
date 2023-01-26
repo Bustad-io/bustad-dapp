@@ -8,14 +8,12 @@ import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { ConnectButton } from "../../features/wallet/connectButton";
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchUserPositionsAsync, fetchUserStakesAsync, selectUserPositions, selectUserStakes } from "../../features/incentive/incentiveSlice";
+import { fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync, selectTotalAccrued, selectUserPositions, selectUserStakes } from "../../features/incentive/incentiveSlice";
 import { isAddress } from "ethers/lib/utils";
 
 function RewardPage() {
   const { incentives } = useIncentive();  
   const { isConnected, address } = useWalletConnection();
-  const userStakes = useAppSelector(selectUserStakes);
-  const positions = useAppSelector(selectUserPositions);
   const sortedIncentives = [...incentives].sort(SortIncentiveByDate);
   const dispatch = useAppDispatch();
 
@@ -23,15 +21,11 @@ function RewardPage() {
     (async () => {
       if(!isConnected || address === null || !isAddress(address)) {
         return;
-      }
-
-      if (userStakes.length === 0) {        
-        await dispatch(fetchUserStakesAsync(address));
-      }
-
-      if(positions.length === 0) {
-        await dispatch(fetchUserPositionsAsync());
-      }
+      }      
+      
+      await dispatch(fetchUserStakesAsync());
+      await dispatch(fetchUserPositionsAsync());
+      await dispatch(fetchTotalAccruedAsync());      
     })();    
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, isConnected]);
