@@ -1,6 +1,5 @@
 import { MainBox } from "../../components/MainBox";
 import { Fragment } from 'react';
-import { useIncentive } from "../../hooks/incentiveHook";
 import { SortIncentiveByDate } from "../../features/incentive/utils";
 import { RewardProgramItems } from "./components/RewardProgramItems";
 import { TotalAccrued } from './components/TotalAccrued';
@@ -8,32 +7,33 @@ import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { ConnectButton } from "../../features/wallet/connectButton";
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync, selectTotalAccrued, selectUserPositions, selectUserStakes } from "../../features/incentive/incentiveSlice";
+import { fetchCreatedIncentivesAsync, fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync, selectIncentives } from "../../features/incentive/incentiveSlice";
 import { isAddress } from "ethers/lib/utils";
 
 function RewardPage() {
-  const { incentives } = useIncentive();  
+  const incentives = useAppSelector(selectIncentives);
   const { isConnected, address } = useWalletConnection();
   const sortedIncentives = [...incentives].sort(SortIncentiveByDate);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     (async () => {
-      if(!isConnected || address === null || !isAddress(address)) {
+      if (!isConnected || address === null || !isAddress(address)) {
         return;
-      }      
-      
+      }
+
+      await dispatch(fetchCreatedIncentivesAsync());
       await dispatch(fetchUserStakesAsync());
       await dispatch(fetchUserPositionsAsync());
-      await dispatch(fetchTotalAccruedAsync());      
-    })();    
+      await dispatch(fetchTotalAccruedAsync());
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, isConnected]);
 
 
   return (
     <MainBox title="Reward program">
-      { isConnected ? <>
+      {isConnected ? <>
         <div className="space-y-2.5 mb-5">
           {sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
         </div>

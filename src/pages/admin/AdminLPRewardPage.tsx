@@ -11,20 +11,27 @@ import { deepCopy } from "../../utils/helper";
 import { BigNumberish, ethers, utils } from "ethers";
 import { getContracts } from "../../providers/web3.provider";
 import { fromEther, toEther } from "../../utils/format";
-import { postIncentiveAsync } from "../../features/incentive/incentiveSlice";
+import { fetchCreatedIncentivesAsync, postIncentiveAsync, selectIncentives } from "../../features/incentive/incentiveSlice";
 import { IncentiveItem } from "./components/IncentiveItem";
 import { StringToEpoch } from "../../utils/date";
 import { generateIncentiveId, SortIncentiveByDate } from "../../features/incentive/utils";
 import RefreshIcon from "../../assets/icons/refresh.png";
-import { useIncentive } from "../../hooks/incentiveHook";
 import { useWeb3Connector } from "../../hooks/web3Hook";
 import UniswapV3PoolDef from '../../contracts/UniswapV3Pool.sol/UniswapV3Pool.json';
 import { useContractConfig } from "../../hooks/contractConfigHook";
 
 export function AdminLPRewardPage() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
-  const { incentives } = useIncentive();
+  const incentives = useAppSelector(selectIncentives);
+
+  useEffect(() => {
+    if(incentives.length === 0) {
+      dispatch(fetchCreatedIncentivesAsync());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const incentivePoolList = [...incentives].sort(SortIncentiveByDate).map((data, i) => (
     <Fragment key={i}>

@@ -2,20 +2,19 @@ import { MainBox } from "../../components/MainBox";
 import { useWeb3Connector } from "../../hooks/web3Hook";
 import { Fragment } from 'react';
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
-import { useIncentive } from "../../hooks/incentiveHook";
 import { StakeIncentiveItem } from "./components/StakeIncentiveItem";
 import { SortIncentiveByDate } from "../../features/incentive/utils";
 import { generateIncentivePositionAllowance } from "./helpers";
-import { selectUserPositions, selectUserStakes } from "../../features/incentive/incentiveSlice";
+import { selectIncentives, selectUserPositions, selectUserStakes } from "../../features/incentive/incentiveSlice";
 import { useAppSelector } from "../../app/hooks";
 
 function StakingPage() {
   const { contracts } = useWeb3Connector();
   const { address } = useWalletConnection();
 
-  const { incentives } = useIncentive();
   const positions = useAppSelector(selectUserPositions);
   const userStakes = useAppSelector(selectUserStakes);
+  const incentives = useAppSelector(selectIncentives);
 
   const { allowedIncentives } = generateIncentivePositionAllowance(positions, incentives);
   const sortedIncentives = [...allowedIncentives].sort(SortIncentiveByDate);
