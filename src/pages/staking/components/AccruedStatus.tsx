@@ -38,7 +38,7 @@ export function AccruedStatus({ incentive }: Props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected, address, staked]);
 
-    if(accrued > 0) {
+    if(staked) {
         return (
             <div className='flex space-x-2'>
                 <span className='text-[#40B66B] font-semibold text-xs'>Accrued</span>

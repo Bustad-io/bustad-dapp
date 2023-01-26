@@ -14,6 +14,7 @@ import { useWalletConnection } from '../../../hooks/walletConnectionHook';
 import { AccruedStatus } from './AccruedStatus';
 import { ReactComponent as Arrow } from '../../../assets/icons/Arrow_up_right.svg';
 import { utils } from 'ethers';
+import { addPendingTransaction, hideAwaitingModal, removePendingTransaction, showAwaitingModal, showConfirmedModal, showRejectedModal, showSubmittedModal } from '../../../features/dialog/dialogSlice';
 
 interface Props {
     incentive: Incentive,
@@ -33,7 +34,25 @@ export function RewardProgramItems({ incentive }: Props) {
     const stakingContractAddress = contracts.uniswapStaker.address;
 
     async function onStake() {
-        await contracts.uniswapLpNft["safeTransferFrom(address,address,uint256,bytes)"](address, stakingContractAddress, position?.tokenId, incentive?.onChainIncentiveId);
+        let tx;
+
+        dispatch(showAwaitingModal(`Stake on ${poolContract?.label} program`));
+
+        try {
+            tx = await contracts.uniswapLpNft["safeTransferFrom(address,address,uint256,bytes)"](address, stakingContractAddress, position?.tokenId, incentive?.onChainIncentiveId);
+        } catch (e) {
+            await dispatch(hideAwaitingModal());
+            await dispatch(showRejectedModal());
+            return;
+        }
+
+        await dispatch(hideAwaitingModal());
+        await dispatch(showSubmittedModal({ txHash: tx.hash }));
+        await dispatch(addPendingTransaction({txHash: tx.hash, type: 'stake'}));
+
+        await tx.wait();
+        await dispatch(removePendingTransaction(tx.hash));
+        await dispatch(showConfirmedModal());
 
         await dispatch(postUserStakeAsync({
             incentiveId: Number(incentive.id),
@@ -61,7 +80,25 @@ export function RewardProgramItems({ incentive }: Props) {
             utils.arrayify(encodedWithdrawFunc)
         ];
 
-        await contracts.uniswapStaker.multicall(calls);
+        let tx;
+
+        dispatch(showAwaitingModal(`Unstake from ${poolContract?.label} program`));
+
+        try {
+            tx = await contracts.uniswapStaker.multicall(calls);
+        } catch(e) {
+            await dispatch(hideAwaitingModal());
+            await dispatch(showRejectedModal());
+        }
+
+        await dispatch(hideAwaitingModal());
+        await dispatch(showSubmittedModal({ txHash: tx.hash }));
+        await dispatch(addPendingTransaction({txHash: tx.hash, type: 'stake'}));
+
+        await tx.wait();
+        await dispatch(removePendingTransaction(tx.hash));
+        await dispatch(showConfirmedModal());
+
         await dispatch(postUnstakedAsync({ tokenId: Number(staked?.tokenId), incentiveId: Number(incentive.id) }));
     }
 
@@ -94,7 +131,7 @@ export function RewardProgramItems({ incentive }: Props) {
                             leaveFrom="transform scale-100 opacity-100"
                             leaveTo="transform scale-95 opacity-0"
                         >
-                            <Disclosure.Panel as="div" className='flex flex-row space-x-2 max-w-[235px] mt-5' static>
+                            <Disclosure.Panel as="div" className='flex flex-row space-x-2 max-w-[235px] mt-3' static>
                                 {staked
                                     ? <PrimaryButtonXSmall onClick={onUnstake} text='Unstake' />
                                     : (position ? <PrimaryButtonXSmall disabled={!!staked} onClick={onStake} text='Stake' /> : <a href={uniswapLink()} className='flex items-center space-x-[2px] cursor-pointer' target="_blank" rel="noopener noreferrer">
@@ -108,4 +145,4 @@ export function RewardProgramItems({ incentive }: Props) {
             </Disclosure>
         </div>
     );
-}
+} 
