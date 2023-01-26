@@ -7,9 +7,8 @@ import { ProgramActiveStatus } from './ProgramActiveStatus';
 import { Disclosure, Transition } from '@headlessui/react';
 import { useWeb3Connector } from '../../../hooks/web3Hook';
 import { getPositionByIncentive } from '../helpers';
-import { useLpPositions } from '../../../hooks/lpPositionsHook';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { postUnstakedAsync, postUserStakeAsync, selectUserStakes } from '../../../features/incentive/incentiveSlice';
+import { postUnstakedAsync, postUserStakeAsync, selectUserStakes, selectUserPositions, fetchUserPositionsAsync } from '../../../features/incentive/incentiveSlice';
 import { useWalletConnection } from '../../../hooks/walletConnectionHook';
 import { AccruedStatus } from './AccruedStatus';
 import { ReactComponent as Arrow } from '../../../assets/icons/Arrow_up_right.svg';
@@ -23,7 +22,7 @@ interface Props {
 export function RewardProgramItems({ incentive }: Props) {
     const { contracts } = useWeb3Connector();
     const { address } = useWalletConnection();
-    const { positions } = useLpPositions();
+    const positions = useAppSelector(selectUserPositions);
     const { getContractByAddress } = useContractConfig();
     const dispatch = useAppDispatch();
     const userStakes = useAppSelector(selectUserStakes);
@@ -87,19 +86,27 @@ export function RewardProgramItems({ incentive }: Props) {
         try {
             tx = await contracts.uniswapStaker.multicall(calls);
         } catch(e) {
-            await dispatch(hideAwaitingModal());
-            await dispatch(showRejectedModal());
+            dispatch(hideAwaitingModal());
+            dispatch(showRejectedModal());
         }
 
-        await dispatch(hideAwaitingModal());
-        await dispatch(showSubmittedModal({ txHash: tx.hash }));
-        await dispatch(addPendingTransaction({txHash: tx.hash, type: 'stake'}));
+        dispatch(hideAwaitingModal());
+        dispatch(showSubmittedModal({ txHash: tx.hash }));
+        dispatch(addPendingTransaction({txHash: tx.hash, type: 'unstake'}));
 
-        await tx.wait();
-        await dispatch(removePendingTransaction(tx.hash));
-        await dispatch(showConfirmedModal());
+        try {
+            await tx.wait();
+        } catch(e) {
+            dispatch(removePendingTransaction(tx.hash));
+            dispatch(showRejectedModal());
+            return;
+        }
+
+        dispatch(removePendingTransaction(tx.hash));
+        dispatch(showConfirmedModal());
 
         await dispatch(postUnstakedAsync({ tokenId: Number(staked?.tokenId), incentiveId: Number(incentive.id) }));
+        await dispatch(fetchUserPositionsAsync());
     }
 
     const uniswapLink = () => {

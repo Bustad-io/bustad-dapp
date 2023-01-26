@@ -5,9 +5,8 @@ import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { useIncentive } from "../../hooks/incentiveHook";
 import { StakeIncentiveItem } from "./components/StakeIncentiveItem";
 import { SortIncentiveByDate } from "../../features/incentive/utils";
-import { useLpPositions } from "../../hooks/lpPositionsHook";
 import { generateIncentivePositionAllowance } from "./helpers";
-import { selectUserStakes } from "../../features/incentive/incentiveSlice";
+import { selectUserPositions, selectUserStakes } from "../../features/incentive/incentiveSlice";
 import { useAppSelector } from "../../app/hooks";
 
 function StakingPage() {
@@ -15,7 +14,7 @@ function StakingPage() {
   const { address } = useWalletConnection();
 
   const { incentives } = useIncentive();
-  const { positions } = useLpPositions();
+  const positions = useAppSelector(selectUserPositions);
   const userStakes = useAppSelector(selectUserStakes);
 
   const { allowedIncentives } = generateIncentivePositionAllowance(positions, incentives);

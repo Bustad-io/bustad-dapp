@@ -3,19 +3,17 @@ import { MainBox } from "../../components/MainBox";
 import { useIncentive } from "../../hooks/incentiveHook";
 import { useWeb3Connector } from "../../hooks/web3Hook";
 import { useWalletConnection } from '../../hooks/walletConnectionHook';
-import { useLpPositions } from "../../hooks/lpPositionsHook";
 import { getPositionByIncentive } from "./helpers";
-import { postUnstakedAsync, postUserStakeAsync, selectUserStakes } from "../../features/incentive/incentiveSlice";
+import { postUnstakedAsync, postUserStakeAsync, selectUserPositions, selectUserStakes } from "../../features/incentive/incentiveSlice";
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { StringToEpoch } from "../../utils/date";
 import { utils } from "ethers";
-import { toEther } from "../../utils/format";
 
 function StakeIncentiveDetailsPage() {
   const { contracts } = useWeb3Connector();
   const { address } = useWalletConnection();
   const { incentives } = useIncentive();
-  const { positions } = useLpPositions();
+  const positions = useAppSelector(selectUserPositions);
   const userStakes = useAppSelector(selectUserStakes);
   const { id } = useParams();
   const dispatch = useAppDispatch();
