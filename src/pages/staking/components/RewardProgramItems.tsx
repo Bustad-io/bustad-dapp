@@ -17,13 +17,12 @@ import { utils } from 'ethers';
 
 interface Props {
     incentive: Incentive,
-
 }
 
 export function RewardProgramItems({ incentive }: Props) {
     const { contracts } = useWeb3Connector();
     const { address } = useWalletConnection();
-    const { positions } = useLpPositions();    
+    const { positions } = useLpPositions();
     const { getContractByAddress } = useContractConfig();
     const dispatch = useAppDispatch();
     const userStakes = useAppSelector(selectUserStakes);
@@ -66,6 +65,12 @@ export function RewardProgramItems({ incentive }: Props) {
         await dispatch(postUnstakedAsync({ tokenId: Number(staked?.tokenId), incentiveId: Number(incentive.id) }));
     }
 
+    const uniswapLink = () => {
+        const token0 = getContractByAddress(incentive.token0)?.label === "ETH" ? "ETH" : incentive.token0;
+        const token1 = getContractByAddress(incentive.token1)?.label === "ETH" ? "ETH" : incentive.token1;
+        return `https://app.uniswap.org/#/add/${token0}/${token1}/${incentive.poolFee}`;
+    }
+
     return (
         <div className='bg-white rounded-lg p-3'>
             <Disclosure as='div'>
@@ -89,10 +94,10 @@ export function RewardProgramItems({ incentive }: Props) {
                             leaveFrom="transform scale-100 opacity-100"
                             leaveTo="transform scale-95 opacity-0"
                         >
-                            <Disclosure.Panel as="div" className='flex flex-row space-x-2 max-w-[235px] mt-5' static>                                
+                            <Disclosure.Panel as="div" className='flex flex-row space-x-2 max-w-[235px] mt-5' static>
                                 {staked
                                     ? <PrimaryButtonXSmall onClick={onUnstake} text='Unstake' />
-                                    : (position ? <PrimaryButtonXSmall disabled={!!staked} onClick={onStake} text='Stake' /> : <a href='https://app.uniswap.org/#/add/ETH/0x2943864BE07a0F1Fb2E3CB48fDe09d9FC2621B07/10000' className='flex items-center space-x-[2px] cursor-pointer' target="_blank" rel="noopener noreferrer">
+                                    : (position ? <PrimaryButtonXSmall disabled={!!staked} onClick={onStake} text='Stake' /> : <a href={uniswapLink()} className='flex items-center space-x-[2px] cursor-pointer' target="_blank" rel="noopener noreferrer">
                                         <span className='text-sm text-stone-800 underline'>Add liquidity on Uniswap</span>
                                         <Arrow className='-top-[2px] relative' />
                                     </a>)}

@@ -12,3 +12,5 @@ export interface Incentive {
  token1: string;
  poolFee: number;
 }
+
+export type IncentiveArray = [string, string, number, number, string];

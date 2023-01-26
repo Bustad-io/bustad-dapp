@@ -14,7 +14,7 @@ import { fromEther, toEther } from "../../utils/format";
 import { postIncentiveAsync } from "../../features/incentive/incentiveSlice";
 import { IncentiveItem } from "./components/IncentiveItem";
 import { StringToEpoch } from "../../utils/date";
-import { SortIncentiveByDate } from "../../features/incentive/utils";
+import { generateIncentiveId, SortIncentiveByDate } from "../../features/incentive/utils";
 import RefreshIcon from "../../assets/icons/refresh.png";
 import { useIncentive } from "../../hooks/incentiveHook";
 import { useWeb3Connector } from "../../hooks/web3Hook";
@@ -149,10 +149,6 @@ export function AdminCreateLPRewardPage() {
   async function onAllow() {
     await contracts.govToken.approve(contracts.uniswapStaker.address, fromEther(createInsentiveForm.rewardAmount));
   }
-
-  async function generateIncentiveId(arr: [string, string, number, number, string]) {
-    return utils.defaultAbiCoder.encode(["address", "address", "uint", "uint", "address"], arr);
-  }  
 
   async function onRefreshAllowance() {
     const allowance = await contracts.govToken.allowance(address, contracts.uniswapStaker.address);
