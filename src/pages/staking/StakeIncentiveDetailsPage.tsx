@@ -58,8 +58,7 @@ function StakeIncentiveDetailsPage() {
     await dispatch(postUnstakedAsync({tokenId: Number(staked?.tokenId), incentiveId: Number(id)}));
   }
 
-  async function onClaim() {
-    await console.log(toEther(await contracts.uniswapStaker.callStatic.claimReward(contracts.govToken.address, address, 0)));
+  async function onClaim() {    
     await contracts.uniswapStaker.claimReward(contracts.govToken.address, address, 0);    
   }
 
@@ -73,8 +72,7 @@ function StakeIncentiveDetailsPage() {
       startTime: startTimeEpoch,
       endTime: endTimeEpoch,
       refundee: incentive?.refundeeAddress
-    }, Number(staked?.tokenId));
-    console.log(toEther(a.reward));
+    }, Number(staked?.tokenId));    
   }
 
   return (

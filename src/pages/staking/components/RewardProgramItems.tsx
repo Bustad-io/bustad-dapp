@@ -55,7 +55,7 @@ export function RewardProgramItems({ incentive }: Props) {
             refundee: incentive?.refundeeAddress
         }, staked?.tokenId]);
 
-        const encodedWithdrawFunc = contracts.uniswapStaker.interface.encodeFunctionData("withdrawToken", [staked?.tokenId, incentive?.refundeeAddress, []]);
+        const encodedWithdrawFunc = contracts.uniswapStaker.interface.encodeFunctionData("withdrawToken", [staked?.tokenId, address, []]);
 
         const calls = [
             utils.arrayify(encodedUnstakeFunc),
