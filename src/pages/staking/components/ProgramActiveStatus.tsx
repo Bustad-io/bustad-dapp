@@ -1,18 +1,11 @@
-import { DateNowEpoch, StringToEpoch } from '../../../utils/date';
-
 interface Props {
-    startDate: string;
-    endDate: string;
-    isActivelyEnded: boolean;
+    isStarted: boolean;
+    isEnded: boolean;
+    isComingSoon: boolean;    
 }
 
-export function ProgramActiveStatus({ startDate, endDate, isActivelyEnded }: Props) {
-    const isActive = StringToEpoch(startDate) < DateNowEpoch() && StringToEpoch(endDate) > DateNowEpoch();
-
-    const isComingSoon = StringToEpoch(startDate) > DateNowEpoch();
-    const isEnded = StringToEpoch(endDate) < DateNowEpoch() || isActivelyEnded;
-
-    const label = isActive
+export function ProgramActiveStatus({ isComingSoon, isEnded, isStarted }: Props) {    
+    const label = isStarted
         ? 'Active'
         : (isComingSoon
             ? 'Coming soon'
@@ -20,7 +13,7 @@ export function ProgramActiveStatus({ startDate, endDate, isActivelyEnded }: Pro
                 ? 'Ended'
                 : 'Unknown'));
 
-    const dotComponent = isActive
+    const dotComponent = isStarted
         ? <span className='h-2 w-2 bg-[#40B66B] inline-block rounded-full'></span>
         : (isComingSoon ? <span className='h-2 w-2 bg-[#FCC934] inline-block rounded-full'></span>
             : (isEnded

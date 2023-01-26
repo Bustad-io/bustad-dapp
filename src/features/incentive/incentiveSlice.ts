@@ -175,7 +175,7 @@ export const incentiveSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCreatedIncentivesAsync.fulfilled, (state, action) => {
-        state.incentives = [...state.incentives, ...action.payload.data]
+        state.incentives = action.payload.data;
       })
       .addCase(postUnstakedAsync.fulfilled, (state, action) => {
         const removeIndex = state.userStakes.findIndex(x => x.tokenId === action.payload.tokenId);

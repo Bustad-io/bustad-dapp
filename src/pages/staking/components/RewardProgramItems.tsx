@@ -1,7 +1,7 @@
 import { PrimaryButtonXSmall } from '../../../components/PrimaryButton';
 import { useContractConfig } from '../../../hooks/contractConfigHook';
 import { Incentive } from '../../../types/IncentiveType';
-import { FormateDateString, StringToEpoch } from '../../../utils/date';
+import { DateNowEpoch, FormateDateString, StringToEpoch } from '../../../utils/date';
 import { PoolLogoLabel } from './PoolLogoLabel';
 import { ProgramActiveStatus } from './ProgramActiveStatus';
 import { Disclosure, Transition } from '@headlessui/react';
@@ -29,6 +29,10 @@ export function RewardProgramItems({ incentive }: Props) {
     const poolContract = getContractByAddress(incentive.poolAddress);
     const position = getPositionByIncentive(incentive!, positions);
     const staked = userStakes.find(x => x.incentiveId === Number(incentive.id));
+    
+    const isActive = StringToEpoch(incentive.startTime) < DateNowEpoch() && StringToEpoch(incentive.endTime) > DateNowEpoch();
+    const isComingSoon = StringToEpoch(incentive.startTime) > DateNowEpoch();
+    const isEnded = StringToEpoch(incentive.endTime) < DateNowEpoch() || incentive.activelyEnded;
 
     const stakingContractAddress = contracts.uniswapStaker.address;
 
@@ -127,7 +131,7 @@ export function RewardProgramItems({ incentive }: Props) {
                                 <PoolLogoLabel poolLabel={poolContract?.label ?? ''} />
                             </div>
                             <div className='flex flex-col items-end space-y-1'>
-                                <ProgramActiveStatus startDate={incentive.startTime} endDate={incentive.endTime} isActivelyEnded={incentive.activelyEnded} />
+                                <ProgramActiveStatus isComingSoon={isComingSoon} isEnded={isEnded} isStarted={isActive} />
                                 <span className='text-xs font-medium'>{FormateDateString(incentive.startTime)} - {FormateDateString(incentive.endTime)}</span>
                             </div>
                         </Disclosure.Button>
@@ -142,7 +146,7 @@ export function RewardProgramItems({ incentive }: Props) {
                             <Disclosure.Panel as="div" className='flex flex-row space-x-2 max-w-[235px] mt-3' static>
                                 {staked
                                     ? <PrimaryButtonXSmall onClick={onUnstake} text='Unstake' />
-                                    : (position ? <PrimaryButtonXSmall disabled={!!staked} onClick={onStake} text='Stake' /> : <a href={uniswapLink()} className='flex items-center space-x-[2px] cursor-pointer' target="_blank" rel="noopener noreferrer">
+                                    : (position ? <PrimaryButtonXSmall disabled={!!staked || !isActive} onClick={onStake} text='Stake' /> : <a href={uniswapLink()} className='flex items-center space-x-[2px] cursor-pointer' target="_blank" rel="noopener noreferrer">
                                         <span className='text-sm text-stone-800 underline'>Add liquidity on Uniswap</span>
                                         <Arrow className='-top-[2px] relative' />
                                     </a>)}
