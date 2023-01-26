@@ -67,10 +67,11 @@ function App() {
         </header>
         <div className='flex justify-center items-center md:h-full'>
           <div className='flex flex-col dialog:w-auto w-full items-center px-2 dialog:px-0'>
-            {network !== 'mainnet' && <div className="flex rounded-md w-full mt-2">
-              <span className='bg-Anakiwa px-3 py-1 rounded font-semibold text-xs'>Network: {network.toUpperCase()}</span>
-            </div>}
-            <div className="mb-2">
+            {network !== 'mainnet' && (
+              <div className="flex rounded-md w-full mt-2 mb-2">
+                <span className='bg-Anakiwa px-3 py-1 rounded font-semibold text-xs'>Network: {network.toUpperCase()}</span>
+              </div>)}
+            <div className="w-full">
               <PendingTransactionList />
             </div>
             <Routes>
