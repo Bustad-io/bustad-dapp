@@ -44,7 +44,8 @@ export const fetchUserStakesAsync = createAsyncThunk(
       throw Error('Wallet not connected');
     }
 
-    if (state.wallet.account === null || isAddress(state.wallet.account)) {
+    
+    if (state.wallet.account === null || !isAddress(state.wallet.account)) {
       throw Error('Wallet address is null or invalid');
     }
 
