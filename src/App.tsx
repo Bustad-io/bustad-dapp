@@ -1,7 +1,6 @@
 import './App.css';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import MintPage from './pages/MintPage';
-import { NavigationTab } from './components/NavigationTab';
 import GovernancePage from './pages/GovernancePage';
 import { Dialog, PendingTransactionList } from './features/dialog/Dialog';
 import { AccountButton } from './components/AccountButton';
@@ -24,10 +23,11 @@ import { AdminCreateLPRewardPage, AdminLPRewardPage } from './pages/admin/AdminL
 import { AdminIncentiveDetailPage } from './pages/admin/incentive/AdminIncentiveDetailPage';
 import StakeIncentiveDetailsPage from './pages/staking/StakeIncentiveDetailsPage';
 import RewardPage from './pages/staking/RewardPage';
+import { NavigationBar } from './components/NavigationBar';
 
 function App() {
   const location = useLocation();
-  const [showNavigationTab, setShowNavigationTab] = useState(true);
+  const [, setShowNavigationTab] = useState(true);
   const network = useAppSelector(selectNetwork);
 
   useEffect(() => {
@@ -52,18 +52,14 @@ function App() {
   return (
     <>
       <div className='flex flex-col bg-orange-100 dark:bg-gradient-to-br dark:from-DarkPaleBlue dark:to-DarkPaleBlueDarker h-full'>
-        <header className='flex pt-2 sm:pt-12 px-2 sm:px-11 items-center'>
-          <div className='md:grow'>
-            <a href="https://bustad.io" className='w-6 sm:w-12 inline-block'>
-              <BustadIcon className='w-6 sm:w-12' />
+        <header className='flex px-2 pt-5 mb-14 justify-between'>
+          <div className='flex items-center space-x-9 sm:space-x-16'>
+            <a href="https://bustad.io" className='w-6 sm:w-9 inline-block'>
+              <BustadIcon className='w-6 sm:w-9' />
             </a>
+            <NavigationBar />
           </div>
-          {showNavigationTab && <div className='grow flex justify-between'>
-            <div className='relative sm:left-16 ml-6 sm:ml-0'>
-              <NavigationTab />
-            </div>
-            <AccountButton />
-          </div>}
+          <AccountButton />
         </header>
         <div className='flex justify-center items-center md:h-full'>
           <div className='flex flex-col dialog:w-auto w-full items-center px-2 dialog:px-0'>
@@ -77,7 +73,7 @@ function App() {
             <Routes>
               <Route path="/" element={<StartPage />} />
               <Route path="mint" element={<MintPage />} />
-              <Route path="governance" element={<GovernancePage />} />
+              <Route path="eig" element={<GovernancePage />} />
               <Route path="counter" element={<CounterPage />} />
               <Route path="mint/wallet-selection" element={<WalletSelectionPage />} />
               <Route path="mint/app-store-redirect" element={<MobileRedirectionPage />} />

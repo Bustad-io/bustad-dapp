@@ -61,7 +61,7 @@ function GovernancePage() {
     dispatch(fetchBalanceAsync());
   }
 
-  return <MainBox title="Governance">
+  return <MainBox title="EIG">
     {isConnected ? <div className="flex flex-col">
       <div className="mb-4">
         <WhiteSection>
