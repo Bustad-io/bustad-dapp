@@ -1,5 +1,5 @@
 import { MainBox } from "../../components/MainBox";
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { SortIncentiveByDate } from "../../features/incentive/utils";
 import { RewardProgramItems } from "./components/RewardProgramItems";
 import { TotalAccrued } from './components/TotalAccrued';
@@ -9,12 +9,14 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchCreatedIncentivesAsync, fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync, selectIncentives } from "../../features/incentive/incentiveSlice";
 import { isAddress } from "ethers/lib/utils";
+import Skeleton from 'react-loading-skeleton';
 
 function RewardPage() {
   const incentives = useAppSelector(selectIncentives);
   const { isConnected, address } = useWalletConnection();
   const sortedIncentives = [...incentives].sort(SortIncentiveByDate);
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -22,7 +24,12 @@ function RewardPage() {
         return;
       }
 
-      await dispatch(fetchCreatedIncentivesAsync());
+      if (incentives.length === 0) {
+        setLoading(true);        
+        await dispatch(fetchCreatedIncentivesAsync());
+        setLoading(false);
+      }
+
       await dispatch(fetchUserStakesAsync());
       await dispatch(fetchUserPositionsAsync());
       await dispatch(fetchTotalAccruedAsync());
@@ -33,12 +40,14 @@ function RewardPage() {
 
   return (
     <MainBox title="Reward program">
-      {isConnected ? <>
-        <div className="space-y-2.5 mb-5">
-          {sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
-        </div>
-        <TotalAccrued />
-      </> : <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl px-10' />}
+      {isConnected
+        ? <>
+          <div className="space-y-2.5 mb-5">
+            {loading ? <Skeleton baseColor="#dbdbdb" count={4} /> : sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
+          </div>
+          <TotalAccrued />
+        </>
+        : <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl px-10' />}
     </MainBox>
   );
 }
