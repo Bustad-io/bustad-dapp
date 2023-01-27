@@ -14,3 +14,8 @@ export interface Incentive {
 }
 
 export type IncentiveArray = [string, string, number, number, string];
+
+export interface AccruedPerIncentive {
+    accrued: number;
+    incentiveId: number;
+}

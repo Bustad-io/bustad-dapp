@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
-import { Incentive } from '../../types/IncentiveType';
+import { AccruedPerIncentive, Incentive } from '../../types/IncentiveType';
 import { endIncentive, getAllIncentives, postIncentive } from '../../api/incentiveApi';
 import { UserStake } from '../../types/UserStakeType';
 import { getUserStake, postUserStake, setToUnstaked } from '../../api/stakeApi';
@@ -10,20 +10,63 @@ import { formatUnitToNumber, toEther } from '../../utils/format';
 import { getContracts } from '../../providers/web3.provider';
 import { getContractByAddressHelper } from '../../utils/helper';
 import { isAddress } from 'ethers/lib/utils';
+import { StringToEpoch } from '../../utils/date';
 
 export interface IncentiveState {
   incentives: Incentive[]
   userStakes: UserStake[],
   positions: PositionView[],
-  totalAccrued: number
+  totalAccrued: number,
+  accruedPerIncentiveList: AccruedPerIncentive[] 
 }
 
 const initialState: IncentiveState = {
   incentives: [],
   userStakes: [],
   positions: [],
-  totalAccrued: 0
+  totalAccrued: 0,
+  accruedPerIncentiveList: []
 };
+
+export const fetchAccruedPerIncentiveAsync = createAsyncThunk(
+  'incentive/fetchAccruedPerIncentive',
+  async (_, { getState }) => {
+    const state = getState() as RootState;
+    const network = state.wallet.network;
+    const incentives = state.incentive.incentives;
+    const userStakes = state.incentive.userStakes;
+
+    const { uniswapStaker } = getContracts(network, true);
+
+    const accruedPerIncentiveList: AccruedPerIncentive[] = []
+
+    for (const incentive of incentives) {
+      
+      const startTimeEpoch = StringToEpoch(incentive?.startTime!);
+      const endTimeEpoch = StringToEpoch(incentive?.endTime!);
+
+      const staked = userStakes.find(x => x.incentiveId === Number(incentive.id));
+      
+      if(!staked!) {
+        continue;
+      }
+
+      const rewardInfo = await uniswapStaker.getRewardInfo({
+        rewardToken: incentive?.rewardTokenAddress,
+        pool: incentive?.poolAddress,
+        startTime: startTimeEpoch,
+        endTime: endTimeEpoch,
+        refundee: incentive?.refundeeAddress
+      }, Number(staked?.tokenId));      
+
+      accruedPerIncentiveList.push({accrued: Number(toEther(rewardInfo.reward)), incentiveId: incentive.id!})
+    }
+
+    return {
+      accruedPerIncentiveList
+    }
+  }
+);
 
 export const postUnstakedAsync = createAsyncThunk(
   'incentive/postUnstaked',
@@ -38,13 +81,13 @@ export const postUnstakedAsync = createAsyncThunk(
 export const fetchUserStakesAsync = createAsyncThunk(
   'incentive/fetchUserStakes',
   async (_, { getState }) => {
-    const state = getState() as RootState;    
+    const state = getState() as RootState;
 
     if (state.wallet.status !== 'connected') {
       throw Error('Wallet not connected');
     }
 
-    
+
     if (state.wallet.account === null || !isAddress(state.wallet.account)) {
       throw Error('Wallet address is null or invalid');
     }
@@ -204,6 +247,9 @@ export const incentiveSlice = createSlice({
       })
       .addCase(fetchTotalAccruedAsync.fulfilled, (state, action) => {
         state.totalAccrued = action.payload.accrued;
+      })
+      .addCase(fetchAccruedPerIncentiveAsync.fulfilled, (state, action) => {
+        state.accruedPerIncentiveList = action.payload.accruedPerIncentiveList;
       });
   }
 });
@@ -212,5 +258,6 @@ export const selectIncentives = (state: RootState) => state.incentive.incentives
 export const selectUserStakes = (state: RootState) => state.incentive.userStakes;
 export const selectUserPositions = (state: RootState) => state.incentive.positions;
 export const selectTotalAccrued = (state: RootState) => state.incentive.totalAccrued;
+export const selectAccruedPerIncentiveList = (state: RootState) => state.incentive.accruedPerIncentiveList;
 
 export default incentiveSlice.reducer;

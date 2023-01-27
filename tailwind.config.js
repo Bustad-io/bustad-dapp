@@ -37,7 +37,8 @@ module.exports = {
         'Negroni': '#FFDABF',
         'PeachOrange': '#FFC499',
         'Tuscanyapprox': '#BE6B30',
-        'Anakiwa': '#B1DEFF'
+        'Anakiwa': '#B1DEFF',
+        'EmeraldGreen': '#40B66B'
       }
     },
   },

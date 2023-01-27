@@ -14,7 +14,7 @@ export function ProgramActiveStatus({ isComingSoon, isEnded, isStarted }: Props)
                 : 'Unknown'));
 
     const dotComponent = isStarted
-        ? <span className='h-2 w-2 bg-[#40B66B] inline-block rounded-full'></span>
+        ? <span className='h-2 w-2 bg-EmeraldGreen inline-block rounded-full'></span>
         : (isComingSoon ? <span className='h-2 w-2 bg-[#FCC934] inline-block rounded-full'></span>
             : (isEnded
                 ? <span className='h-2 w-2 bg-[#E93939] inline-block rounded-full'></span>

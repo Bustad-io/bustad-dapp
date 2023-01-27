@@ -7,7 +7,7 @@ import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { ConnectButton } from "../../features/wallet/connectButton";
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchCreatedIncentivesAsync, fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync, selectIncentives } from "../../features/incentive/incentiveSlice";
+import { fetchAccruedPerIncentiveAsync, fetchCreatedIncentivesAsync, fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync, selectIncentives } from "../../features/incentive/incentiveSlice";
 import { isAddress } from "ethers/lib/utils";
 import Skeleton from 'react-loading-skeleton';
 
@@ -33,6 +33,7 @@ function RewardPage() {
       await dispatch(fetchUserStakesAsync());
       await dispatch(fetchUserPositionsAsync());
       await dispatch(fetchTotalAccruedAsync());
+      await dispatch(fetchAccruedPerIncentiveAsync());
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, isConnected]);
@@ -45,7 +46,10 @@ function RewardPage() {
           <div className="space-y-2.5 mb-5">
             {loading ? <Skeleton baseColor="#dbdbdb" count={4} /> : sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
           </div>
-          <TotalAccrued />
+          <div className="flex flex-col space-y-1">
+            <TotalAccrued />
+            <span className="text-[#222222] text-xs pl-1">*You can only claim your unstaked positions</span>
+          </div>
         </>
         : <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl px-10' />}
     </MainBox>
