@@ -8,7 +8,7 @@ import { Disclosure, Transition } from '@headlessui/react';
 import { useWeb3Connector } from '../../../hooks/web3Hook';
 import { getPositionByIncentive } from '../helpers';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { postUnstakedAsync, postUserStakeAsync, selectUserStakes, selectUserPositions, fetchUserPositionsAsync, fetchTotalAccruedAsync } from '../../../features/incentive/incentiveSlice';
+import { postUnstakedAsync, postUserStakeAsync, selectUserStakes, selectUserPositions, fetchUserPositionsAsync, fetchTotalAccruedAsync, fetchAccruedPerIncentiveAsync } from '../../../features/incentive/incentiveSlice';
 import { useWalletConnection } from '../../../hooks/walletConnectionHook';
 import { AccruedStatus } from './AccruedStatus';
 import { ReactComponent as Arrow } from '../../../assets/icons/Arrow_up_right.svg';
@@ -113,6 +113,7 @@ export function RewardProgramItems({ incentive }: Props) {
         await dispatch(postUnstakedAsync({ tokenId: Number(staked?.tokenId), incentiveId: Number(incentive.id) }));
         await dispatch(fetchUserPositionsAsync());
         await dispatch(fetchTotalAccruedAsync());
+        await dispatch(fetchAccruedPerIncentiveAsync());
     }
 
     const uniswapLink = () => {
