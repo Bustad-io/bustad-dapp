@@ -62,7 +62,7 @@ function App() {
           </div>
           <AccountButton />
         </header>
-        <div className='flex justify-center items-center md:h-full'>
+        <div className='flex justify-center'>
           <div className='flex flex-col dialog:w-auto w-full items-center px-2 dialog:px-0'>
             {network !== 'mainnet' && (
               <div className="flex rounded-md w-full mt-2 mb-2">
