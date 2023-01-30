@@ -66,7 +66,7 @@ function App() {
           <div className='flex flex-col dialog:w-auto w-full items-center px-2 dialog:px-0'>
             {network !== 'mainnet' && (
               <div className="flex rounded-md w-full mt-2 mb-2">
-                <span className='bg-Anakiwa px-3 py-1 rounded font-semibold text-xs'>Network: {network.toUpperCase()}</span>
+                <span className='bg-yellow-400 px-3 py-1 rounded font-semibold text-xs'>Network: {network.toUpperCase()}</span>
               </div>)}
             <div className="w-full">
               <PendingTransactionList />

@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { fetchAccruedPerIncentiveAsync, fetchCreatedIncentivesAsync, fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync, selectIncentives } from "../../features/incentive/incentiveSlice";
 import { isAddress } from "ethers/lib/utils";
 import Skeleton from 'react-loading-skeleton';
+import { AnnouncementBox } from "../../components/AnnouncementBox";
 
 function RewardPage() {
   const incentives = useAppSelector(selectIncentives);
@@ -25,7 +26,7 @@ function RewardPage() {
       }
 
       if (incentives.length === 0) {
-        setLoading(true);        
+        setLoading(true);
         await dispatch(fetchCreatedIncentivesAsync());
         setLoading(false);
       }
@@ -40,20 +41,23 @@ function RewardPage() {
 
 
   return (
-    <MainBox title="Reward program">
-      {isConnected
-        ? <>
-          <div className="space-y-2.5 mb-5">
-            {loading ? <Skeleton baseColor="#dbdbdb" count={4} /> : sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
-            {(!loading && sortedIncentives.length === 0) && <div className="font-semibold border-2 border-dashed border-white rounded-lg px-3 py-3">No active program</div>}
-          </div>
-          <div className="flex flex-col space-y-1">
-            <TotalAccrued />
-            <span className="text-[#222222] text-xs pl-1">*You can only claim your unstaked positions</span>
-          </div>
-        </>
-        : <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl px-10' />}
-    </MainBox>
+    <div className="space-y-2">      
+      <MainBox title="Reward program">
+        {isConnected
+          ? <>
+            <div className="space-y-2.5 mb-5">
+              {loading ? <Skeleton baseColor="#dbdbdb" count={4} /> : sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
+              {(!loading && sortedIncentives.length === 0) && <div className="font-semibold border-2 border-dashed border-white rounded-lg px-3 py-3">No active program</div>}
+            </div>
+            <div className="flex flex-col space-y-1">
+              <TotalAccrued />
+              <span className="text-[#222222] text-xs pl-1">*You can only claim your unstaked positions</span>
+            </div>
+          </>
+          : <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl px-10' />}
+      </MainBox>
+      <AnnouncementBox bgColor={'bg-Anakiwa'} title='Learn more about the Reward program' text='Join in the Reward program and earn more EIG.'/>
+    </div>
   );
 }
 
