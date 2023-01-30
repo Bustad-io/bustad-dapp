@@ -45,6 +45,7 @@ function RewardPage() {
         ? <>
           <div className="space-y-2.5 mb-5">
             {loading ? <Skeleton baseColor="#dbdbdb" count={4} /> : sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
+            {(!loading && sortedIncentives.length === 0) && <div className="font-semibold border-2 border-dashed border-white rounded-lg px-3 py-3">No active program</div>}
           </div>
           <div className="flex flex-col space-y-1">
             <TotalAccrued />
