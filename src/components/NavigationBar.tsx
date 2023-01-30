@@ -2,22 +2,23 @@ import { Transition } from "@headlessui/react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { fetchTotalAccruedAsync, selectTotalAccrued } from "../features/incentive/incentiveSlice";
 import { fetchAccountAsync, fetchGovernanceDistributorShareAsync, selectAccount, selectWalletGovernanceDistributionShare } from "../features/wallet/walletSlice";
 import { useWalletConnection } from '../hooks/walletConnectionHook';
+import { NumberPostfixFormatter } from "../utils/format";
 
 interface TabProp {
     to: string;
     text: string;
-    showBadge: boolean;    
+    badgeValue: number;    
 }
 
 export function NavigationBar() {
     const dispatch = useAppDispatch();
     const {isConnected} = useWalletConnection();
     const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
+    const totalAccrued = useAppSelector(selectTotalAccrued);
     const account = useAppSelector(selectAccount);    
-
-    const showBadge = walletGovernanceDistributionShare >= 1;    
 
     useEffect(() => {
         const runAsync = async () => {
@@ -28,15 +29,16 @@ export function NavigationBar() {
             }
 
             await dispatch(fetchGovernanceDistributorShareAsync());
+            await dispatch(fetchTotalAccruedAsync());
         }
         runAsync();
     }, [account, dispatch, isConnected, walletGovernanceDistributionShare]);
 
-    function Tab({ to, text, showBadge = false }: TabProp) {    
+    function Tab({ to, text, badgeValue }: TabProp) {    
         return (
             <div className="relative">
                 <Transition                    
-                    show={showBadge}
+                    show={badgeValue > 0}
                     enter="transition ease-out duration-[300ms]"
                     enterFrom="transform opacity-0 translate-y-2"
                     enterTo="transform opacity-100 translate-y-0"
@@ -44,23 +46,22 @@ export function NavigationBar() {
                     leaveFrom="transform opacity-100 translate-y-0"
                     leaveTo="transform opacity-0 translate-y-2"
                 >
-                    <Badge></Badge>
+                    <Badge value={badgeValue}></Badge>
                 </Transition>
                 <NavLink className={({isActive}) => isActive ? 'text-black dark:text-white' : ''} to={to} >{text}</NavLink>
             </div>
         )
     }
     
-    function Badge() {
-        const walletGovernanceDistributionShare = useAppSelector(selectWalletGovernanceDistributionShare);
-        return <div className="absolute text-2xs text-white bg-rose-500 dark:bg-red-500 rounded-full p-2 h-6 -right-3 -top-4 flex justify-center items-center font-bold">{walletGovernanceDistributionShare.toFixed(0)}</div>
+    function Badge({value}: {value: number}) {        
+        return <div className="absolute text-2xs text-white bg-rose-500 dark:bg-red-500 rounded-full p-2 h-6 -right-5 -top-5 flex justify-center items-center font-bold">{NumberPostfixFormatter(value)}</div>
     }
 
     return (
         <nav className="flex space-x-5 sm:space-x-9 text-[#757575] dark:text-[#838383] text-xl sm:text-[26px] font-medium">                        
-            <Tab showBadge={false} text={'Mint'} to={'/mint'}/>
-            <Tab showBadge={showBadge} text={'EIG'} to={'/eig'}/>
-            <Tab showBadge={false} text={'Reward'} to={'/reward'}/>            
+            <Tab badgeValue={0} text={'Mint'} to={'/mint'}/>
+            <Tab badgeValue={walletGovernanceDistributionShare} text={'EIG'} to={'/eig'}/>
+            <Tab badgeValue={totalAccrued} text={'Reward'} to={'/reward'}/>            
         </nav>
     )
 }
