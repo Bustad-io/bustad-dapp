@@ -14,6 +14,7 @@ import { AccruedStatus } from './AccruedStatus';
 import { ReactComponent as Arrow } from '../../../assets/icons/Arrow_up_right.svg';
 import { utils } from 'ethers';
 import { addPendingTransaction, hideAwaitingModal, removePendingTransaction, showAwaitingModal, showConfirmedModal, showRejectedModal, showSubmittedModal } from '../../../features/dialog/dialogSlice';
+import { NumberPostfixFormatter } from '../../../utils/format';
 
 interface Props {
     incentive: Incentive,
@@ -129,6 +130,7 @@ export function RewardProgramItems({ incentive }: Props) {
                             <div className='flex flex-col space-y-1'>
                                 <AccruedStatus incentive={incentive} />
                                 <PoolLogoLabel poolLabel={poolContract?.label ?? ''} />
+                                <span className='font-normal text-xs'>Reward pool: <span className='font-semibold'>{NumberPostfixFormatter(incentive.rewardAmount)} EIG</span></span>
                             </div>
                             <div className='flex flex-col items-end space-y-1'>
                                 <ProgramActiveStatus isComingSoon={isComingSoon} isEnded={isEnded} isStarted={isActive} />
