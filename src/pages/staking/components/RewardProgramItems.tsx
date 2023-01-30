@@ -54,7 +54,14 @@ export function RewardProgramItems({ incentive }: Props) {
         await dispatch(showSubmittedModal({ txHash: tx.hash }));
         await dispatch(addPendingTransaction({txHash: tx.hash, type: 'stake'}));
 
-        await tx.wait();
+        try {
+            await tx.wait();
+        } catch(e) {            
+            dispatch(removePendingTransaction(tx.hash));
+            dispatch(showRejectedModal());
+            return;
+        }
+        
         await dispatch(removePendingTransaction(tx.hash));
         await dispatch(showConfirmedModal());
 
@@ -101,7 +108,7 @@ export function RewardProgramItems({ incentive }: Props) {
 
         try {
             await tx.wait();
-        } catch(e) {
+        } catch(e) {            
             dispatch(removePendingTransaction(tx.hash));
             dispatch(showRejectedModal());
             return;
