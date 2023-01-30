@@ -19,6 +19,7 @@ import RefreshIcon from "../../assets/icons/refresh.png";
 import { useWeb3Connector } from "../../hooks/web3Hook";
 import UniswapV3PoolDef from '../../contracts/UniswapV3Pool.sol/UniswapV3Pool.json';
 import { useContractConfig } from "../../hooks/contractConfigHook";
+import { addPendingTransaction, hideAwaitingModal, removePendingTransaction, showAwaitingModal, showConfirmedModal, showRejectedModal, showSubmittedModal } from "../../features/dialog/dialogSlice";
 
 export function AdminLPRewardPage() {
   const navigate = useNavigate();
@@ -27,10 +28,10 @@ export function AdminLPRewardPage() {
   const incentives = useAppSelector(selectIncentives);
 
   useEffect(() => {
-    if(incentives.length === 0) {
+    if (incentives.length === 0) {
       dispatch(fetchCreatedIncentivesAsync());
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const incentivePoolList = [...incentives].sort(SortIncentiveByDate).map((data, i) => (
@@ -75,8 +76,8 @@ export function AdminCreateLPRewardPage() {
   useEffect(() => {
     const formCopy = deepCopy(createInsentiveForm);
 
-    formCopy.rewardToken = contractConfig.GovToken.address;    
-    formCopy.pool = contractConfig.UniswapPoolEthEig.address;    
+    formCopy.rewardToken = contractConfig.GovToken.address;
+    formCopy.pool = contractConfig.UniswapPoolEthEig.address;
     formCopy.refundee = address;
 
     dispatch(setCreateIncentiveForm(formCopy));
@@ -119,17 +120,35 @@ export function AdminCreateLPRewardPage() {
     dispatch(setCreateIncentiveForm(formCopy));
   }
 
-  async function onCreate() {    
+  async function onCreate() {
+    let tx;
+
+    dispatch(showAwaitingModal(`Create incentive program`));
+
     const startTimeEpoch = StringToEpoch(createInsentiveForm.startTime);
     const endTimeEpoch = StringToEpoch(createInsentiveForm.endTime);
 
-    await contracts.uniswapStaker.createIncentive({
-      rewardToken: createInsentiveForm.rewardToken,
-      pool: createInsentiveForm.pool,
-      startTime: startTimeEpoch,
-      endTime: endTimeEpoch,
-      refundee: createInsentiveForm.refundee
-    }, fromEther(createInsentiveForm.rewardAmount));
+    try {
+      tx = await contracts.uniswapStaker.createIncentive({
+        rewardToken: createInsentiveForm.rewardToken,
+        pool: createInsentiveForm.pool,
+        startTime: startTimeEpoch,
+        endTime: endTimeEpoch,
+        refundee: createInsentiveForm.refundee
+      }, fromEther(createInsentiveForm.rewardAmount));
+    } catch (e) {
+      await dispatch(hideAwaitingModal());
+      await dispatch(showRejectedModal());
+      return;
+    }
+
+    await dispatch(hideAwaitingModal());
+    await dispatch(showSubmittedModal({ txHash: tx.hash }));
+    await dispatch(addPendingTransaction({ txHash: tx.hash, type: 'create program' }));
+
+    await tx.wait();
+    await dispatch(removePendingTransaction(tx.hash));
+    await dispatch(showConfirmedModal());
 
     const incentiveId = await generateIncentiveId([createInsentiveForm.rewardToken, createInsentiveForm.pool, startTimeEpoch, endTimeEpoch, createInsentiveForm.refundee]);
 
@@ -154,7 +173,27 @@ export function AdminCreateLPRewardPage() {
   }
 
   async function onAllow() {
-    await contracts.govToken.approve(contracts.uniswapStaker.address, fromEther(createInsentiveForm.rewardAmount));
+    let tx;
+
+    dispatch(showAwaitingModal(`Allow contract`));
+
+    try {
+      tx = await contracts.govToken.approve(contracts.uniswapStaker.address, fromEther(createInsentiveForm.rewardAmount));
+    } catch (e) {
+      await dispatch(hideAwaitingModal());
+      await dispatch(showRejectedModal());
+      return;
+    }
+
+    await dispatch(hideAwaitingModal());
+    await dispatch(showSubmittedModal({ txHash: tx.hash }));
+    await dispatch(addPendingTransaction({ txHash: tx.hash, type: 'allow' }));
+
+    await tx.wait();
+    await dispatch(removePendingTransaction(tx.hash));
+    await dispatch(showConfirmedModal());
+
+    await onRefreshAllowance();
   }
 
   async function onRefreshAllowance() {
@@ -193,12 +232,12 @@ export function AdminCreateLPRewardPage() {
           <span>pool</span>
           <select className="block" value={createInsentiveForm.pool} onChange={e => onChangePool(e.target.value)}>
             <option value={contractConfig.UniswapPoolEthEig.address}>{contractConfig.UniswapPoolEthEig.label}</option>
-            <option value={contractConfig.UniswapPoolBuscUsdc.address}>{contractConfig.UniswapPoolBuscUsdc.label}</option>            
-          </select>          
+            <option value={contractConfig.UniswapPoolBuscUsdc.address}>{contractConfig.UniswapPoolBuscUsdc.label}</option>
+          </select>
         </div>
         <div className="flex space-x-2">
           <PrimaryButtonSmall disabled={stakingContractEigAllowance >= createInsentiveForm.rewardAmount} text={"Allow"} onClick={onAllow}></PrimaryButtonSmall>
-          <PrimaryButtonSmall disabled={stakingContractEigAllowance < createInsentiveForm.rewardAmount} text={"Create"} onClick={onCreate}></PrimaryButtonSmall>          
+          <PrimaryButtonSmall disabled={stakingContractEigAllowance < createInsentiveForm.rewardAmount || createInsentiveForm.rewardAmount === 0} text={"Create"} onClick={onCreate}></PrimaryButtonSmall>
         </div>
       </div>
     </MainBox>
