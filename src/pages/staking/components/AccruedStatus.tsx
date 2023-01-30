@@ -1,6 +1,7 @@
 import { Incentive } from '../../../types/IncentiveType';
 import { useAppSelector } from '../../../app/hooks';
 import { selectAccruedPerIncentiveList, selectUserStakes } from '../../../features/incentive/incentiveSlice';
+import { NumberPostfixFormatter } from '../../../utils/format';
 
 interface Props {
     incentive: Incentive
@@ -16,7 +17,7 @@ export function AccruedStatus({ incentive }: Props) {
         return (
             <div className='flex space-x-2'>
                 <span className='text-EmeraldGreen font-semibold text-xs'>Accrued</span>
-                <div className='bg-EmeraldGreen text-white font-semibold text-xs flex items-center px-2 rounded-lg'>{((accrued?.accrued ?? 0) / 1000).toFixed(1)}K</div>
+                <div className='bg-EmeraldGreen text-white font-semibold text-xs flex items-center px-2 rounded-lg'>{NumberPostfixFormatter(accrued?.accrued ?? 0)}</div>
             </div>
         );
     }
