@@ -17,10 +17,10 @@ export interface IncentiveState {
   userStakes: UserStake[],
   positions: PositionView[],
   totalAccrued: number,
-  accruedPerIncentiveList: AccruedPerIncentive[] 
+  accruedPerIncentiveList: AccruedPerIncentive[]  
 }
 
-const initialState: IncentiveState = {
+const initialState: IncentiveState = {  
   incentives: [],
   userStakes: [],
   positions: [],
@@ -159,10 +159,10 @@ export const fetchUserPositionsAsync = createAsyncThunk(
 
 export const fetchCreatedIncentivesAsync = createAsyncThunk(
   'incentive/fetchCreatedIncentives',
-  async (_,) => {
-    const { data } = await getAllIncentives();
+  async () => {
+    const { data } = await getAllIncentives();    
     return {
-      data
+      incentives: data
     }
   }
 );
@@ -219,7 +219,7 @@ export const incentiveSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchCreatedIncentivesAsync.fulfilled, (state, action) => {
-        state.incentives = action.payload.data;
+        state.incentives = action.payload.incentives;        
       })
       .addCase(postUnstakedAsync.fulfilled, (state, action) => {
         const removeIndex = state.userStakes.findIndex(x => x.tokenId === action.payload.tokenId);

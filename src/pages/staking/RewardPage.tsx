@@ -6,16 +6,18 @@ import { TotalAccrued } from './components/TotalAccrued';
 import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { ConnectButton } from "../../features/wallet/connectButton";
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { fetchAccruedPerIncentiveAsync, fetchCreatedIncentivesAsync, fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync, selectIncentives } from "../../features/incentive/incentiveSlice";
+import { useAppDispatch } from "../../app/hooks";
+import { fetchAccruedPerIncentiveAsync, fetchCreatedIncentivesAsync, fetchTotalAccruedAsync, fetchUserPositionsAsync, fetchUserStakesAsync } from "../../features/incentive/incentiveSlice";
 import { isAddress } from "ethers/lib/utils";
 import Skeleton from 'react-loading-skeleton';
 import { AnnouncementBox } from "../../components/AnnouncementBox";
+import { PaginationBar } from "../../components/PaginationBar";
+import { useIncentivePaged } from '../../hooks/incentivePagedHook';
 
-function RewardPage() {
-  const incentives = useAppSelector(selectIncentives);
+function RewardPage() {  
   const { isConnected, address } = useWalletConnection();
-  const sortedIncentives = [...incentives].sort(SortIncentiveByDate);
+  const { totalPages, currentPageNumber, pagedIncentives, onPageChange } = useIncentivePaged();
+  const sortedIncentives = [...pagedIncentives].sort(SortIncentiveByDate);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +27,7 @@ function RewardPage() {
         return;
       }
 
-      if (incentives.length === 0) {
+      if (pagedIncentives.length === 0) {
         setLoading(true);
         await dispatch(fetchCreatedIncentivesAsync());
         setLoading(false);
@@ -39,7 +41,6 @@ function RewardPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, isConnected]);
 
-
   return (
     <div className="space-y-2">
       <MainBox title="Reward program">
@@ -49,6 +50,7 @@ function RewardPage() {
             <div className="space-y-2.5 mb-5">
               {loading ? <Skeleton baseColor="#dbdbdb" count={4} /> : sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
               {(!loading && sortedIncentives.length === 0) && <div className="font-semibold border-2 border-dashed border-white rounded-lg px-3 py-3">No active program</div>}
+              <PaginationBar currentPage={currentPageNumber} totalPages={totalPages} onPageChange={onPageChange}/>
             </div>
             <h2 className="text-white font-medium text-base mb-1">Claim Rewards</h2>
             <div className="flex flex-col space-y-1">

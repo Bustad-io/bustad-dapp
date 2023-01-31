@@ -25,7 +25,7 @@ export function AdminLPRewardPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const incentives = useAppSelector(selectIncentives);
+  const incentives = useAppSelector(selectIncentives);  
 
   useEffect(() => {
     if (incentives.length === 0) {
