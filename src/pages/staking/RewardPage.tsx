@@ -41,14 +41,16 @@ function RewardPage() {
 
 
   return (
-    <div className="space-y-2">      
+    <div className="space-y-2">
       <MainBox title="Reward program">
         {isConnected
           ? <>
+          <h2 className="text-white font-medium text-base mb-1">Stake/Unstake Uniswap LP NFT</h2>
             <div className="space-y-2.5 mb-5">
               {loading ? <Skeleton baseColor="#dbdbdb" count={4} /> : sortedIncentives.map((data, i) => <Fragment key={i}><RewardProgramItems incentive={data} /></Fragment>)}
               {(!loading && sortedIncentives.length === 0) && <div className="font-semibold border-2 border-dashed border-white rounded-lg px-3 py-3">No active program</div>}
             </div>
+            <h2 className="text-white font-medium text-base mb-1">Claim Rewards</h2>
             <div className="flex flex-col space-y-1">
               <TotalAccrued />
               <span className="text-[#222222] text-xs pl-1">*You can only claim your unstaked positions</span>
@@ -56,7 +58,7 @@ function RewardPage() {
           </>
           : <ConnectButton wrapperClass='cursor-pointer py-4 rounded-2xl bg-Tuscanyapprox text-center' buttonClass='text-white font-bold text-2xl px-10' />}
       </MainBox>
-      <AnnouncementBox bgColor={'bg-Anakiwa'} title='Learn more about the Reward program' text='Join in the Reward program and earn more EIG.'/>
+      <AnnouncementBox bgColor={'bg-Anakiwa'} title='Learn more about the Reward program' text='Join in the Reward program and earn more EIG.' />
     </div>
   );
 }
