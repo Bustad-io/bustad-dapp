@@ -1,10 +1,8 @@
-import { PrimaryButtonXSmall } from '../../../components/PrimaryButton';
 import { useContractConfig } from '../../../hooks/contractConfigHook';
 import { Incentive } from '../../../types/IncentiveType';
 import { DateNowEpoch, FormateDateString, StringToEpoch } from '../../../utils/date';
 import { PoolLogoLabel } from './PoolLogoLabel';
 import { ProgramActiveStatus } from './ProgramActiveStatus';
-import { Disclosure, Transition } from '@headlessui/react';
 import { useWeb3Connector } from '../../../hooks/web3Hook';
 import { getPositionByIncentive } from '../helpers';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
@@ -15,6 +13,7 @@ import { ReactComponent as Arrow } from '../../../assets/icons/Arrow_up_right.sv
 import { utils } from 'ethers';
 import { addPendingTransaction, hideAwaitingModal, removePendingTransaction, showAwaitingModal, showConfirmedModal, showRejectedModal, showSubmittedModal } from '../../../features/dialog/dialogSlice';
 import { NumberPostfixFormatter } from '../../../utils/format';
+import { UnderlineButton } from '../../../components/UnderlineButton';
 
 interface Props {
     incentive: Incentive,
@@ -30,7 +29,7 @@ export function RewardProgramItems({ incentive }: Props) {
     const poolContract = getContractByAddress(incentive.poolAddress);
     const position = getPositionByIncentive(incentive!, positions);
     const staked = userStakes.find(x => x.incentiveId === Number(incentive.id));
-    
+
     const isActive = StringToEpoch(incentive.startTime) < DateNowEpoch() && StringToEpoch(incentive.endTime) > DateNowEpoch();
     const isComingSoon = StringToEpoch(incentive.startTime) > DateNowEpoch();
     const isEnded = StringToEpoch(incentive.endTime) < DateNowEpoch() || incentive.activelyEnded;
@@ -52,16 +51,16 @@ export function RewardProgramItems({ incentive }: Props) {
 
         await dispatch(hideAwaitingModal());
         await dispatch(showSubmittedModal({ txHash: tx.hash }));
-        await dispatch(addPendingTransaction({txHash: tx.hash, type: 'stake'}));
+        await dispatch(addPendingTransaction({ txHash: tx.hash, type: 'stake' }));
 
         try {
             await tx.wait();
-        } catch(e) {            
+        } catch (e) {
             dispatch(removePendingTransaction(tx.hash));
             dispatch(showRejectedModal());
             return;
         }
-        
+
         await dispatch(removePendingTransaction(tx.hash));
         await dispatch(showConfirmedModal());
 
@@ -97,18 +96,18 @@ export function RewardProgramItems({ incentive }: Props) {
 
         try {
             tx = await contracts.uniswapStaker.multicall(calls);
-        } catch(e) {
+        } catch (e) {
             dispatch(hideAwaitingModal());
             dispatch(showRejectedModal());
         }
 
         dispatch(hideAwaitingModal());
         dispatch(showSubmittedModal({ txHash: tx.hash }));
-        dispatch(addPendingTransaction({txHash: tx.hash, type: 'unstake'}));
+        dispatch(addPendingTransaction({ txHash: tx.hash, type: 'unstake' }));
 
         try {
             await tx.wait();
-        } catch(e) {            
+        } catch (e) {
             dispatch(removePendingTransaction(tx.hash));
             dispatch(showRejectedModal());
             return;
@@ -130,41 +129,26 @@ export function RewardProgramItems({ incentive }: Props) {
     }
 
     return (
-        <div className='bg-white rounded-lg p-3'>
-            <Disclosure as='div'>
-                {() => (
-                    <>
-                        <Disclosure.Button as="div" className="flex flex-row justify-between items-center cursor-pointer">
-                            <div className='flex flex-col space-y-1'>
-                                <AccruedStatus incentive={incentive} />
-                                <PoolLogoLabel poolLabel={poolContract?.label ?? ''} />
-                                <span className='font-normal text-xs'>Reward pool: <span className='font-semibold'>{NumberPostfixFormatter(incentive.rewardAmount)} EIG</span></span>
-                            </div>
-                            <div className='flex flex-col items-end space-y-1'>
-                                <ProgramActiveStatus isComingSoon={isComingSoon} isEnded={isEnded} isStarted={isActive} />
-                                <span className='text-xs font-medium'>{FormateDateString(incentive.startTime)} - {FormateDateString(incentive.endTime)}</span>
-                            </div>
-                        </Disclosure.Button>
-                        <Transition
-                            enter="transition duration-100 ease-out"
-                            enterFrom="transform scale-95 opacity-0"
-                            enterTo="transform scale-100 opacity-100"
-                            leave="transition duration-75 ease-out"
-                            leaveFrom="transform scale-100 opacity-100"
-                            leaveTo="transform scale-95 opacity-0"
-                        >
-                            <Disclosure.Panel as="div" className='flex flex-row space-x-2 max-w-[235px] mt-3' static>
-                                {staked
-                                    ? <PrimaryButtonXSmall onClick={onUnstake} text='Unstake' />
-                                    : (position ? <PrimaryButtonXSmall disabled={!!staked || !isActive} onClick={onStake} text='Stake' /> : <a href={uniswapLink()} className='flex items-center space-x-[2px] cursor-pointer' target="_blank" rel="noopener noreferrer">
-                                        <span className='text-sm text-stone-800 underline'>Add liquidity on Uniswap</span>
-                                        <Arrow className='-top-[2px] relative' />
-                                    </a>)}
-                            </Disclosure.Panel>
-                        </Transition>
-                    </>
-                )}
-            </Disclosure>
+        <div className='bg-white rounded-lg p-3 space-y-2'>
+            <div className="flex flex-row justify-between items-center">
+                <div className='flex flex-col space-y-1'>
+                    <AccruedStatus incentive={incentive} />
+                    <PoolLogoLabel poolLabel={poolContract?.label ?? ''} />
+                    <span className='font-normal text-xs'>Reward pool: <span className='font-semibold'>{NumberPostfixFormatter(incentive.rewardAmount)} EIG</span></span>
+                </div>
+                <div className='flex flex-col items-end space-y-1'>
+                    <ProgramActiveStatus isComingSoon={isComingSoon} isEnded={isEnded} isStarted={isActive} />
+                    <span className='text-xs font-medium'>{FormateDateString(incentive.startTime)} - {FormateDateString(incentive.endTime)}</span>
+                </div>
+            </div>
+            <div className='flex'>
+                {staked
+                    ? <UnderlineButton onClick={onUnstake} text='Unstake' />
+                    : (position ? <UnderlineButton disabled={!!staked || !isActive} onClick={onStake} text='Stake' /> : <a href={uniswapLink()} className='flex items-center space-x-[2px] cursor-pointer' target="_blank" rel="noopener noreferrer">
+                        <span className='text-sm text-stone-800 underline'>Add liquidity on Uniswap</span>
+                        <Arrow className='-top-[2px] relative' />
+                    </a>)}
+            </div>
         </div>
     );
 } 
