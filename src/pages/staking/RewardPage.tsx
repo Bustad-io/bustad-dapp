@@ -42,7 +42,7 @@ function RewardPage() {
   }, [address, isConnected]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 w-full">
       <MainBox title="Reward program">
         {isConnected
           ? <>

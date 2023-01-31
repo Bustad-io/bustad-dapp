@@ -53,7 +53,7 @@ export function TotalAccrued() {
                 <span className='text-xs text-[#626262]'>Total staked: {formatNumberToSpaces(accruedPerIncentiveSum, 2)} EIG</span>
                 <div className='space-x-1'>
                     <span className='font-medium text-sm'>Total unstaked:</span>
-                    <span className='font-semibold text-base'>{formatNumberToSpaces(totalAccrued, 2)} EIG</span>
+                    <span className='font-semibold text-base'>{formatNumberToSpaces(totalAccrued, 0)} EIG</span>
                 </div>
             </div>
             <PrimaryButtonXSmall text='Claim' onClick={onClaim} disabled={totalAccrued === 0} />
