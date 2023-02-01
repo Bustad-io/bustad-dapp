@@ -24,7 +24,18 @@ export const ANALYTICS_ID_TEST = process.env.REACT_APP_ANALYTICS_ID_TEST ?? "";
 export const ANALYTICS_ID = process.env.REACT_APP_ANALYTICS_ID ?? "";
 
 export const AdminAddress: string = process.env.REACT_APP_ADMIN_ADDRESS ?? "";
-export const ServiceBaseUri: string = process.env.REACT_APP_SERVICE_BASE_URI ?? "";
+
+export function GetConfig(network: NetworkTypes) {
+    if(network === "mainnet") {
+        return {
+            ServiceBaseUri: process.env.REACT_APP_SERVICE_BASE_PROD_URI!
+        }
+    }
+
+    return {
+        ServiceBaseUri: process.env.REACT_APP_SERVICE_BASE_DEV_URI!
+    }
+}
 
 export function GetContractConfig(network: NetworkTypes): ContractConfig {
 

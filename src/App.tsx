@@ -25,6 +25,7 @@ import StakeIncentiveDetailsPage from './pages/staking/StakeIncentiveDetailsPage
 import RewardPage from './pages/staking/RewardPage';
 import { NavigationBar } from './components/NavigationBar';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { changeBaseUrl } from './api/instance';
 
 function App() {
   const location = useLocation();
@@ -49,6 +50,10 @@ function App() {
       setShowNavigationTab(false);
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    changeBaseUrl(network);    
+  }, [network]);
 
   return (
     <>
