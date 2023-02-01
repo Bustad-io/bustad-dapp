@@ -79,7 +79,7 @@ function App() {
             <Routes>
               <Route path="/" element={<StartPage />} />
               <Route path="mint" element={<MintPage />} />
-              <Route path="eig" element={<GovernancePage />} />
+              <Route path="claim" element={<GovernancePage />} />
               <Route path="counter" element={<CounterPage />} />
               <Route path="mint/wallet-selection" element={<WalletSelectionPage />} />
               <Route path="mint/app-store-redirect" element={<MobileRedirectionPage />} />

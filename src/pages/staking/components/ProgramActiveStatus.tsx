@@ -6,7 +6,7 @@ interface Props {
 
 export function ProgramActiveStatus({ isComingSoon, isEnded, isStarted }: Props) {    
     const label = isStarted
-        ? 'Active'
+        ? 'Open'
         : (isComingSoon
             ? 'Coming soon'
             : (isEnded

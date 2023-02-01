@@ -60,7 +60,7 @@ export function NavigationBar() {
     return (
         <nav className="flex space-x-5 sm:space-x-9 text-[#757575] dark:text-[#838383] text-xl sm:text-[26px] font-medium">                        
             <Tab badgeValue={0} text={'Mint'} to={'/mint'}/>
-            <Tab badgeValue={walletGovernanceDistributionShare} text={'EIG'} to={'/eig'}/>
+            <Tab badgeValue={walletGovernanceDistributionShare} text={'Claim'} to={'/claim'}/>
             <Tab badgeValue={totalAccrued} text={'Reward'} to={'/reward'}/>            
         </nav>
     )
