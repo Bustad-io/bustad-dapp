@@ -18,6 +18,8 @@ import { useWalletConnection } from "../../hooks/walletConnectionHook";
 import { MainBox } from "../../components/MainBox";
 import ReactGA from 'react-ga';
 import { ButtonGroup } from "./components/ButtonGroup";
+import { WizardProgressTracker } from "../../pages/wizard/components/WizardProgressTracker";
+import { useQuery } from "../../hooks/queryHook";
 
 export function Minter() {
   const walletBalance = useAppSelector(selectWalletBalance);
@@ -26,6 +28,7 @@ export function Minter() {
 
   const balance = useWalletBalance();
   const allowance = useWalletAllowance();
+  const query = useQuery();
 
   const dispatch = useAppDispatch();
 
@@ -40,6 +43,8 @@ export function Minter() {
   const toAmountNumber = Number(toAmount);
 
   const insufficientBalance = fromAmountNumber > balance;
+
+  const showProgressTracker = query.get('showProgress');
 
   useEffect(() => {
     if (fromAmount === '') return;
@@ -72,8 +77,8 @@ export function Minter() {
     }
 
     await dispatch(hideAwaitingModal());
-    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddBustadToWalletButton: isMetaMask }));    
-    await dispatch(addPendingTransaction({txHash: tx.hash, type: 'mint'}));
+    await dispatch(showSubmittedModal({ txHash: tx.hash, showAddBustadToWalletButton: isMetaMask }));
+    await dispatch(addPendingTransaction({ txHash: tx.hash, type: 'mint' }));
 
     await tx.wait();
     await dispatch(removePendingTransaction(tx.hash));
@@ -94,7 +99,7 @@ export function Minter() {
         category: 'Mint',
         action: 'Start Allow Process'
       });
-    } catch (e) {      
+    } catch (e) {
       await dispatch(hideAwaitingModal());
       await dispatch(showRejectedModal());
       return;
@@ -102,7 +107,7 @@ export function Minter() {
 
     await dispatch(hideAwaitingModal());
     await dispatch(showSubmittedModal({ txHash: tx.hash }));
-    await dispatch(addPendingTransaction({txHash: tx.hash, type: 'allow'}));
+    await dispatch(addPendingTransaction({ txHash: tx.hash, type: 'allow' }));
 
     await tx.wait();
 
@@ -124,8 +129,12 @@ export function Minter() {
   }
 
   return (
-    <MainBox title="Mint">
+    <MainBox title={showProgressTracker ? '' : "Mint"}>
       <>
+        {showProgressTracker && <div className="flex justify-center mt-4 mb-6">
+            <WizardProgressTracker />          
+        </div>}
+        {showProgressTracker && <div className="text-white font-semibold text-base mb-2 pl-1">Mint BUSC</div>}
         <Input balance={Number(balance.toFixed(4))} currencyName={chosenCurrency.toUpperCase()} amount={fromAmount} insufficientBalance={insufficientBalance} onChange={onChangeFromAmount} />
         <div className="mt-4">
           <Input balance={Number(walletBalance.bustadToken.toFixed(2))} currencyName={BustadTokenSymbol} amount={toAmount} onChange={onChangeToAmount} govTokenToReceive={calculateGovTokensToReceive()} />
