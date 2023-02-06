@@ -32,6 +32,8 @@ function App() {
   const [, setShowNavigationTab] = useState(true);
   const network = useAppSelector(selectNetwork);
 
+  console.log('secret key',process.env.REACT_APP_MY_SUPER_SECRET_KEY);
+
   useEffect(() => {
     if (IS_DEV_ENV) {
       ReactGA.initialize(ANALYTICS_ID_TEST, { debug: false });

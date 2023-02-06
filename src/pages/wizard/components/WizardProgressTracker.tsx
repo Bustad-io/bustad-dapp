@@ -27,7 +27,7 @@ export function WizardProgressTracker() {
 
     const activeIndex = trackingList.findIndex(x => x.path === location.pathname);
 
-    function TrackerPoint({ isActive, label, path, query, isFirst = false, isLast = false }: {isActive: boolean, label: string, path: string, isFirst?: boolean, isLast?: boolean, query?: string }) {
+    function TrackerPoint({ isActive, label, path, query, isFirst = false}: {isActive: boolean, label: string, path: string, isFirst?: boolean, query?: string }) {
         function onClick() {
             if(isActive) {                
                 navigate({
@@ -50,7 +50,7 @@ export function WizardProgressTracker() {
 
     return (
         <div className='flex justify-between'>
-            {trackingList.map((data,index) => <TrackerPoint isActive={activeIndex >= index} label={data.label} path={data.path} query={data.query} isFirst={index===0} isLast={index === trackingList.length}></TrackerPoint>)}
+            {trackingList.map((data,index) => <TrackerPoint isActive={activeIndex >= index} label={data.label} path={data.path} query={data.query} isFirst={index===0}></TrackerPoint>)}
         </div>
     )
 }
