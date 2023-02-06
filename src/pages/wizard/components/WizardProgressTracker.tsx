@@ -43,7 +43,7 @@ export function WizardProgressTracker() {
                 <div className={`rounded-full h-[18px] w-[18px] ${isActive ? 'bg-Tuscanyapprox' : ''}`}/>
                 </div>                
                 {!isFirst && <div className={`absolute border-[2px] border-b-0 border-x-0 border-Tuscanyapprox w-[93px] -bottom-[12px] h-full right-8 ${isActive ? 'border-Tuscanyapprox' : 'border-[#DF813C]'}`} />}
-                <div className='text-white text-xs'>{label}</div>
+                <div className={`text-white z-10 text-xs ${isActive && 'cursor-pointer'}`}>{label}</div>
             </div>
         )
     }
