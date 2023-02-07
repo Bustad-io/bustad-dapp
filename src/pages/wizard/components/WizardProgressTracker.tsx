@@ -50,7 +50,7 @@ export function WizardProgressTracker() {
 
     return (
         <div className='flex justify-between'>
-            {trackingList.map((data,index) => <TrackerPoint isActive={activeIndex >= index} label={data.label} path={data.path} query={data.query} isFirst={index===0}></TrackerPoint>)}
+            {trackingList.map((data,index) => <TrackerPoint key={index} isActive={activeIndex >= index} label={data.label} path={data.path} query={data.query} isFirst={index===0}></TrackerPoint>)}
         </div>
     )
 }

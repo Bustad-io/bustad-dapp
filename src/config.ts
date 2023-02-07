@@ -28,12 +28,14 @@ export const AdminAddress: string = process.env.REACT_APP_ADMIN_ADDRESS ?? "";
 export function GetConfig(network: NetworkTypes) {
     if(network === "mainnet") {
         return {
-            ServiceBaseUri: process.env.REACT_APP_SERVICE_BASE_PROD_URI!
+            ServiceBaseUri: process.env.REACT_APP_SERVICE_BASE_PROD_URI!,
+            RampApiKey: process.env.REACT_APP_RAMP_API_PRODUCTION_KEY!
         }
     }
 
     return {
-        ServiceBaseUri: process.env.REACT_APP_SERVICE_BASE_DEV_URI!
+        ServiceBaseUri: process.env.REACT_APP_SERVICE_BASE_DEV_URI!,
+        RampApiKey: process.env.REACT_APP_RAMP_API_STAGING_KEY!
     }
 }
 
