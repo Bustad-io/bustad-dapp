@@ -13,16 +13,11 @@ import ReactGA from "react-ga";
 import { WizardWrapper } from "./components/WizardWrapper";
 import { GetConfig } from "../../config";
 import { IPurchaseCreatedEvent, IWidgetCloseEvent } from "@ramp-network/ramp-instant-sdk/dist/types/types";
-import { fetchLatestRampPurchaseStatusAsync, selectRampPurchaseStatus, setRampPuchaseId, setRampPuchaseStatus } from "../../features/wizard/wizardSlice";
-import { RampPurchaseStatus } from "../../types/RampPurchaseStatus";
-import { wait } from "../../utils/asyncHelper";
-import { addPendingTransaction, removePendingTransaction } from "../../features/dialog/dialogSlice";
 
 function FundingPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const network = useAppSelector(selectNetwork);  
-  const rampPurchaseStatus = useAppSelector(selectRampPurchaseStatus);
 
   const walletBalance = useAppSelector(selectWalletBalance);
   const balanceLoading = useAppSelector(selectBalanceLoading);
@@ -34,35 +29,12 @@ function FundingPage() {
   }
 
   async function onRampPurhaseCreated(e: IPurchaseCreatedEvent) {
-    dispatch(setRampPuchaseId(e.payload.purchase.id));
-    dispatch(setRampPuchaseStatus(RampPurchaseStatus.InProgress));
-
-    await rampPurchaseStatusPolling(e.payload.purchase.id);    
-
     ReactGA.event({ category: 'On ramp', action: 'Purchase created' });
   }
 
   function onRampWidgetClose(e: IWidgetCloseEvent) {
-    //dispatch(setRampPuchaseStatus(RampPurchaseStatus.Cancelled));
-    console.log(e)
     ReactGA.event({ category: 'On ramp', action: 'Widget close' })
-  }
-
-  async function rampPurchaseStatusPolling(purchaseId: string) {
-    dispatch(addPendingTransaction({ txHash: purchaseId, type: 'buy' }));
-    await wait(5000);
-    await dispatch(fetchLatestRampPurchaseStatusAsync());
-
-    do {
-      await wait(5000);
-      await dispatch(fetchLatestRampPurchaseStatusAsync());
-      console.log(rampPurchaseStatus)
-      console.log(RampPurchaseStatus.InProgress)
-      console.log(rampPurchaseStatus === RampPurchaseStatus.InProgress)
-    } while(rampPurchaseStatus === RampPurchaseStatus.InProgress)
-    console.log('continued')
-    dispatch(removePendingTransaction(purchaseId));
-  }
+  }  
 
   useEffect(() => {
     if (!isConnected) {
