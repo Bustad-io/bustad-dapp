@@ -4,11 +4,12 @@ import { RootState } from '../../app/store';
 export type WalletChoice = 'coinbase' | 'metamask';
 
 export interface WizardState {  
-  chosenWallet: WalletChoice
+  chosenWallet: WalletChoice  
 }
 
 const initialState: WizardState = {  
   chosenWallet: 'coinbase'
+  
 };
 
 export const wizardSlice = createSlice({

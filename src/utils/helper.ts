@@ -18,13 +18,3 @@ export function getContractByAddressHelper(address: string, network: NetworkType
   }
   return null;
 }
-
-export async function DelayerAsync(func: Promise<any>, delayBy: number) {
-  const timeout = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve('');
-    }, delayBy);
-  });
-
-  return await Promise.all([timeout, func]);
-}

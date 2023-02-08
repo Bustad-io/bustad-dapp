@@ -11,21 +11,30 @@ import { LoadingTextComponent } from "../../components/LoadingTextComponent";
 import RefreshIcon from "../../assets/icons/refresh.png";
 import ReactGA from "react-ga";
 import { WizardWrapper } from "./components/WizardWrapper";
-
+import { GetConfig } from "../../config";
+import { IPurchaseCreatedEvent, IWidgetCloseEvent } from "@ramp-network/ramp-instant-sdk/dist/types/types";
 
 function FundingPage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const network = useAppSelector(selectNetwork);
+  const network = useAppSelector(selectNetwork);  
 
   const walletBalance = useAppSelector(selectWalletBalance);
   const balanceLoading = useAppSelector(selectBalanceLoading);
 
   const { address, isConnected } = useWalletConnection();
 
-  const onContinue = () => {
-    navigate({pathname: '/mint', search: '?showProgress=true'});
+  function onContinue() {
+    navigate({ pathname: '/mint', search: '?showProgress=true' });
   }
+
+  async function onRampPurhaseCreated(e: IPurchaseCreatedEvent) {
+    ReactGA.event({ category: 'On ramp', action: 'Purchase created' });
+  }
+
+  function onRampWidgetClose(e: IWidgetCloseEvent) {
+    ReactGA.event({ category: 'On ramp', action: 'Widget close' })
+  }  
 
   useEffect(() => {
     if (!isConnected) {
@@ -41,20 +50,24 @@ function FundingPage() {
         hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',
         url: 'https://ri-widget-staging.firebaseapp.com/',
         swapAsset: 'GOERLI_ETH',
-        userAddress: address!
+        userAddress: address!,
+        hostApiKey: GetConfig(network).RampApiKey,
+        webhookStatusUrl: 'https://94b3-82-134-9-170.eu.ngrok.io/ramp/webhook'
+
       })
-        .on(RampInstantEventTypes.WIDGET_CLOSE, (e) => ReactGA.event({ category: 'On ramp', action: 'Widget close' }))
-        .on(RampInstantEventTypes.PURCHASE_CREATED, (e) => ReactGA.event({ category: 'On ramp', action: 'Purchase created' }))
+        .on(RampInstantEventTypes.WIDGET_CLOSE, onRampWidgetClose)
+        .on(RampInstantEventTypes.PURCHASE_CREATED, onRampPurhaseCreated)
         .show();
     } else {
       new RampInstantSDK({
         hostAppName: 'Bustad',
         hostLogoUrl: 'https://app.bustad.io/logo/bustad_orange.png',
         swapAsset: 'ETH_ETH',
-        userAddress: address!
+        userAddress: address!,
+        hostApiKey: GetConfig(network).RampApiKey
       })
-        .on(RampInstantEventTypes.WIDGET_CLOSE, (e) => ReactGA.event({ category: 'On ramp', action: 'Widget close' }))
-        .on(RampInstantEventTypes.PURCHASE_CREATED, (e) => ReactGA.event({ category: 'On ramp', action: 'Purchase created' }))
+        .on(RampInstantEventTypes.WIDGET_CLOSE, onRampWidgetClose)
+        .on(RampInstantEventTypes.PURCHASE_CREATED, onRampPurhaseCreated)
         .show();
     }
 
@@ -64,7 +77,7 @@ function FundingPage() {
     });
   }
 
-  const onRefreshBalance = async () => {
+  async function onRefreshBalance() {
     ReactGA.event({
       category: 'Wallet',
       action: 'Refresh balance'
